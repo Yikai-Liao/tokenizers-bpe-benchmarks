@@ -1,0 +1,45 @@
+--- a/tokenizers/tk-train/src/trainers/bpe/mod.rs
++++ b/tokenizers/tk-train/src/trainers/bpe/mod.rs
+@@ -376,24 +376,27 @@
+     {
+         let words: Result<AHashMap<CompactString, u64>> = iterator
+             .maybe_par_bridge()
+-            .map(|sequence| {
+-                let words = process(sequence.as_ref())?;
+-                let mut map = AHashMap::new();
+-                for word in words {
+-                    *map.entry(CompactString::from(word)).or_default() += 1;
+-                }
+-                Ok(map)
+-            })
+-            .reduce(
++            .fold(
+                 || Ok(AHashMap::new()),
+-                |acc, ws| {
+-                    let mut acc = acc?;
+-                    for (k, v) in ws? {
+-                        *acc.entry(k).or_default() += v;
++                |counts, sequence| {
++                    // Keep calling process after an earlier error, preserving
++                    // the existing callback behavior.
++                    let words = process(sequence.as_ref());
++                    let mut counts = counts?;
++                    for word in words? {
++                        *counts.entry(CompactString::from(word)).or_default() += 1;
+                     }
+-                    Ok(acc)
++                    Ok(counts)
+                 },
+-            );
++            )
++            .reduce_with(|acc, words| {
++                let mut acc = acc?;
++                for (word, count) in words? {
++                    *acc.entry(word).or_default() += count;
++                }
++                Ok(acc)
++            })
++            .unwrap_or_else(|| Ok(AHashMap::new()));
+ 
+         self.words = words?;
+         Ok(())

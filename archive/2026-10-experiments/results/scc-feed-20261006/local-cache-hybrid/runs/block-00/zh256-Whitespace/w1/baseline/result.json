@@ -1,0 +1,39 @@
+{
+  "arm": "baseline",
+  "case": "zh256-Whitespace",
+  "started_unix": 1791273171.9423869,
+  "protocol": 2,
+  "status": "ok",
+  "loadavg": [
+    2.46875,
+    2.0029296875,
+    1.623046875
+  ],
+  "cpu_affinity": [
+    0
+  ],
+  "command": [
+    "/usr/bin/taskset",
+    "--cpu-list",
+    "0",
+    "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-scc-local-cache-hybrid-results/binaries/baseline",
+    "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-scc-local-cache-hybrid-results/runs/block-00/zh256-Whitespace/w1/baseline/job.json"
+  ],
+  "returncode": 0,
+  "supervisor_wall_seconds": 18.370905036004842,
+  "sampled_peak_rss_bytes": 1511641088,
+  "sampled_peak_swap_bytes": 0,
+  "minimum_host_available_bytes": 14815420416,
+  "metrics": {
+    "actual_merges": 0,
+    "actual_vocab": 6827958,
+    "cpu_seconds": 5.110481,
+    "elapsed_seconds": 5.130298273,
+    "feed_seconds": 5.130298273,
+    "maxrss_kib": 519452,
+    "phase": "public Trainer::feed; repository pretokenizer",
+    "pretokenizer": "Whitespace",
+    "train_cpu_seconds": 5.110481,
+    "train_seconds": 5.130298273
+  }
+}

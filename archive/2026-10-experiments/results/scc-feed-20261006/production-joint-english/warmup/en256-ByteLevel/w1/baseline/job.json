@@ -1,0 +1,11 @@
+{
+  "input": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/english-corpus/en-256m.txt",
+  "split": "ByteLevel",
+  "vocab_size": 100000,
+  "min_frequency": 2,
+  "prefix": null,
+  "suffix": null,
+  "max_token_length": null,
+  "workers": 1,
+  "output": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-train-scc-shared-production-english-results/warmup/en256-ByteLevel/w1/baseline/model.json"
+}

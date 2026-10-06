@@ -1,0 +1,40 @@
+{
+  "arm": "candidate",
+  "case": "english-hot64-WhitespaceSplit",
+  "started_unix": 1791276689.0513647,
+  "protocol": 2,
+  "status": "ok",
+  "loadavg": [
+    3.23291015625,
+    4.13134765625,
+    3.24951171875
+  ],
+  "cpu_affinity": [
+    0
+  ],
+  "command": [
+    "/usr/bin/taskset",
+    "--cpu-list",
+    "0",
+    "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-scc-shared-fold-results/binaries/candidate",
+    "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-scc-shared-fold-results/warmup/english-hot64-WhitespaceSplit/w1/candidate/job.json"
+  ],
+  "returncode": 0,
+  "supervisor_wall_seconds": 0.602435267996043,
+  "sampled_peak_rss_bytes": 3100672,
+  "sampled_peak_swap_bytes": 0,
+  "minimum_host_available_bytes": 16751742976,
+  "metrics": {
+    "actual_merges": 0,
+    "actual_vocab": 11,
+    "cpu_seconds": 0.585558,
+    "elapsed_seconds": 0.587167862,
+    "feed_seconds": 0.587167862,
+    "maxrss_kib": 3028,
+    "phase": "public Trainer::feed; repository pretokenizer",
+    "pretokenizer": "WhitespaceSplit",
+    "retained_rss_kib": 3028,
+    "train_cpu_seconds": 0.585558,
+    "train_seconds": 0.587167862
+  }
+}

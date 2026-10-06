@@ -1,0 +1,11 @@
+{
+  "input": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/corpus/english-hot-64m.txt",
+  "split": "WhitespaceSplit",
+  "vocab_size": 100000,
+  "min_frequency": 2,
+  "prefix": null,
+  "suffix": null,
+  "max_token_length": null,
+  "workers": 8,
+  "output": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-scc-local-cache-hybrid-results/runs/block-01/english-hot64-WhitespaceSplit/w8/baseline/model.json"
+}

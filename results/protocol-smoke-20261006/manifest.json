@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "purpose": "protocol-and-public-API-smoke",
+  "performance_evidence": false,
+  "baseline_revision": "bbccb0513ff9afda385ca5c85c66eddb1318cfc7",
+  "candidate_revision": "d857cfeecc659449550c6f5ff37438c6d0ebffd5",
+  "unit_tests": 14,
+  "successful_process_runs": 112,
+  "experiments": [
+    {
+      "name": "affix-core",
+      "experiment_id": "c329f4a7579b8d763a27216c36c535222a0e5d8afac7f4685306fa6e2167d152",
+      "attempts": 4,
+      "complete_blocks": 1,
+      "expected_blocks": 1,
+      "correctness_failed": false
+    },
+    {
+      "name": "affix-pipeline",
+      "experiment_id": "f7df372f27e6a16b0155bcda4138a9506469a5cd32dbd1073bf4a76c0e63827c",
+      "attempts": 4,
+      "complete_blocks": 1,
+      "expected_blocks": 1,
+      "correctness_failed": false
+    },
+    {
+      "name": "core-bytelevel_regex",
+      "experiment_id": "1954f7b9e8c3606d701f5180487021ccae4294550d2754bcc473f5f1c103be56",
+      "attempts": 12,
+      "complete_blocks": 4,
+      "expected_blocks": 4,
+      "correctness_failed": false
+    },
+    {
+      "name": "core-none",
+      "experiment_id": "48d7b91d331b07e9c01b3c0ff858507f368a5391071f09b4ef24330a53f3ff4f",
+      "attempts": 12,
+      "complete_blocks": 4,
+      "expected_blocks": 4,
+      "correctness_failed": false
+    },
+    {
+      "name": "core-whitespace",
+      "experiment_id": "498d75d66ec2788889002ed0bafd487e2737e774034e6bb9e2aaa380388bcd74",
+      "attempts": 12,
+      "complete_blocks": 4,
+      "expected_blocks": 4,
+      "correctness_failed": false
+    },
+    {
+      "name": "core-whitespace_split",
+      "experiment_id": "b95a3e9dc7d44ba1a6545195aa21c810950ba0876f7dadfd35fc60420042f4f3",
+      "attempts": 12,
+      "complete_blocks": 4,
+      "expected_blocks": 4,
+      "correctness_failed": false
+    },
+    {
+      "name": "empty-core",
+      "experiment_id": "558533dec967d890bee19bbc8c4069fb4517e2f64bfdd430f1612f8b8a630062",
+      "attempts": 4,
+      "complete_blocks": 2,
+      "expected_blocks": 2,
+      "correctness_failed": false
+    },
+    {
+      "name": "empty-pipeline",
+      "experiment_id": "597f85b150ed4cd06be32d0c4866d33b28ef9a37b5260fbbacd9d1f602ebbc7f",
+      "attempts": 4,
+      "complete_blocks": 2,
+      "expected_blocks": 2,
+      "correctness_failed": false
+    },
+    {
+      "name": "pipeline-bytelevel_regex",
+      "experiment_id": "1aa0c75f7371ece86500f847cca9c92f0252d743702ac37b23d4218f0318edfe",
+      "attempts": 12,
+      "complete_blocks": 4,
+      "expected_blocks": 4,
+      "correctness_failed": false
+    },
+    {
+      "name": "pipeline-none",
+      "experiment_id": "059953693f14a880fc39b678c84a92a285e9c54c047203df5183f821362f1390",
+      "attempts": 12,
+      "complete_blocks": 4,
+      "expected_blocks": 4,
+      "correctness_failed": false
+    },
+    {
+      "name": "pipeline-whitespace",
+      "experiment_id": "7a2454c93f57dedc7de0167b4c98142287c47d113010404749a7ae0859cd279a",
+      "attempts": 12,
+      "complete_blocks": 4,
+      "expected_blocks": 4,
+      "correctness_failed": false
+    },
+    {
+      "name": "pipeline-whitespace_split",
+      "experiment_id": "070f166b4db8050aecaa02d16c8685c619bb6860839495e4c80dc698462e9914",
+      "attempts": 12,
+      "complete_blocks": 4,
+      "expected_blocks": 4,
+      "correctness_failed": false
+    }
+  ],
+  "artifacts": {
+    "smoke-records.tar.gz": "401b1a1181dacca0d4ce493d5b987c649970e07da8e058b7ab1967d8d5ddf973",
+    "upstream-affix-diagnostic.tar.gz": "8efc11d0b1298284400fdbf37fc9cfbbedaede4a2fbe5c3df13b65e11301a886",
+    "unit-tests.log": "805882ba44c930e6bc13dea11b63e952b1a0decc83830ff055f868f419768a5a",
+    "integration.log": "223d496d26b481be49385f7772b9d1b5c5153df9c861b809532606a05fcb6541"
+  },
+  "preliminary_diagnostic": {
+    "status": "model_mismatch",
+    "same_upstream_revision": true,
+    "performance_evidence": false,
+    "note": "Multi-character affix IDs differed across native upstream invocations; models and original failed report retained."
+  }
+}

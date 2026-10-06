@@ -1,0 +1,11 @@
+{
+  "input": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/english-corpus/en-256m.txt",
+  "split": "Whitespace",
+  "vocab_size": 100000,
+  "min_frequency": 2,
+  "prefix": null,
+  "suffix": null,
+  "max_token_length": null,
+  "workers": 8,
+  "output": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-scc-local-cache-hybrid-results/warmup/en256-Whitespace/w8/candidate/model.json"
+}

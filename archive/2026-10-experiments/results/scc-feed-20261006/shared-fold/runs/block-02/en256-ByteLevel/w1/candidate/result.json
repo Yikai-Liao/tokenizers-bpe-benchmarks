@@ -1,0 +1,40 @@
+{
+  "arm": "candidate",
+  "case": "en256-ByteLevel",
+  "started_unix": 1791276879.2511733,
+  "protocol": 2,
+  "status": "ok",
+  "loadavg": [
+    3.078125,
+    3.53759765625,
+    3.17431640625
+  ],
+  "cpu_affinity": [
+    0
+  ],
+  "command": [
+    "/usr/bin/taskset",
+    "--cpu-list",
+    "0",
+    "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-scc-shared-fold-results/binaries/candidate",
+    "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-scc-shared-fold-results/runs/block-02/en256-ByteLevel/w1/candidate/job.json"
+  ],
+  "returncode": 0,
+  "supervisor_wall_seconds": 5.928592676005792,
+  "sampled_peak_rss_bytes": 151400448,
+  "sampled_peak_swap_bytes": 0,
+  "minimum_host_available_bytes": 16518836224,
+  "metrics": {
+    "actual_merges": 0,
+    "actual_vocab": 836105,
+    "cpu_seconds": 4.706473,
+    "elapsed_seconds": 4.7231700960000005,
+    "feed_seconds": 4.7231700960000005,
+    "maxrss_kib": 54304,
+    "phase": "public Trainer::feed; repository pretokenizer",
+    "pretokenizer": "ByteLevel",
+    "retained_rss_kib": 37780,
+    "train_cpu_seconds": 4.706473,
+    "train_seconds": 4.7231700960000005
+  }
+}

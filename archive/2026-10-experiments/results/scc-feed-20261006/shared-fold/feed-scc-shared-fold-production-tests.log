@@ -1,0 +1,84 @@
+    Updating crates.io index
+     Locking 3 packages to highest Rust 1.99.0 compatible versions
+      Adding saa v5.6.2
+      Adding scc v3.8.8
+      Adding sdd v4.8.11
+   Compiling saa v5.6.2
+   Compiling sdd v4.8.11
+   Compiling scc v3.8.8
+   Compiling tk-train v0.1.0-dev.0 (/home/lyk/code/tokenizers/tokenizers/tk-train)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.22s
+     Running unittests src/lib.rs (tokenizers/tk-train/target/debug/deps/tk_train-7d09595726719bea)
+
+running 68 tests
+test trainers::bpe::engine::aa_parity::tests::long_tokens_and_large_positions_do_not_wrap ... ok
+test trainers::bpe::engine::aa_parity::tests::preserves_runs_over_empty_chunks_and_restarts_after_gaps ... ok
+test trainers::bpe::engine::corpus::tests::unit_weight_range_preserves_boundaries_and_cursor_resets ... ok
+test trainers::bpe::engine::initial_pairs::tests::wave_offsets_restore_positions_above_u32 ... ok
+test trainers::bpe::engine::merge::prepare::ordinary::producer_budget_tests::node_budget_includes_partial_tasks_and_accepts_exact_capacity ... ok
+test trainers::bpe::engine::aa_parity::tests::long_mixed_runs_match_linear_summary ... ok
+test trainers::bpe::engine::merge::prepare::tests::selected_rule_reuse_clears_shared_endpoints_before_domain_growth ... ok
+test trainers::bpe::engine::corpus::tests::intermediate_birth_survives_its_later_boundary_removal ... ok
+test trainers::bpe::engine::corpus::tests::cohort_cohorts_keep_distinct_words_and_unequal_occurrence_spans ... ok
+test trainers::bpe::engine::execution::tests::worker_directories_are_clean_after_errors_and_unwinding ... ok
+test trainers::bpe::engine::storage::id_accumulator::tests::caught_value_construction_panic_leaves_a_reusable_directory ... ok
+test trainers::bpe::engine::pair_index::tests::fresh_queue_preserves_survivors_after_retiring_other_keys ... ok
+test trainers::bpe::engine::storage::id_accumulator::tests::forgotten_drain_does_not_transfer_dirty_ids_to_another_accumulator ... ok
+test trainers::bpe::engine::storage::id_accumulator::tests::recycled_directory_drops_values_and_resets_unconsumed_ids ... ok
+test trainers::bpe::engine::storage::id_accumulator::tests::touched_values_do_not_survive_drain_in_either_domain ... ok
+test trainers::bpe::engine::storage::interval_index::tests::boundaries_duplicates_and_backwards_queries ... ok
+test trainers::bpe::engine::storage::position_storage::tests::promotion_preserves_full_positions ... ok
+test trainers::bpe::engine::storage::interval_index::tests::sorted_runs_match_scalar_queries_across_full_width_boundaries ... ok
+test trainers::bpe::engine::storage::sorted_positions::tests::chain_sources_concatenate_or_merge_without_losing_duplicates ... ok
+test trainers::bpe::engine::pair_index::tests::cohort_birth_publication_keeps_low_positive_cohorts_and_skips_negative_counts ... ok
+test trainers::bpe::engine::storage::position_chains::tests::interleaved_chains_keep_full_coordinates ... ok
+test trainers::bpe::engine::pair_index::tests::cohort_negative_count_repairs_only_when_its_snapshot_reaches_the_head ... ok
+test trainers::bpe::engine::pair_index::tests::interrupted_frontier_corrects_stale_counts_and_keeps_birth_ties ... ok
+test trainers::bpe::engine::storage::id_accumulator::tests::directory_growth_stays_within_the_dense_budget ... ok
+test trainers::bpe::engine::tests::full_pair_keys_remain_distinct_in_initial_counting ... ok
+test trainers::bpe::engine::tests::feed_error_runs_callbacks_without_replacing_previous_counts ... ok
+test trainers::bpe::engine::storage::sorted_positions::tests::direct_reversed_encoding_matches_sorted_oracle_and_checks_replay ... ok
+test trainers::bpe::engine::storage::sorted_positions::tests::decreasing_seed_boundaries_and_append_fail_without_publication ... ok
+test trainers::bpe::engine::tests::initial_waves_preserve_crossing_edges_and_filter_complete_counts ... ok
+test trainers::bpe::engine::corpus::slots::tests::compact_slot_domains_preserve_ids_separators_and_adjacent_parallel_writes ... ok
+test trainers::bpe::engine::storage::sorted_positions::tests::full_coordinates_duplicates_and_restart_ranges ... ok
+test trainers::bpe::engine::storage::sorted_positions::tests::releasing_lease_keeps_lists_alive_and_allows_parallel_readers ... ok
+test trainers::bpe::engine::pair_index::router_tests::reciprocal_router_is_exact_for_full_mixed_range_boundaries ... ok
+test trainers::bpe::engine::tests::affix_first_activations_preserve_reserved_ids_and_model_order ... ok
+test trainers::bpe::engine::aa_parity::tests::all_partitions_of_small_valid_edge_patterns_match_greedy ... ok
+test trainers::bpe::engine::tests::owner_single_producer_requires_full_task_and_prunes_complete_births ... ok
+test trainers::bpe::engine::tests::feed_preserves_flat_counts_and_trainer_equality ... ok
+test trainers::bpe::engine::storage::sorted_positions::tests::append_preserves_prefix_across_inline_restarts_and_growth ... ok
+test trainers::bpe::engine::tests::pruning_waits_for_all_birth_producers_and_alphabet_filtering ... ok
+test trainers::bpe::engine::tests::public_feed_train_and_model_reload_preserve_affixes ... ok
+test trainers::bpe::engine::tests::suffix_identity_reuse_has_literal_mainline_merge_choices ... ok
+test trainers::bpe::engine::tests::zero_merge_paths_preserve_count_overflow_and_signed_policy_checks ... ok
+test trainers::bpe::engine::tests::public_json_progress_preserves_upstream_fields ... ok
+test trainers::bpe::tests::bpe_test_max_token_length_direct_assert ... ok
+test trainers::bpe::tests::bpe_test_max_token_length_16 ... ok
+test trainers::bpe::word::tests::test_merge ... ok
+test trainers::bpe::word::tests::test_merge_max_length ... ok
+test trainers::tests::trainer_wrapper_train_model_wrapper ... ok
+test trainers::unigram::tests::test_initial_alphabet ... ok
+test trainers::bpe::engine::tests::active_id_reuse_rebuilds_without_publishing_speculative_rules ... ok
+test trainers::unigram::tests::test_to_log_prob ... ok
+test trainers::bpe::tests::test_train ... ok
+test trainers::wordlevel::tests::test_train ... ok
+test trainers::unigram::tests::test_special_tokens ... ok
+test trainers::unigram::tests::test_unigram_chars ... ok
+test trainers::bpe::engine::tests::planned_edges_match_materialized_slots_across_word_and_seek_boundaries ... ok
+test trainers::bpe::engine::tests::weighted_ties_unicode_aa_and_reserved_id_activations ... ok
+test trainers::bpe::engine::tests::wide_frequencies_and_signed_ledger_boundaries ... ok
+test trainers::unigram::tests::test_unk_token ... ok
+test trainers::bpe::engine::tests::producer_encoding_preserves_hf_trace_and_fallbacks ... ok
+test trainers::bpe::engine::tests::routed_batches_preserve_rule_and_position_order_with_many_workers ... ok
+test trainers::bpe::engine::tests::affixes_aliases_and_strict_length_boundaries ... ok
+test trainers::bpe::engine::tests::public_thread_policy_in_isolated_processes ... ok
+test trainers::bpe::engine::tests::routing_keeps_stable_births_and_original_count_actions ... ok
+test trainers::bpe::engine::tests::cohort_cohort_words_include_stale_addresses_and_zero_weights ... ok
+test trainers::bpe::engine::tests::randomized_round_by_round_hf_differential ... ok
+test trainers::bpe::engine::tests::long_word_split_preserves_unicode_filtering_affixes_and_merge_trace ... ok
+test trainers::bpe::engine::storage::radix::tests::full_keys_keep_payload_order_across_dispatch_and_block_boundaries ... ok
+
+test result: ok. 68 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.10s
+

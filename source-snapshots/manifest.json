@@ -35,5 +35,10 @@
     "tokenizers/tk-train/src/trainers/bpe/engine/corpus/slots.rs": "1ae11c3162b2547065da646d861b2793740d022d910bc6dad279cd8a070d7f5a",
     "tokenizers/tk-train/src/trainers/bpe/engine/merge/events.rs": "a607fd7e11db7b9d80be57737d650088c4bdcba766562af0cab2bcc4fe4a4d18",
     "tokenizers/tk-train/src/trainers/bpe/engine/merge/mod.rs": "8e629353692aa9b8842c4a57fd61fb5e378810f03c79b44455ba38aec536cc87"
+  },
+  "final_candidate": {
+    "commit": "b896141fcc74c1dde13373099c34c22d2b51867f",
+    "snapshot": "final-simplified.tar.gz",
+    "sha256": "25afb3f56cb9b82a15503c8e56cdc253eba9a63a282504d18a8e17da35e878b5"
   }
 }

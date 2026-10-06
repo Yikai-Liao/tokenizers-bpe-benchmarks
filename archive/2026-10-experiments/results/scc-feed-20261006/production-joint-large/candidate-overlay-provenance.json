@@ -1,0 +1,14 @@
+{
+  "base_sha": "d857cfeecc659449550c6f5ff37438c6d0ebffd5",
+  "overlay_files": {
+    "tokenizers/tk-train/Cargo.toml": "6587c94689ad9c95143a6b15f13951d58b84c2011076930b1fed75cd4f38b52f",
+    "tokenizers/tk-train/src/trainers/bpe/engine/README.md": "aaa286b05464eacf336b1b8a6e189ae42541bacbb5e11e588ce642bf58de6611",
+    "tokenizers/tk-train/src/trainers/bpe/engine/corpus/prepare.rs": "618cbab2cef8bd3c51b494e556960a2a0d5b86297b3c4e215709df08a4862e98",
+    "tokenizers/tk-train/src/trainers/bpe/engine/mod.rs": "c6b2c802b3c62b8941e6a14c52f7b142efc7befdc0ba8ca98fe94e81cdc1fb2a",
+    "tokenizers/tk-train/src/trainers/bpe/engine/tests.rs": "3be32c35e01ad26c457959193679bbcc3291c843249ffdfd82a28cce18c8d327",
+    "tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs": "f648658fbea57acd07a276c0305e5e688027795bf6e37c492ec6225d47bc9f6c",
+    "tokenizers/tk-train/src/trainers/bpe/mod.rs": "8807bb63e3fceec0829d7140629024db4c63883a23a7e97672fd3e4855842be8",
+    "tokenizers/tk-train/src/trainers/bpe/feed.rs": "dcb43819a88d5a7f015ae6839af2ffddc728c75b2af1824f68e6f925b311db49",
+    "tokenizers/tk-train/src/trainers/bpe/word_counts.rs": "dd2149738bcf8e51169b54a50b654cdfc40b197bda0e9110aae4e7d2068fd9d4"
+  }
+}

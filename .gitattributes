@@ -1,0 +1,2 @@
+# Historical logs, patches and reviews retain their original bytes.
+archive/** -whitespace

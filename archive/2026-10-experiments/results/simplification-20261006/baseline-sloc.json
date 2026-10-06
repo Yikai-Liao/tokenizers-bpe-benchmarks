@@ -1,0 +1,41 @@
+{
+  "engine": {
+    "code": 6713,
+    "comments": 573,
+    "files": [
+      "tokenizers/tk-train/src/trainers/bpe/engine/aa_parity.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/corpus.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/execution.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/mod.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/single_producer_diagnostics.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs",
+      "tokenizers/tk-collections/src/arena.rs",
+      "tokenizers/tk-collections/src/id_accumulator.rs",
+      "tokenizers/tk-collections/src/interval_index.rs",
+      "tokenizers/tk-collections/src/lib.rs",
+      "tokenizers/tk-collections/src/position_buffer.rs",
+      "tokenizers/tk-collections/src/position_chains.rs",
+      "tokenizers/tk-collections/src/position_storage.rs",
+      "tokenizers/tk-collections/src/radix.rs",
+      "tokenizers/tk-collections/src/sorted_positions.rs"
+    ]
+  },
+  "trainer_and_word": {
+    "code": 388,
+    "comments": 86,
+    "files": [
+      "tokenizers/tk-train/src/trainers/bpe/mod.rs",
+      "tokenizers/tk-train/src/trainers/bpe/word.rs"
+    ]
+  },
+  "progress": {
+    "code": 219,
+    "comments": 8,
+    "files": [
+      "tokenizers/tk-train/src/progress.rs"
+    ]
+  }
+}

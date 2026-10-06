@@ -1,0 +1,1 @@
+{"actual_merges":0,"actual_vocab":724596,"cpu_seconds":5.060334,"elapsed_seconds":0.677563617,"feed_seconds":0.677563617,"maxrss_kib":211360,"phase":"public Trainer::feed; repository pretokenizer","pretokenizer":"Whitespace","train_cpu_seconds":5.060334,"train_seconds":0.677563617}

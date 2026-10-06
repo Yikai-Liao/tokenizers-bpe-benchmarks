@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "dataset": "wikimedia/wikipedia",
+  "revision": "b04c8d1ceb2f5cd4588862100d08de323dccfbaa",
+  "configuration": "20231101.zh",
+  "license": "CC BY-SA 3.0 / GFDL; see upstream dataset card",
+  "metadata_source": "https://huggingface.co/api/datasets/wikimedia/wikipedia/tree/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.zh",
+  "shards": [
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.zh/train-00000-of-00006.parquet",
+      "sha256": "853ddf4a138c792ad7386d6de831788f96326c03e1e3349f7a315498392e8b56",
+      "bytes": 587109027
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.zh/train-00001-of-00006.parquet",
+      "sha256": "038b08e5aae38b5a1671794cee3fa0d4952c0d00fa0890a903d2de3f3fe5f703",
+      "bytes": 263629009
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.zh/train-00002-of-00006.parquet",
+      "sha256": "ec8f6c0dd1418b8fcd454278fb4f2bc7cd0ce8312f29c80b672533942601338f",
+      "bytes": 126796358
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.zh/train-00003-of-00006.parquet",
+      "sha256": "4884e4933fa91f46dc9bf711db8be07f368da59b8cfc2e00e895a65a3284cbb1",
+      "bytes": 262039932
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.zh/train-00004-of-00006.parquet",
+      "sha256": "415a5cd235a359a009c6bd6d488c3d9ee81ed3220b9f33fd04214558bc5150cd",
+      "bytes": 256719920
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.zh/train-00005-of-00006.parquet",
+      "sha256": "803ae27118b1daf9be4403b57b679b8ce065fbffdfdea0c33c517255c17478df",
+      "bytes": 224856014
+    }
+  ]
+}

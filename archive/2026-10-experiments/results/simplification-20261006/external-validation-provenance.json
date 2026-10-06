@@ -1,0 +1,44 @@
+{
+  "source_commit": "5e86f878c65811ce918c91ea1bebe248cd110499",
+  "injected_files": {
+    "stress-test.rs": "7de9fbdfcc0dbdc5f35c11fe7119becd01469cb331399b3a41a78235ef036b43",
+    "extended-tests.rs": "4ebe75bd4a3b2aa2d9a80dd72672e72217a352545a0897a1cc6f307b42b780e4"
+  },
+  "commands": [
+    [
+      "cargo",
+      "test",
+      "--locked",
+      "--manifest-path",
+      "/home/lyk/code/tokenizers-local-validation/simplification-20261006/final-external-validation/tokenizers/tk-train/Cargo.toml",
+      "--target-dir",
+      "/home/lyk/code/tokenizers-local-validation/simplification-20261006/build",
+      "--lib",
+      "randomized_round_by_round_hf_stress",
+      "--",
+      "--ignored"
+    ],
+    [
+      "cargo",
+      "test",
+      "--locked",
+      "--manifest-path",
+      "/home/lyk/code/tokenizers-local-validation/simplification-20261006/final-external-validation/tokenizers/tk-train/Cargo.toml",
+      "--target-dir",
+      "/home/lyk/code/tokenizers-local-validation/simplification-20261006/build",
+      "--lib",
+      "recomputing_greedy_oracle_without_affixes_or_length_filter"
+    ],
+    [
+      "cargo",
+      "test",
+      "--locked",
+      "--manifest-path",
+      "/home/lyk/code/tokenizers-local-validation/simplification-20261006/final-external-validation/tokenizers/tk-train/Cargo.toml",
+      "--target-dir",
+      "/home/lyk/code/tokenizers-local-validation/simplification-20261006/build",
+      "--lib",
+      "planned_wave_tables_preserve_coordinates_weights_and_filtering"
+    ]
+  ]
+}

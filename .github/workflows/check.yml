@@ -1,0 +1,25 @@
+name: Benchmark protocol
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  protocol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m unittest discover -s tests -v
+      - run: python -m bench --help
+  runner-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: dtolnay/rust-toolchain@stable
+      - run: |
+          git clone https://github.com/huggingface/tokenizers.git .bench/tokenizers
+          python -m bench build --source .bench/tokenizers --revision bbccb0513ff9afda385ca5c85c66eddb1318cfc7 --lockfile locks/tk-train-v1/Cargo.lock > .bench/build-record.txt
+          build=$(tail -n 1 .bench/build-record.txt)
+          PYTHONPATH=. python tests/integration.py --baseline "$build" --candidate "$build" --out .bench/smoke

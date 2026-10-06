@@ -1,0 +1,82 @@
+[
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/merge/mod.rs",
+    "code": 997
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/storage/sorted_positions.rs",
+    "code": 714
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs",
+    "code": 573
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/corpus/prepare.rs",
+    "code": 386
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/storage/radix.rs",
+    "code": 323
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs",
+    "code": 311
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs",
+    "code": 311
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/corpus/mod.rs",
+    "code": 272
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/mod.rs",
+    "code": 225
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/corpus/slots.rs",
+    "code": 144
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/storage/id_accumulator.rs",
+    "code": 132
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/merge/events.rs",
+    "code": 129
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/aa_parity.rs",
+    "code": 105
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/storage/position_chains.rs",
+    "code": 96
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/execution.rs",
+    "code": 94
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/storage/position_storage.rs",
+    "code": 92
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/batch.rs",
+    "code": 79
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/storage/interval_index.rs",
+    "code": 76
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/storage/arena.rs",
+    "code": 40
+  },
+  {
+    "file": "tokenizers/tk-train/src/trainers/bpe/engine/storage/mod.rs",
+    "code": 22
+  }
+]

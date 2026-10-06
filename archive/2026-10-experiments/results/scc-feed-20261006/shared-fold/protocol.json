@@ -1,0 +1,100 @@
+{
+  "config": {
+    "binaries": {
+      "baseline": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-tls-common-runner/bpe-suite-runner",
+      "candidate": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-scc-shared-fold-runner/bpe-suite-runner"
+    },
+    "workers": [
+      1,
+      8
+    ],
+    "cpu_set": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      14,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15
+    ],
+    "repetitions": 3,
+    "cases": [
+      {
+        "name": "english-hot64-WhitespaceSplit",
+        "input": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/corpus/english-hot-64m.txt",
+        "split": "WhitespaceSplit",
+        "vocab_size": 100000,
+        "min_frequency": 2
+      },
+      {
+        "name": "en256-WhitespaceSplit",
+        "input": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/english-corpus/en-256m.txt",
+        "split": "WhitespaceSplit",
+        "vocab_size": 100000,
+        "min_frequency": 2
+      },
+      {
+        "name": "en256-Whitespace",
+        "input": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/english-corpus/en-256m.txt",
+        "split": "Whitespace",
+        "vocab_size": 100000,
+        "min_frequency": 2
+      },
+      {
+        "name": "en256-ByteLevel",
+        "input": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/english-corpus/en-256m.txt",
+        "split": "ByteLevel",
+        "vocab_size": 100000,
+        "min_frequency": 2
+      }
+    ],
+    "guards": {
+      "min_available_gib": 4,
+      "max_process_rss_gib": 12,
+      "timeout_seconds": 600
+    },
+    "baseline_env": {},
+    "expected_phase": "public Trainer::feed; repository pretokenizer"
+  },
+  "platform": "Linux-7.2.9-1-cachyos-x86_64-with-glibc2.44",
+  "rustc": "rustc 1.99.0 (b940084d7 2026-09-28) (Arch Linux rust 1:1.99.0-1)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0\nLLVM version: 23.1.1\n",
+  "lscpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  16\nOn-line CPU(s) list:                     0-15\nVendor ID:                               AuthenticAMD\nModel name:                              AMD Ryzen 7 8845H w/ Radeon 780M Graphics\nCPU family:                              25\nModel:                                   117\nThread(s) per core:                      2\nCore(s) per socket:                      8\nSocket(s):                               1\nStepping:                                2\nMicrocode version:                       0xa705208\nFrequency boost:                         enabled\nCPU(s) scaling MHz:                      47%\nCPU max MHz:                             5137.2891\nCPU min MHz:                             1600.0000\nBogoMIPS:                                7586.13\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpuid_fault cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid overflow_recov succor smca fsrm flush_l1d\nVirtualization:                          AMD-V\nL1d cache:                               256 KiB (8 instances)\nL1i cache:                               256 KiB (8 instances)\nL2 cache:                                8 MiB (8 instances)\nL3 cache:                                16 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-15\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; Safe RET\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Mitigation; Clear CPU buffers\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Mitigation; IBPB before exit to userspace\n",
+  "started_unix": 1791276687.9462123,
+  "binaries": {
+    "baseline": {
+      "path": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-tls-common-runner/bpe-suite-runner",
+      "sha256": "e9c4a375d3b0da526b83a36de062e45381601af795ea7459f9d51c33a922863a"
+    },
+    "candidate": {
+      "path": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-scc-shared-fold-runner/bpe-suite-runner",
+      "sha256": "6b25e6eb36f4e7dbc936c9a1df8608e616b7b62a5d95bc74913c2a33253fa763"
+    }
+  },
+  "inputs": {
+    "english-hot64-WhitespaceSplit": {
+      "bytes": 67108023,
+      "sha256": "4c0869eac7ca9e90cc0548dbda89f5acce6699d8c3772f94a1bc1ad8e2ac0912"
+    },
+    "en256-WhitespaceSplit": {
+      "bytes": 268434441,
+      "sha256": "ae02a7e36df46e6dff26481f054dd4a385d50c4a42a9f166de754ee44fbf6b8a"
+    },
+    "en256-Whitespace": {
+      "bytes": 268434441,
+      "sha256": "ae02a7e36df46e6dff26481f054dd4a385d50c4a42a9f166de754ee44fbf6b8a"
+    },
+    "en256-ByteLevel": {
+      "bytes": 268434441,
+      "sha256": "ae02a7e36df46e6dff26481f054dd4a385d50c4a42a9f166de754ee44fbf6b8a"
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "engine": {
+    "code": 5173,
+    "comments": 510,
+    "files": [
+      "tokenizers/tk-train/src/trainers/bpe/engine/aa_parity.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/execution.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/batch.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/mod.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/arena.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/id_accumulator.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/interval_index.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/position_chains.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/position_storage.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/radix.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/sorted_positions.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/mod.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/corpus/slots.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/corpus/mod.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/corpus/prepare.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/events.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/mod.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/pair_index/commit.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/prepare/mod.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/prepare/ordinary.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/prepare/cohort.rs",
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/prepare/aa.rs"
+    ],
+    "by_file": {
+      "tokenizers/tk-train/src/trainers/bpe/engine/mod.rs": 224,
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/arena.rs": 40,
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/mod.rs": 22,
+      "tokenizers/tk-train/src/trainers/bpe/engine/aa_parity.rs": 105,
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/interval_index.rs": 76,
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/mod.rs": 73,
+      "tokenizers/tk-train/src/trainers/bpe/engine/corpus/prepare.rs": 386,
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/events.rs": 129,
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/position_storage.rs": 92,
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/prepare/cohort.rs": 151,
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/prepare/aa.rs": 107,
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/prepare/ordinary.rs": 211,
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/id_accumulator.rs": 132,
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/position_chains.rs": 96,
+      "tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs": 312,
+      "tokenizers/tk-train/src/trainers/bpe/engine/execution.rs": 94,
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/radix.rs": 323,
+      "tokenizers/tk-train/src/trainers/bpe/engine/pair_index/commit.rs": 232,
+      "tokenizers/tk-train/src/trainers/bpe/engine/corpus/slots.rs": 144,
+      "tokenizers/tk-train/src/trainers/bpe/engine/batch.rs": 79,
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge/prepare/mod.rs": 502,
+      "tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs": 311,
+      "tokenizers/tk-train/src/trainers/bpe/engine/corpus/mod.rs": 274,
+      "tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs": 343,
+      "tokenizers/tk-train/src/trainers/bpe/engine/storage/sorted_positions.rs": 715
+    }
+  },
+  "trainer_and_word": {
+    "code": 560,
+    "comments": 91,
+    "files": [
+      "tokenizers/tk-train/src/trainers/bpe/mod.rs",
+      "tokenizers/tk-train/src/trainers/bpe/word.rs",
+      "tokenizers/tk-train/src/trainers/bpe/feed.rs",
+      "tokenizers/tk-train/src/trainers/bpe/word_counts.rs"
+    ],
+    "by_file": {
+      "tokenizers/tk-train/src/trainers/bpe/feed.rs": 83,
+      "tokenizers/tk-train/src/trainers/bpe/word_counts.rs": 103,
+      "tokenizers/tk-train/src/trainers/bpe/word.rs": 133,
+      "tokenizers/tk-train/src/trainers/bpe/mod.rs": 241
+    }
+  },
+  "progress": {
+    "code": 135,
+    "comments": 3,
+    "files": [
+      "tokenizers/tk-train/src/progress.rs"
+    ],
+    "by_file": {
+      "tokenizers/tk-train/src/progress.rs": 135
+    }
+  }
+}

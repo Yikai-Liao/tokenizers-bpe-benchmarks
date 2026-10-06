@@ -1,0 +1,11 @@
+{
+  "input": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/english-corpus/en-64m.txt",
+  "split": "ByteLevel",
+  "vocab_size": 50000,
+  "min_frequency": 2,
+  "prefix": null,
+  "suffix": null,
+  "max_token_length": null,
+  "workers": 1,
+  "output": "/home/lyk/code/tokenizers-local-validation/simplification-20261006/feed-train-scc-shared-production-large-results/runs/block-00/en64-ByteLevel/w1/candidate/model.json"
+}

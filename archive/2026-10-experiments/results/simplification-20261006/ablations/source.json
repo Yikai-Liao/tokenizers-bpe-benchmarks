@@ -1,0 +1,9 @@
+{
+  "control_commit": "3e79a09f26412fce0240e01602f6aa2c2ef0eabd",
+  "changes": {
+    "no-prefetch": "Only replace Corpus::prefetch with an inline empty method; identical decode/lookahead ring and all other algorithms.",
+    "feed-fold": "Only replace per-sequence map with partition fold; reducer, callback-before-error behavior and public signatures remain unchanged."
+  },
+  "control_snapshot": "source-snapshots/ablation-control-3e79a09f.tar.gz",
+  "control_snapshot_sha256": "1efc708ce4d60927f2b737448c1a7c4a89b4cb95e9f644fc429bd40e02b79037"
+}

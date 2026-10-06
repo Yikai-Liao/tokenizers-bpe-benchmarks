@@ -1,0 +1,10 @@
+   Compiling tk-train v0.1.0-dev.0 (/home/lyk/code/tokenizers/tokenizers/tk-train)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.03s
+   Doc-tests tk_train
+
+running 1 test
+test src/trainers/bpe/mod.rs - trainers::bpe::BpeTrainer (line 175) ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+all doctests ran in 0.31s; merged doctests compilation took 0.28s

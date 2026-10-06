@@ -1,0 +1,28 @@
+--- a/tokenizers/tk-train/src/trainers/bpe/mod.rs
++++ b/tokenizers/tk-train/src/trainers/bpe/mod.rs
+@@ -376,14 +376,17 @@
+     {
+         let words: Result<AHashMap<CompactString, u64>> = iterator
+             .maybe_par_bridge()
+-            .map(|sequence| {
+-                let words = process(sequence.as_ref())?;
+-                let mut map = AHashMap::new();
+-                for word in words {
+-                    *map.entry(CompactString::from(word)).or_default() += 1;
+-                }
+-                Ok(map)
+-            })
++            .fold(
++                || Ok(AHashMap::new()),
++                |counts, sequence| {
++                    let words = process(sequence.as_ref());
++                    let mut counts = counts?;
++                    for word in words? {
++                        *counts.entry(CompactString::from(word)).or_default() += 1;
++                    }
++                    Ok(counts)
++                },
++            )
+             .reduce(
+                 || Ok(AHashMap::new()),
+                 |acc, ws| {

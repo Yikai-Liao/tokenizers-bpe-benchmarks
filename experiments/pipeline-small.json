@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "name": "pipeline-small",
+  "mode": "pipeline",
+  "arms": {
+    "baseline": {
+      "build": "../.bench/builds/BASELINE_BUILD_ID/build.json",
+      "environment": {}
+    },
+    "candidate": {
+      "build": "../.bench/builds/CANDIDATE_BUILD_ID/build.json",
+      "environment": {}
+    }
+  },
+  "cases": [
+    {
+      "name": "tiny",
+      "input_manifest": "../.bench/text.json",
+      "pretokenizer": "whitespace",
+      "trainer": {
+        "vocab_size": 1000,
+        "min_frequency": 2,
+        "prefix": null,
+        "suffix": null,
+        "max_token_length": null
+      }
+    }
+  ],
+  "execution": {
+    "workers": [
+      1,
+      8
+    ],
+    "cpu_set": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      14
+    ],
+    "warmups_per_cell": 1,
+    "paired_blocks": 5,
+    "order": "balanced-alternating",
+    "timeout_seconds": 600,
+    "min_available_gib": 3,
+    "max_process_rss_gib": 12
+  },
+  "comparison": "exact-model"
+}

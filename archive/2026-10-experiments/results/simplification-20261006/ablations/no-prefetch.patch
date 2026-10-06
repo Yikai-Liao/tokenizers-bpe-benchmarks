@@ -1,0 +1,26 @@
+--- a/tokenizers/tk-train/src/trainers/bpe/engine/corpus/mod.rs
++++ b/tokenizers/tk-train/src/trainers/bpe/engine/corpus/mod.rs
+@@ -222,21 +222,8 @@
+         self.occurrence_spans.is_some()
+     }
+     #[inline]
+-    pub(super) fn prefetch(&self, position: u64) {
+-        #[cfg(not(target_arch = "x86_64"))]
+-        let _ = position;
+-        #[cfg(target_arch = "x86_64")]
+-        if position < self.len() as u64 {
+-            // SAFETY: this address is inside the live slot allocation. Prefetch
+-            // does not load a value or change the phase-ordering contract.
+-            unsafe {
+-                std::arch::x86_64::_mm_prefetch(
+-                    self.slots.prefetch_pointer(position as usize),
+-                    std::arch::x86_64::_MM_HINT_T0,
+-                );
+-            }
+-        }
+-    }
++    pub(super) fn prefetch(&self, _position: u64) {}
++
+ }
+ 
+ // Prepared plans own disjoint live-token spans. Pool joins delimit the

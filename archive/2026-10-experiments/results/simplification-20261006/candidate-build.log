@@ -1,0 +1,4 @@
+   Compiling tk-train v0.1.0-dev.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/clean-pr/tokenizers/tk-train)
+   Compiling bpe-suite-runner v0.1.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/reviewed-runner)
+    Finished `release` profile [optimized] target(s) in 23.63s
+/home/lyk/code/tokenizers-local-validation/simplification-20261006/reviewed-runner/bpe-suite-runner

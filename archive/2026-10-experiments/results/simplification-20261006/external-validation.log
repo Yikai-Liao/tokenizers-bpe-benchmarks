@@ -1,0 +1,29 @@
+   Compiling bitcannon v0.1.0-dev.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/final-external-validation/tokenizers/bitcannon)
+   Compiling tk-encode v0.1.0-dev.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/final-external-validation/tokenizers/tk-encode)
+   Compiling tk-convert v0.1.0-dev.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/final-external-validation/tokenizers/tk-convert)
+   Compiling tk-serialize v0.1.0-dev.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/final-external-validation/tokenizers/tk-serialize)
+   Compiling tk-train v0.1.0-dev.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/final-external-validation/tokenizers/tk-train)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.29s
+     Running unittests src/lib.rs (/home/lyk/code/tokenizers-local-validation/simplification-20261006/build/debug/deps/tk_train-9eb6dfd6b4a845bc)
+
+running 1 test
+test trainers::bpe::engine::tests::randomized_round_by_round_hf_stress ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 68 filtered out; finished in 9.98s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/lib.rs (/home/lyk/code/tokenizers-local-validation/simplification-20261006/build/debug/deps/tk_train-9eb6dfd6b4a845bc)
+
+running 1 test
+test trainers::bpe::engine::tests::recomputing_greedy_oracle_without_affixes_or_length_filter ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 68 filtered out; finished in 3.23s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/lib.rs (/home/lyk/code/tokenizers-local-validation/simplification-20261006/build/debug/deps/tk_train-9eb6dfd6b4a845bc)
+
+running 1 test
+test trainers::bpe::engine::tests::planned_wave_tables_preserve_coordinates_weights_and_filtering ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 68 filtered out; finished in 0.10s
+

@@ -1,0 +1,18 @@
+{
+  "upstream_sha": "bbccb0513ff9afda385ca5c85c66eddb1318cfc7",
+  "methods": [
+    {
+      "file": "tokenizers/tk-train/src/trainers/bpe/mod.rs",
+      "added": [],
+      "removed": [],
+      "byte_identical": false
+    },
+    {
+      "file": "tokenizers/tk-train/src/trainers/bpe/parity_trainer.rs",
+      "added": [],
+      "removed": [],
+      "byte_identical": true
+    }
+  ],
+  "candidate_sha": "b896141fcc74c1dde13373099c34c22d2b51867f"
+}

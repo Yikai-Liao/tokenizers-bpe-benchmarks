@@ -1,0 +1,49 @@
+test_build_identity_includes_manifests_runner_and_vendor (test_bench.BenchTests.test_build_identity_includes_manifests_runner_and_vendor) ... ok
+test_cache_environment_is_removed_or_rejected (test_bench.BenchTests.test_cache_environment_is_removed_or_rejected) ... ok
+test_config_and_binary_changes_reject_resume (test_bench.BenchTests.test_config_and_binary_changes_reject_resume) ... block:0:tiny:1:baseline: ok
+block:0:tiny:1:candidate: ok
+block:1:tiny:1:candidate: ok
+block:1:tiny:1:baseline: ok
+ok
+test_cpu_invalid_cases (test_bench.BenchTests.test_cpu_invalid_cases) ... ok
+test_full_model_ids_and_merge_order_preserved (test_bench.BenchTests.test_full_model_ids_and_merge_order_preserved) ... ok
+test_invalid_outputs_and_process_failures_are_terminal (test_bench.BenchTests.test_invalid_outputs_and_process_failures_are_terminal) ... ok
+test_late_mismatch_is_reported_after_a_complete_block (test_bench.BenchTests.test_late_mismatch_is_reported_after_a_complete_block) ... block:0:tiny:1:baseline: ok
+block:0:tiny:1:candidate: ok
+block:1:tiny:1:candidate: model_mismatch
+block:1:tiny:1:candidate: ok
+block:1:tiny:1:baseline: ok
+ok
+test_memory_guard_and_orphan_recovery (test_bench.BenchTests.test_memory_guard_and_orphan_recovery) ... ok
+test_mismatch_survives_successful_retry_without_block_file (test_bench.BenchTests.test_mismatch_survives_successful_retry_without_block_file) ... block:0:tiny:1:baseline: ok
+block:0:tiny:1:candidate: model_mismatch
+block:0:tiny:1:candidate: ok
+block:1:tiny:1:candidate: ok
+block:1:tiny:1:baseline: ok
+ok
+test_paired_ratios_and_schedule (test_bench.BenchTests.test_paired_ratios_and_schedule) ... block:0:tiny:1:baseline: ok
+block:0:tiny:1:candidate: ok
+block:1:tiny:1:candidate: ok
+block:1:tiny:1:baseline: ok
+ok
+test_raw_cached_shard_is_verified (test_bench.BenchTests.test_raw_cached_shard_is_verified) ... ok
+test_revision_and_cpu_changes_reject_resume (test_bench.BenchTests.test_revision_and_cpu_changes_reject_resume) ... block:0:tiny:1:baseline: ok
+block:0:tiny:1:candidate: ok
+block:1:tiny:1:candidate: ok
+block:1:tiny:1:baseline: ok
+ok
+test_same_path_same_size_input_changes_reject_resume (test_bench.BenchTests.test_same_path_same_size_input_changes_reject_resume) ... block:0:tiny:1:baseline: ok
+block:0:tiny:1:candidate: ok
+block:1:tiny:1:candidate: ok
+block:1:tiny:1:baseline: ok
+ok
+test_successful_resume_reuses_immutable_attempts (test_bench.BenchTests.test_successful_resume_reuses_immutable_attempts) ... block:0:tiny:1:baseline: ok
+block:0:tiny:1:candidate: ok
+block:1:tiny:1:candidate: ok
+block:1:tiny:1:baseline: ok
+ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 1.529s
+
+OK

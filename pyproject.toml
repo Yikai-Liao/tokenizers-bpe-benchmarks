@@ -1,0 +1,14 @@
+[project]
+name = "tokenizers-bpe-benchmarks"
+version = "0.1.0"
+requires-python = ">=3.11.8"
+description = "Reproducible paired BPE core and public pipeline measurements"
+[project.optional-dependencies]
+corpus = ["pyarrow>=17"]
+[project.scripts]
+bpe-bench = "bench.__main__:main"
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+[tool.setuptools]
+packages = ["bench"]
