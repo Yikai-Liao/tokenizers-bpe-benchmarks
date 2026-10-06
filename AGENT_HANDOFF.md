@@ -9,6 +9,9 @@ selects `core` or `pipeline` through the recorded job.
    performance control. Official upstream `bbccb0513ff9afda385ca5c85c66eddb1318cfc7`
    is the API baseline. Do not confuse these roles. Use the retained control's
    recorded vendor/algorithm settings when reproducing that particular control.
+   Its archived output links require explicit `--exclude-source-path
+   benchmarks/bpe-suite/results` on both `lock` and `build`; exclusions are
+   recorded in source identity. Individual tracked paths can also be excluded.
 2. Generate a named runner lock for each required dependency graph with
    `python -m bench lock`, then build with `python -m bench build`. Record the
    returned `build.json` paths. Builds are locked and source snapshots are retained.

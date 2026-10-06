@@ -15,6 +15,12 @@ def main():
         p = commands.add_parser(name)
         p.add_argument("--source", type=Path, required=True)
         p.add_argument("--revision")
+        p.add_argument(
+            "--exclude-source-path",
+            action="append",
+            default=[],
+            help="explicit tracked path/subtree omitted from a Git revision snapshot; recorded in build identity",
+        )
         p.add_argument("--vendored-rayon", action="store_true")
         p.add_argument("--lockfile", type=Path, required=True)
         if name == "build":
@@ -49,7 +55,10 @@ def main():
         from .builds import create_lock
 
         print(
-            create_lock(args.source, args.revision, args.lockfile, args.vendored_rayon)
+            create_lock(
+                args.source, args.revision, args.lockfile,
+                args.vendored_rayon, args.exclude_source_path,
+            )
         )
     elif args.command == "build":
         from .builds import build
@@ -64,6 +73,7 @@ def main():
                 args.rustflags,
                 args.vendored_rayon,
                 read(args.build_env) if args.build_env else None,
+                args.exclude_source_path,
             )["record_path"]
         )
     elif args.command == "text":

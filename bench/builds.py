@@ -5,7 +5,7 @@ import io
 import shutil
 import subprocess
 import tarfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from .config import ROOT, digest, environment, identity, read, verify, write
 
@@ -54,7 +54,20 @@ def files(root):
     return result
 
 
-def source_snapshot(source, revision, destination):
+def source_snapshot(source, revision, destination, exclude_source_paths=()):
+    exclusions = sorted(set(exclude_source_paths))
+    for name in exclusions:
+        path = PurePosixPath(name)
+        if (
+            not name
+            or path.is_absolute()
+            or ".." in path.parts
+            or str(path) != name
+            or name == "."
+        ):
+            raise ValueError("source exclusions must be canonical relative paths")
+    if exclusions and not revision:
+        raise ValueError("source exclusions require an immutable Git revision")
     if revision:
         sha = subprocess.check_output(
             ["git", "-C", str(source), "rev-parse", revision + "^{commit}"], text=True
@@ -64,8 +77,36 @@ def source_snapshot(source, revision, destination):
         ).strip()
         data = subprocess.check_output(["git", "-C", str(source), "archive", sha])
         with tarfile.open(fileobj=io.BytesIO(data)) as bundle:
-            bundle.extractall(destination, filter="data")
-        return {"commit": sha, "tree": tree, "dirty": False}
+            members = bundle.getmembers()
+            omitted = []
+            retained = []
+            matched = set()
+            for member in members:
+                matches = [
+                    name
+                    for name in exclusions
+                    if member.name == name or member.name.startswith(name + "/")
+                ]
+                if matches:
+                    matched.update(matches)
+                    omitted.append(
+                        {
+                            "path": member.name,
+                            "type": member.type.decode("ascii"),
+                            "link_target": member.linkname,
+                        }
+                    )
+                else:
+                    retained.append(member)
+            if matched != set(exclusions):
+                raise ValueError("source exclusion did not match a tracked path")
+            # Explicit exclusions are applied before tar's safety filter. All
+            # retained links still pass the data filter and setup's containment check.
+            bundle.extractall(destination, members=retained, filter="data")
+        provenance = {"commit": sha, "tree": tree, "dirty": False}
+        if exclusions:
+            provenance.update(exclude_source_paths=exclusions, excluded_entries=omitted)
+        return provenance
     manifest = files(source)
     for name in manifest:
         dest = destination / name
@@ -88,11 +129,13 @@ def source_snapshot(source, revision, destination):
     return {"commit": sha, "dirty": dirty, "snapshot_files": manifest}
 
 
-def setup(source, revision, work, vendored_rayon):
+def setup(source, revision, work, vendored_rayon, exclude_source_paths=()):
     work.mkdir(parents=True, exist_ok=False)
     snapshot = work / "source"
     snapshot.mkdir()
-    provenance = source_snapshot(Path(source).resolve(), revision, snapshot)
+    provenance = source_snapshot(
+        Path(source).resolve(), revision, snapshot, exclude_source_paths
+    )
     # Official source includes LICENSE symlinks. Materialize internal links so
     # the frozen snapshot remains self-contained; reject external targets.
     for path in snapshot.rglob("*"):
@@ -114,14 +157,18 @@ def setup(source, revision, work, vendored_rayon):
     return runner, provenance
 
 
-def create_lock(source, revision, profile, vendored_rayon=False):
+def create_lock(
+    source, revision, profile, vendored_rayon=False, exclude_source_paths=()
+):
     import tempfile
 
     profile = Path(profile)
     if profile.exists():
         raise ValueError("lock profile exists; create a new named profile")
     with tempfile.TemporaryDirectory() as temp:
-        runner, _ = setup(source, revision, Path(temp) / "work", vendored_rayon)
+        runner, _ = setup(
+            source, revision, Path(temp) / "work", vendored_rayon, exclude_source_paths
+        )
         subprocess.run(
             [
                 "cargo",
@@ -160,6 +207,7 @@ def build(
     rustflags="",
     vendored_rayon=False,
     build_env=None,
+    exclude_source_paths=(),
 ):
     import tempfile
 
@@ -183,7 +231,7 @@ def build(
     cpu = subprocess.check_output(["lscpu", "-J"], text=True)
     with tempfile.TemporaryDirectory(dir=cache) as temp:
         work = Path(temp) / "work"
-        runner, source_info = setup(source, revision, work, vendored_rayon)
+        runner, source_info = setup(source, revision, work, vendored_rayon, exclude_source_paths)
         shutil.copyfile(lockfile, runner / "Cargo.lock")
         modes = {
             str(p.relative_to(work)): p.stat().st_mode & 0o777

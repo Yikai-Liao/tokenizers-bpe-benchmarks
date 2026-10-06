@@ -2,12 +2,14 @@
 
 import json
 import os
+import subprocess
+import tarfile
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from bench.builds import files
+from bench.builds import files, setup, source_snapshot
 from bench.config import cpu_config, digest, environment, identity, read, write
 from bench.inputs import prepared, shard_cache, text_manifest
 from bench.reports import report
@@ -356,6 +358,49 @@ print(json.dumps(v))
             [r["slot"].split(":")[-1] for r in starts],
             ["baseline", "candidate", "candidate", "baseline"],
         )
+
+
+
+
+class SnapshotExclusionTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.repo = self.root / "repo"
+        self.repo.mkdir()
+        (self.repo / "source.rs").write_text("preserved source\n")
+        (self.repo / "LICENSE").symlink_to("source.rs")
+        (self.repo / "historical-output").symlink_to("/unavailable/old-machine-output")
+        subprocess.run(["git", "init", "-q", str(self.repo)], check=True)
+        subprocess.run(["git", "-C", str(self.repo), "add", "."], check=True)
+        subprocess.run(["git", "-C", str(self.repo), "-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-qm", "fixture"], check=True)
+        self.sha = subprocess.check_output(["git", "-C", str(self.repo), "rev-parse", "HEAD"], text=True).strip()
+
+    def test_explicit_exclusion_records_original_revision_and_link(self):
+        work = self.root / "work"
+        _, provenance = setup(self.repo, self.sha, work, False, ["historical-output"])
+        self.assertEqual(provenance["commit"], self.sha)
+        self.assertFalse(provenance["dirty"])
+        self.assertEqual(provenance["exclude_source_paths"], ["historical-output"])
+        self.assertEqual(provenance["excluded_entries"], [{"path": "historical-output", "type": "2", "link_target": "/unavailable/old-machine-output"}])
+        self.assertEqual((work / "source/source.rs").read_bytes(), (self.repo / "source.rs").read_bytes())
+        self.assertFalse((work / "source/LICENSE").is_symlink())
+        self.assertEqual((work / "source/LICENSE").read_bytes(), (self.repo / "source.rs").read_bytes())
+        self.assertFalse((work / "source/historical-output").exists())
+
+    def test_external_links_remain_rejected_by_default(self):
+        with self.assertRaises(tarfile.FilterError):
+            source_snapshot(self.repo, self.sha, self.root / "default")
+        with self.assertRaises(tarfile.FilterError):
+            source_snapshot(self.repo, self.sha, self.root / "unrelated", ["source.rs"])
+
+    def test_exclusions_reject_typos_traversal_and_mutable_sources(self):
+        for name in ["", ".", "../outside", "/absolute", "a/../b", "./source.rs", "missing"]:
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                source_snapshot(self.repo, self.sha, self.root / "invalid", [name])
+        with self.assertRaisesRegex(ValueError, "immutable Git revision"):
+            source_snapshot(self.repo, None, self.root / "mutable", ["historical-output"])
 
 
 if __name__ == "__main__":

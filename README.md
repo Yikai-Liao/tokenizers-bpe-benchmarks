@@ -57,6 +57,17 @@ including dirty edits, which is recorded in provenance. Internal file symlinks
 are materialized; external symlinks and local Cargo path dependencies outside the snapshot are rejected. No automatic porting of
 BPE code into another source tree is performed.
 
+Some historical commits contain external links to experiment outputs. Revision
+snapshots reject these links by default. For Best Multicore, pass
+`--exclude-source-path benchmarks/bpe-suite/results` to **both** `lock` and
+`build`, together with its full `--revision` and `--vendored-rayon`. This
+explicitly omits the historical result subtree while preserving its training
+sources and vendor. You can instead repeat `--exclude-source-path` for individual
+tracked paths. Exclusions require a Git revision; the original commit/tree,
+requested paths and every omitted archive entry (including link targets) are
+recorded in build identity. Missing paths fail rather than silently changing the
+snapshot. Retained external links remain rejected.
+
 Build identity covers the source snapshot (including manifests, locks, build
 scripts, other local crates and vendor), runner/adapter, generated manifest and
 runner lock, compiler/Cargo, flags, explicit environment, user/ancestor Cargo
