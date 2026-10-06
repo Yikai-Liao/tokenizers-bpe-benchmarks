@@ -1,0 +1,24 @@
+{
+  "dataset": "wikimedia/wikipedia",
+  "revision": "b04c8d1ceb2f5cd4588862100d08de323dccfbaa",
+  "selection": "shard order, article order, normalized paragraphs; no replication or synthetic additions",
+  "line_byte_range": [
+    32,
+    8192
+  ],
+  "sources": [
+    {
+      "shard": "train-00000-of-00006.parquet",
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.zh/train-00000-of-00006.parquet",
+      "bytes": 587109027,
+      "sha256": "853ddf4a138c792ad7386d6de831788f96326c03e1e3349f7a315498392e8b56"
+    }
+  ],
+  "articles_visited": 110065,
+  "output": {
+    "path": "zh-512m.txt",
+    "bytes": 536870289,
+    "lines": 1445902,
+    "sha256": "a0d40d4102cba1e933f25e5ccd17552d2eaebaec4ef770bc39d8e46e740b4d4f"
+  }
+}

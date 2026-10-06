@@ -1,0 +1,30 @@
+{
+  "dataset": "wikimedia/wikipedia",
+  "revision": "b04c8d1ceb2f5cd4588862100d08de323dccfbaa",
+  "selection": "shard order, article order, normalized paragraphs; no replication or synthetic additions",
+  "line_byte_range": [
+    32,
+    8192
+  ],
+  "sources": [
+    {
+      "shard": "train-00000-of-00006.parquet",
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.zh/train-00000-of-00006.parquet",
+      "bytes": 587109027,
+      "sha256": "853ddf4a138c792ad7386d6de831788f96326c03e1e3349f7a315498392e8b56"
+    },
+    {
+      "shard": "train-00001-of-00006.parquet",
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.zh/train-00001-of-00006.parquet",
+      "bytes": 263629009,
+      "sha256": "038b08e5aae38b5a1671794cee3fa0d4952c0d00fa0890a903d2de3f3fe5f703"
+    }
+  ],
+  "articles_visited": 336509,
+  "output": {
+    "path": "zh-1024m.txt",
+    "bytes": 1073741749,
+    "lines": 3159381,
+    "sha256": "4f375a10f171be4e9903fe0040538da5051235eb119a6bb07e3f3d06c004b248"
+  }
+}

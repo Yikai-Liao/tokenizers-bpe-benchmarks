@@ -1,0 +1,24 @@
+   Compiling tk-train v0.1.0-dev.0 (/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/full-commit-scatter/experiment/sources/full/tokenizers/tk-train)
+warning: method `dispatch` is never used
+   --> src/trainers/bpe/engine/merge.rs:378:19
+    |
+335 | impl MergeEvents {
+    | ---------------- method in this implementation
+...
+378 |     pub(super) fn dispatch(&self, workers: usize) -> Vec<OwnerRoute> {
+    |                   ^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `tk-train` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.81s
+     Running unittests src/lib.rs (/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/cache/build/debug/deps/tk_train-5538b0d8835647db)
+
+running 4 tests
+test trainers::bpe::engine::pair_index::commit_scatter::tests::commit_scatter_one_owner_splits_retirement_and_complete_cold_buckets ... ok
+test trainers::bpe::engine::pair_index::commit_scatter::tests::commit_scatter_shared_retirement_is_unique ... ok
+test trainers::bpe::engine::pair_index::commit_scatter::tests::commit_scatter_shared_subtraction_checks_full_width_and_underflow ... ok
+test trainers::bpe::engine::tests::commit_scatter_preserves_trace_floor_affixes_and_active_reuse ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 61 filtered out; finished in 2.59s
+

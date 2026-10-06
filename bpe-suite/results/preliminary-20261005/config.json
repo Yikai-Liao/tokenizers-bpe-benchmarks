@@ -1,0 +1,142 @@
+{
+  "stage": "preliminary",
+  "revisions": {
+    "full": "f9ff8b97fb38b248ceb89f6ca807fa09743c585c",
+    "hf": "bbccb0513ff9afda385ca5c85c66eddb1318cfc7",
+    "peer": "6ac0de5359d9e0e1ed0608422575a360ef91b908",
+    "peer_before_arena": "2e22a6860a89817222c30975d0de02ea01caa414"
+  },
+  "workers": 4,
+  "rustflags": "-C target-cpu=native",
+  "min_available_gib": 1.0,
+  "max_process_rss_gib": 14,
+  "timeout_seconds": 2700,
+  "cases": [
+    {
+      "name": "zh512",
+      "input": "/absolute/path/zh-512m.txt",
+      "split": "whitespace",
+      "vocab_size": 100000,
+      "min_frequency": 2
+    },
+    {
+      "name": "en512",
+      "input": "/absolute/path/en-512m.txt",
+      "split": "whitespace",
+      "vocab_size": 50000,
+      "min_frequency": 2
+    },
+    {
+      "name": "mixed512",
+      "input": "/absolute/path/mixed-512m.txt",
+      "split": "bytelevel_regex",
+      "vocab_size": 100000,
+      "min_frequency": 2
+    },
+    {
+      "name": "zh256",
+      "input": "/absolute/path/zh-256m.txt",
+      "split": "whitespace",
+      "vocab_size": 100000,
+      "min_frequency": 2,
+      "selection": "whole-line prefix of the zh512 corpus"
+    },
+    {
+      "name": "mixed256",
+      "input": "/absolute/path/mixed-256m.txt",
+      "split": "bytelevel_regex",
+      "vocab_size": 100000,
+      "min_frequency": 2,
+      "selection": "whole-line prefix of mixed512, retaining round-robin languages"
+    }
+  ],
+  "groups": [
+    {
+      "name": "primary",
+      "cases": [
+        "en512"
+      ],
+      "arms": [
+        "hf",
+        "peer",
+        "full"
+      ],
+      "repetitions": 5
+    },
+    {
+      "name": "ablation",
+      "cases": [
+        "zh512"
+      ],
+      "arms": [
+        "full",
+        "no_radix",
+        "one_rule",
+        "flat64",
+        "u32_corpus",
+        "eager_corpus",
+        "no_position_arena",
+        "scalar_weights",
+        "dual_strings"
+      ],
+      "repetitions": 5
+    },
+    {
+      "name": "primary_zh512",
+      "cases": [
+        "zh512"
+      ],
+      "arms": [
+        "peer",
+        "full"
+      ],
+      "repetitions": 5
+    },
+    {
+      "name": "primary_zh256",
+      "cases": [
+        "zh256"
+      ],
+      "arms": [
+        "hf",
+        "peer",
+        "full"
+      ],
+      "repetitions": 5
+    },
+    {
+      "name": "primary_mixed512",
+      "cases": [
+        "mixed512"
+      ],
+      "arms": [
+        "peer",
+        "full"
+      ],
+      "repetitions": 5
+    },
+    {
+      "name": "primary_mixed256",
+      "cases": [
+        "mixed256"
+      ],
+      "arms": [
+        "hf",
+        "peer",
+        "full"
+      ],
+      "repetitions": 5
+    },
+    {
+      "name": "peer_arena",
+      "cases": [
+        "zh512"
+      ],
+      "arms": [
+        "peer",
+        "peer_no_word_arena"
+      ],
+      "repetitions": 5
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+[package]
+name = "bpe-suite-runner"
+version = "0.1.0"
+edition = "2024"
+[dependencies]
+tk-train = { path = "../../../tokenizers/tokenizers/tk-train", default-features = false }
+tk-encode = { path = "../../../tokenizers/tokenizers/tk-encode", default-features = false }
+ahash = "0.8.12"
+compact_str = "0.9"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+libc = "0.2"
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+debug = false
+strip = false
+

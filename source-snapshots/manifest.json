@@ -1,0 +1,39 @@
+{
+  "baseline_commit": "57c04ca9ed1e843f6e36fe68ed3ae5adf499936c",
+  "candidate_commit": "8176f5e12127f46f682e8e9c9836fc18af158775",
+  "source_repository": "https://github.com/Yikai-Liao/tokenizers",
+  "snapshots": {
+    "57c04ca9.tar.gz": "867baa1280d0264bced4be5f5df380788b0a28ea8bf5938f4cb49ecbd9ac8614",
+    "simplified.tar.gz": "4d3b7d31593844a9e173dc0c20e08e9dbe582a4c9b2d83cbc68c1e2c666be6f9"
+  },
+  "binaries": {
+    "baseline": "164636ccb4228e82b6225e7dc3b1c9eb00ef2a8cc260d86ea33f6e4677988704",
+    "candidate": "8c351a72873409b9ff9082f631e05f3fe317e6858851aec8d06c9ded9b4a0cc0"
+  },
+  "candidate_rust_files": {
+    "tokenizers/tk-train/src/trainers/bpe/mod.rs": "2a1c354018db2c6ec065a0512635461ac2f3c708822ecded677d9db9d5b57454",
+    "tokenizers/tk-train/src/trainers/bpe/parity_trainer.rs": "39839047de9b9dea26b000c8684abd13bf0890aa824db41cf79c5ec813316bac",
+    "tokenizers/tk-train/src/trainers/bpe/word.rs": "b81cd9c9819c7be9a76b6556fd58f0c1d04fb00992998e224f360aa7706553bd",
+    "tokenizers/tk-train/src/trainers/bpe/reference.rs": "00e5f5d21eb191992d2769f3cbf5e1fd92e605c78f647caf4bc88b9e9c302f8a",
+    "tokenizers/tk-train/src/trainers/bpe/engine/aa_parity.rs": "34d6cc7d7036bf58a910c76e1008ffb2d0e4a12f2723e854522cfbaf1e347fda",
+    "tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs": "1b18faa52529f931337ae409a4a60f283bf72b4ef7315b788946e8e66dc79269",
+    "tokenizers/tk-train/src/trainers/bpe/engine/execution.rs": "5ba289d67f65ca1b8fa0b618bb059d4db81cf4d68556bc3da589c6297e020e14",
+    "tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs": "f86027b659c2b41c8cf6a15bcf7738b70da4c9e763c6d1ffad5af349a9823d24",
+    "tokenizers/tk-train/src/trainers/bpe/engine/mod.rs": "10e8acfc5db6c1e309bcbc2fc9093bcd548a529de3681ffbc18677935e6ea4f2",
+    "tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs": "fdefc99f0ecea0ca0110ce5aed0f09c1723226cc18b2adf8500d72f4e6201a1f",
+    "tokenizers/tk-train/src/trainers/bpe/engine/tests.rs": "8b8762dfa54c14507fbb7ce6ab60e6591257994478eda91cebe9b43c6bb2834d",
+    "tokenizers/tk-train/src/trainers/bpe/engine/storage/arena.rs": "3908ec6005050120e143b851e7d8b02bfe08a9f3e2ad977ed1e4cf09a8170ebb",
+    "tokenizers/tk-train/src/trainers/bpe/engine/storage/id_accumulator.rs": "b4b133f35194e2dd908fba9731cfe18a76a5d57989dcdf5472b3e715f2237ea1",
+    "tokenizers/tk-train/src/trainers/bpe/engine/storage/interval_index.rs": "17a0ce03bb920e12786d90f1c3b97504c19a8fdab5f04720340ae9887134f3f1",
+    "tokenizers/tk-train/src/trainers/bpe/engine/storage/position_chains.rs": "5b76bcb8be26275b8f6588e73a4e1f6ef8739ffa07921ec1976048353e207ba1",
+    "tokenizers/tk-train/src/trainers/bpe/engine/storage/position_storage.rs": "1399652ef94fff79455a2e2d51e66ad63453bafca18773c3ecb395bf74ac7e5a",
+    "tokenizers/tk-train/src/trainers/bpe/engine/storage/radix.rs": "b5fad9ae8f630738883bd3deba51832ca4c53e461b8a10df283f3a8e21e45742",
+    "tokenizers/tk-train/src/trainers/bpe/engine/storage/sorted_positions.rs": "8b3b90ab59705f08505bfed98c817e14ff2bdb5827dcd4e3d81963a57b08acf4",
+    "tokenizers/tk-train/src/trainers/bpe/engine/storage/mod.rs": "229c859e28f2505c934bb0d10fc09e6f42f0b717592926bbbd080a406f7f1d65",
+    "tokenizers/tk-train/src/trainers/bpe/engine/corpus/mod.rs": "49ba90372cc74f6b92859b03b26aaac755c8763c2c93cb4695e00631e91c282f",
+    "tokenizers/tk-train/src/trainers/bpe/engine/corpus/prepare.rs": "ed69ed3535d69d44b85c52edfad575074cb6a5d8d9630c693466cedc69979b42",
+    "tokenizers/tk-train/src/trainers/bpe/engine/corpus/slots.rs": "1ae11c3162b2547065da646d861b2793740d022d910bc6dad279cd8a070d7f5a",
+    "tokenizers/tk-train/src/trainers/bpe/engine/merge/events.rs": "a607fd7e11db7b9d80be57737d650088c4bdcba766562af0cab2bcc4fe4a4d18",
+    "tokenizers/tk-train/src/trainers/bpe/engine/merge/mod.rs": "8e629353692aa9b8842c4a57fd61fb5e378810f03c79b44455ba38aec536cc87"
+  }
+}

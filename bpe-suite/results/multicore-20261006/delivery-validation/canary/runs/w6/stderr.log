@@ -1,0 +1,3 @@
+BPE_SUITE_PHASE=feed
+BPE_SUITE_PHASE=train
+BPE_SUITE_PHASE=validation

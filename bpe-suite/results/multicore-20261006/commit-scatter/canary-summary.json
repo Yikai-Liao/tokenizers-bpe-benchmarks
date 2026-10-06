@@ -1,0 +1,94 @@
+{
+  "gates_passed": true,
+  "candidate_binary_sha256": "5abe2d7cbf69d5189467e183d44a32a7f8e1c739d9648138a147aac88de421e0",
+  "source_sha256": {
+    "sources/full/tokenizers/tk-collections/src/sorted_positions.rs": "29544e778492faaa8b8c33c2b477592e6dab6abb2bd4845ef4ae8636093a3ddc",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/aa_parity.rs": "40664f009adb4553529d98949dbcb3131495dc40d88b396c1e164c91ffed9c63",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/corpus.rs": "485f6159c59b4aed3d1beb3ccd659e72963307ae7995397ad40e85857b937513",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/execution.rs": "f6fb5cf7b85733f0cde9c96badaa7a0b029d4730400883b80e459af07b5b4c13",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs": "b024b8b5336e2987c67c68c5aa40029da616c921cf114cf44325add23aca0d98",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/merge.rs": "6800862d4d3c79520efba2a0a06e9e929d7849a652d77217f9aabcf486aa6b00",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/mod.rs": "d3ca9662d21010d3861e2fc4c9116895c199740b6f58333bd755d72ea2bb7d43",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/pair_index/commit_scatter.rs": "eac60d833cb026498ab53a8d31e86d3ae2c33506d9799260c7564dd1d6ab2323",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs": "fe61c83b182fa40381132027eef7bea2549db93387eeb7e20864eef34cb39bb6",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/single_producer_diagnostics.rs": "a64c2aa3ca585be24cbdce1323de035142b651226e0d054de7657d51e88f1df8",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/tests.rs": "4f100a055fac37bca17f0c20318c66d691e414dc4a355f70287b948b10c15f6d",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs": "aa8581fd4b854ab76b0957b4bcada7f25640271e02677ee651d60d9f622f824b"
+  },
+  "runs": [
+    {
+      "workers": 1,
+      "cpu_affinity": [
+        0
+      ],
+      "status": "ok",
+      "returncode": 0,
+      "exact_canonical_model_match": true,
+      "actual_merges": 225,
+      "actual_vocab": 481,
+      "binary_sha256": "5abe2d7cbf69d5189467e183d44a32a7f8e1c739d9648138a147aac88de421e0",
+      "environment": {
+        "TK_CORE_PHASES": "1",
+        "TK_SINGLE_PRODUCER_FAST": "1",
+        "TK_SINGLE_DIRECT": "1",
+        "TK_PAIR_LAYOUT": "whole",
+        "TK_COMMIT_GROUP_FUSION": "1",
+        "TK_FAST_SHARD_ROUTER": "1",
+        "TK_LOGICAL_OWNERS": "0",
+        "TK_COMMIT_DIRECT_COLD": "0",
+        "TK_REMOVAL_ENTRY": "0",
+        "TK_REMOVAL_REDUCE": "0",
+        "TK_REMOVAL_SELECTIVE": "0",
+        "TK_REMOVAL_STATS": "0",
+        "TK_BATCH_LIMIT": "256",
+        "TK_RAYON_IDLE_SPIN": "4096",
+        "TK_RAYON_IDLE_PAUSE": "1",
+        "TK_SINGLE_DIAG": "0",
+        "TK_SINGLE_DIAG_TIMELINE": "0",
+        "TK_YTTM_RUST": "0",
+        "TK_COMMIT_SCATTER": "1"
+      }
+    },
+    {
+      "workers": 6,
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "status": "ok",
+      "returncode": 0,
+      "exact_canonical_model_match": true,
+      "actual_merges": 225,
+      "actual_vocab": 481,
+      "binary_sha256": "5abe2d7cbf69d5189467e183d44a32a7f8e1c739d9648138a147aac88de421e0",
+      "environment": {
+        "TK_CORE_PHASES": "1",
+        "TK_SINGLE_PRODUCER_FAST": "1",
+        "TK_SINGLE_DIRECT": "1",
+        "TK_PAIR_LAYOUT": "whole",
+        "TK_COMMIT_GROUP_FUSION": "1",
+        "TK_FAST_SHARD_ROUTER": "1",
+        "TK_LOGICAL_OWNERS": "0",
+        "TK_COMMIT_DIRECT_COLD": "0",
+        "TK_REMOVAL_ENTRY": "0",
+        "TK_REMOVAL_REDUCE": "0",
+        "TK_REMOVAL_SELECTIVE": "0",
+        "TK_REMOVAL_STATS": "0",
+        "TK_BATCH_LIMIT": "256",
+        "TK_RAYON_IDLE_SPIN": "4096",
+        "TK_RAYON_IDLE_PAUSE": "1",
+        "TK_SINGLE_DIAG": "0",
+        "TK_SINGLE_DIAG_TIMELINE": "0",
+        "TK_YTTM_RUST": "0",
+        "TK_COMMIT_SCATTER": "1"
+      }
+    }
+  ],
+  "limits": [
+    "small ByteLevel fixture correctness only; not a timing screen"
+  ]
+}

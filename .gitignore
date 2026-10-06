@@ -1,0 +1,6 @@
+__pycache__/
+.venv/
+target/
+/build/
+/data/
+/local-results/

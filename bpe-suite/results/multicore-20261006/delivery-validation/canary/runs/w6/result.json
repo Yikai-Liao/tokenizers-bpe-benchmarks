@@ -1,0 +1,64 @@
+{
+  "arm": "delivery",
+  "case": "smoke_bytelevel",
+  "started_unix": 1791217750.8100412,
+  "protocol": 2,
+  "status": "ok",
+  "loadavg": [
+    0.8603515625,
+    0.986328125,
+    0.97900390625
+  ],
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "command": [
+    "/usr/bin/taskset",
+    "--cpu-list",
+    "0,1,2,3,4,5",
+    "/root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/results/multicore-20261006/delivery-validation/canary/binaries/delivery",
+    "/root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/results/multicore-20261006/delivery-validation/canary/runs/w6/job.json"
+  ],
+  "returncode": 0,
+  "supervisor_wall_seconds": 0.10303821496199816,
+  "sampled_peak_rss_bytes": 266240,
+  "sampled_peak_swap_bytes": 0,
+  "minimum_host_available_bytes": 13263134720,
+  "metrics": {
+    "actual_merges": 225,
+    "actual_vocab": 481,
+    "allocation_counters_enabled": false,
+    "cpu_seconds": 0.058944,
+    "elapsed_seconds": 0.019539502,
+    "feed_mode": "streaming",
+    "feed_seconds": 0.001838553,
+    "initial_edges": 8551,
+    "input_bytes": 68476,
+    "internal_hash_seeds": "native_random",
+    "lines": 38,
+    "maxrss_kib": 8324,
+    "min_frequency": 2,
+    "model_output": "/root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/results/multicore-20261006/delivery-validation/canary/runs/w6/model.json",
+    "pretoken_occurrences": 7263,
+    "special_tokens": 0,
+    "split": "bytelevel_regex",
+    "train_cpu_seconds": 0.057095,
+    "train_seconds": 0.017690342,
+    "unique_symbols": 10679,
+    "unique_words": 2128,
+    "vocab_size": 750,
+    "word_counts_cache": null,
+    "word_hash_seeds": [
+      11,
+      13,
+      17,
+      19
+    ],
+    "workers": 6
+  }
+}

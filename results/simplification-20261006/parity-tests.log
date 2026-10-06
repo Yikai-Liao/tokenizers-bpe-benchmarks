@@ -1,0 +1,12 @@
+   Compiling tk-train v0.1.0-dev.0 (/home/lyk/code/tokenizers/tokenizers/tk-train)
+error[E0432]: unresolved import `super::BPE`
+ --> src/trainers/bpe/parity_trainer.rs:1:13
+  |
+1 | use super::{BPE, Pair, WithFirstLastIterator, Word};
+  |             ^^^ no `BPE` in `trainers::bpe`
+  |
+  = help: consider importing this variant instead:
+          crate::ModelWrapper::BPE
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `tk-train` (lib test) due to 1 previous error

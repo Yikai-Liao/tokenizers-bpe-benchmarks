@@ -1,0 +1,91 @@
+   Compiling rayon-core v1.13.0 (/root/code/tokenizers-workspaces/multicore-best-delivery/vendor/rayon-core)
+   Compiling bitcannon v0.1.0-dev.0 (/root/code/tokenizers-workspaces/multicore-best-delivery/tokenizers/bitcannon)
+   Compiling rayon v1.12.0
+   Compiling tk-collections v0.1.0-dev.0 (/root/code/tokenizers-workspaces/multicore-best-delivery/tokenizers/tk-collections)
+   Compiling rdst v0.20.14
+   Compiling rayon-cond v0.4.0
+   Compiling ptr_hash v2.1.2
+   Compiling tk-convert v0.1.0-dev.0 (/root/code/tokenizers-workspaces/multicore-best-delivery/tokenizers/tk-convert)
+   Compiling tk-encode v0.1.0-dev.0 (/root/code/tokenizers-workspaces/multicore-best-delivery/tokenizers/tk-encode)
+   Compiling tk-serialize v0.1.0-dev.0 (/root/code/tokenizers-workspaces/multicore-best-delivery/tokenizers/tk-serialize)
+   Compiling tk-train v0.1.0-dev.0 (/root/code/tokenizers-workspaces/multicore-best-delivery/tokenizers/tk-train)
+warning: method `dispatch` is never used
+   --> src/trainers/bpe/engine/merge.rs:378:19
+    |
+335 | impl MergeEvents {
+    | ---------------- method in this implementation
+...
+378 |     pub(super) fn dispatch(&self, workers: usize) -> Vec<OwnerRoute> {
+    |                   ^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `tk-train` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 34.01s
+     Running unittests src/lib.rs (/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/cache/build/debug/deps/tk_train-821002bef6e7af15)
+
+running 61 tests
+test trainers::bpe::engine::aa_parity::tests::all_partitions_of_small_valid_edge_patterns_match_greedy ... ok
+test trainers::bpe::engine::aa_parity::tests::long_mixed_runs_match_linear_summary ... ok
+test trainers::bpe::engine::aa_parity::tests::long_tokens_and_large_positions_do_not_wrap ... ok
+test trainers::bpe::engine::aa_parity::tests::preserves_runs_over_empty_chunks_and_restarts_after_gaps ... ok
+test trainers::bpe::engine::corpus::tests::cohort_cohorts_keep_distinct_words_and_unequal_occurrence_spans ... ok
+test trainers::bpe::engine::corpus::tests::compact_slot_domains_preserve_ids_separators_and_adjacent_parallel_writes ... ok
+test trainers::bpe::engine::corpus::tests::intermediate_birth_survives_its_later_boundary_removal ... ok
+test trainers::bpe::engine::corpus::tests::unit_weight_range_preserves_boundaries_and_cursor_resets ... ok
+test trainers::bpe::engine::initial_pairs::tests::wave_offsets_restore_positions_above_u32 ... ok
+test trainers::bpe::engine::merge::producer_budget_tests::node_budget_includes_partial_tasks_and_accepts_exact_capacity ... ok
+test trainers::bpe::engine::merge::tests::selected_rule_reuse_clears_shared_endpoints_before_domain_growth ... ok
+test trainers::bpe::engine::pair_index::router_tests::reciprocal_router_is_exact_for_full_mixed_range_boundaries ... ok
+test trainers::bpe::engine::pair_index::tests::cohort_birth_publication_keeps_low_positive_cohorts_and_skips_negative_counts ... ok
+test trainers::bpe::engine::pair_index::tests::cohort_negative_count_repairs_only_when_its_snapshot_reaches_the_head ... ok
+test trainers::bpe::engine::pair_index::tests::commit_removal_reduce_retains_distinct_rr_old_keys_and_prunes_exactly ... ok
+test trainers::bpe::engine::pair_index::tests::fresh_queue_preserves_survivors_after_retiring_other_keys ... ok
+test trainers::bpe::engine::pair_index::tests::interrupted_frontier_corrects_stale_counts_and_keeps_birth_ties ... ok
+test trainers::bpe::engine::single_producer_diagnostics::tests::actual_single_chunk_does_not_override_allocation_budget_fallback ... ok
+test trainers::bpe::engine::single_producer_diagnostics::tests::nested_fast_codec_is_not_double_counted_in_worker_cpu_or_wall ... ok
+test trainers::bpe::engine::single_producer_diagnostics::tests::parallel_window_union_preserves_sequential_phase_gap ... ok
+test trainers::bpe::engine::single_producer_diagnostics::tests::same_worker_two_jobs_are_two_producers_and_cannot_be_fast_eligible ... ok
+test trainers::bpe::engine::tests::active_id_reuse_rebuilds_without_publishing_speculative_rules ... ok
+test trainers::bpe::engine::tests::affix_first_activations_preserve_reserved_ids_and_model_order ... ok
+test trainers::bpe::engine::tests::affixes_aliases_and_strict_length_boundaries ... ok
+test trainers::bpe::engine::tests::cohort_cohort_words_include_stale_addresses_and_zero_weights ... ok
+test trainers::bpe::engine::tests::commit_fused_group_and_direct_cold_preserve_hf_trace_and_reuse ... ok
+test trainers::bpe::engine::tests::commit_removal_reduce_batch_limits_preserve_hf_trace_and_reuse ... ok
+test trainers::bpe::engine::tests::commit_removal_reduce_matches_hf_trace_and_reuse ... ok
+test trainers::bpe::engine::tests::full_pair_keys_remain_distinct_in_initial_counting ... ok
+test trainers::bpe::engine::tests::initial_waves_preserve_crossing_edges_and_filter_complete_counts ... ok
+test trainers::bpe::engine::tests::long_word_split_preserves_unicode_filtering_affixes_and_merge_trace ... ok
+test trainers::bpe::engine::tests::owner_router_balance_preserves_trace_and_reuse ... ok
+test trainers::bpe::engine::tests::owner_single_producer_active_reuse_restarts_through_original_cohorts ... ok
+test trainers::bpe::engine::tests::owner_single_producer_layout_factors_preserve_hf_trace_and_fallbacks ... ok
+test trainers::bpe::engine::tests::owner_single_producer_requires_full_task_and_prunes_complete_births ... ok
+test trainers::bpe::engine::tests::planned_edges_match_materialized_slots_across_word_and_seek_boundaries ... ok
+test trainers::bpe::engine::tests::planned_wave_tables_preserve_coordinates_weights_and_filtering ... ok
+test trainers::bpe::engine::tests::pruning_waits_for_all_birth_producers_and_alphabet_filtering ... ok
+test trainers::bpe::engine::tests::public_feed_train_and_model_reload_preserve_affixes ... ok
+test trainers::bpe::engine::tests::public_thread_policy_in_isolated_processes ... ok
+test trainers::bpe::engine::tests::randomized_round_by_round_hf_differential ... ok
+test trainers::bpe::engine::tests::randomized_round_by_round_hf_stress ... ignored, extended differential check; run explicitly before release
+test trainers::bpe::engine::tests::recomputing_greedy_oracle_without_affixes_or_length_filter ... ok
+test trainers::bpe::engine::tests::routed_batches_preserve_rule_and_position_order_with_many_workers ... ok
+test trainers::bpe::engine::tests::routing_keeps_stable_births_and_original_count_actions ... ok
+test trainers::bpe::engine::tests::suffix_identity_reuse_has_literal_mainline_merge_choices ... ok
+test trainers::bpe::engine::tests::weighted_ties_unicode_aa_and_reserved_id_activations ... ok
+test trainers::bpe::engine::tests::wide_frequencies_and_signed_ledger_boundaries ... ok
+test trainers::bpe::engine::tests::zero_merge_paths_preserve_count_overflow_and_signed_policy_checks ... ok
+test trainers::bpe::tests::bpe_test_max_token_length_16 ... ok
+test trainers::bpe::tests::bpe_test_max_token_length_direct_assert ... ok
+test trainers::bpe::tests::test_train ... ok
+test trainers::bpe::word::tests::test_merge ... ok
+test trainers::bpe::word::tests::test_merge_max_length ... ok
+test trainers::tests::trainer_wrapper_train_model_wrapper ... ok
+test trainers::unigram::tests::test_initial_alphabet ... ok
+test trainers::unigram::tests::test_special_tokens ... ok
+test trainers::unigram::tests::test_to_log_prob ... ok
+test trainers::unigram::tests::test_unigram_chars ... ok
+test trainers::unigram::tests::test_unk_token ... ok
+test trainers::wordlevel::tests::test_train ... ok
+
+test result: ok. 60 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 34.59s
+

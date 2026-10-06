@@ -1,0 +1,104 @@
+{
+  "status": "passed",
+  "branch": "bpe/multicore-best",
+  "delivery_root": "/root/code/tokenizers-workspaces/multicore-best-delivery",
+  "git_commit_created": false,
+  "source_validation": {
+    "manifest_path": "/root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/results/multicore-20261006/source-manifest.json",
+    "manifest_sha256": "6f7aa840c344132bdb9ab0ee977a90e0bc9f4cc9f290c99f4adbcd7954159f1d",
+    "rust_files_expected": 8,
+    "rust_files_matched": 8,
+    "all_rust_sha_match": true,
+    "vendor_files_expected": 43,
+    "vendor_files_matched": 43,
+    "all_vendor_sha_match": true,
+    "manifest_state": "retained prior Full candidate; final experiment rejected; delivery validation in progress",
+    "details": "source-hash-validation.json"
+  },
+  "build": {
+    "status": "passed",
+    "command": "CARGO_BUILD_JOBS=2 RUSTFLAGS='-C target-cpu=native' /root/.cargo/bin/cargo build --release --manifest-path benchmarks/bpe-suite/multicore-runner/Cargo.toml --target-dir /root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/cache/build --offline --locked",
+    "manifest_path": "/root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/multicore-runner/Cargo.toml",
+    "profile": {
+      "release": true,
+      "lto": "fat",
+      "codegen_units": 1,
+      "rustflags": "-C target-cpu=native",
+      "cargo_build_jobs": 2
+    },
+    "actual_binary_path": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/cache/build/release/bpe-suite-runner",
+    "binary_sha256": "e158fb259f2107c4ad34defae89196f0e7e6de5b351de48832a2d91cd56f4f42",
+    "log": "native-fatlto-build.log",
+    "path_lookup_correction": "Cargo package produces bpe-suite-runner, not multicore-runner. Build passed; initial post-build SHA lookup used the wrong filename and failed, then was corrected."
+  },
+  "library_tests": {
+    "status": "passed",
+    "command": "TK_COMMIT_SCATTER=0 RUSTFLAGS='-C target-cpu=native' CARGO_BUILD_JOBS=2 benchmarks/bpe-suite/with_multicore_candidate.sh /root/.cargo/bin/cargo test --manifest-path tokenizers/tk-train/Cargo.toml --target-dir /root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/cache/build --no-default-features --offline --locked -j2 --lib -- --test-threads=1",
+    "wrapper": "/root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/with_multicore_candidate.sh",
+    "TK_COMMIT_SCATTER": "0",
+    "tests": {
+      "passed": 60,
+      "failed": 0,
+      "ignored": 1
+    },
+    "log": "tk-train-lib-tests.log"
+  },
+  "bytelevel_w6_canary": {
+    "status": "passed",
+    "command": "TK_COMMIT_SCATTER=0 /root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/with_multicore_candidate.sh python3 <temporary canary harness>",
+    "workers": 6,
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "exact_existing_canonical_match": true,
+    "merges": 225,
+    "vocab": 481,
+    "binary_path": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/cache/build/release/bpe-suite-runner",
+    "binary_sha256": "e158fb259f2107c4ad34defae89196f0e7e6de5b351de48832a2d91cd56f4f42",
+    "input_path": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/full-commit-scatter/experiment/smoke/input.txt",
+    "input_sha256": "8f498ae6e7d9c8cbe94438effe64c25681b03a2533e6427549cc900b2a9e3d90",
+    "canonical_model_path": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/full-commit-scatter/experiment/models/smoke_bytelevel.json",
+    "canonical_model_sha256": "51060d7b951068ab71427b5cf9fb038628e8057f97ae0ebe5cae1d3f4832d35f",
+    "environment": {
+      "TK_RAYON_IDLE_PAUSE": "1",
+      "TK_SINGLE_DIAG": "0",
+      "TK_SINGLE_DIRECT": "1",
+      "TK_BATCH_LIMIT": "256",
+      "TK_RAYON_IDLE_SPIN": "4096",
+      "TK_REMOVAL_STATS": "0",
+      "TK_PAIR_LAYOUT": "whole",
+      "TK_COMMIT_DIRECT_COLD": "0",
+      "TK_REMOVAL_REDUCE": "0",
+      "TK_FAST_SHARD_ROUTER": "1",
+      "TK_REMOVAL_ENTRY": "0",
+      "TK_REMOVAL_SELECTIVE": "0",
+      "TK_LOGICAL_OWNERS": "0",
+      "TK_COMMIT_GROUP_FUSION": "1",
+      "TK_COMMIT_SCATTER": "0",
+      "TK_SINGLE_PRODUCER_FAST": "1",
+      "TK_SINGLE_DIAG_TIMELINE": "0"
+    },
+    "summary": "canary/summary.json",
+    "log": "canary.log",
+    "harness_after_validation": "/tmp/multicore-delivery-canary.py (removed from delivery results directory after run)"
+  },
+  "archive_patch_check": {
+    "status": "passed",
+    "command": "git apply --check benchmarks/bpe-suite/results/multicore-20261006/commit-scatter.patch",
+    "patch_sha256": "f7f59c4dae957b467d8e47582df97ce8b186d06ae66c8a61314ae575b41901cd",
+    "patch_applied": false,
+    "log": "commit-scatter-patch-check.log"
+  },
+  "validation_artifacts": {
+    "directory": "/root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/results/multicore-20261006/delivery-validation",
+    "source_hash_details": "source-hash-validation.json",
+    "build_details": "build-provenance.json",
+    "canary_assets": "Canary corpus, canonical model, and runner remain in the LAB/cache; delivery canary paths are symlinks."
+  },
+  "scope": "Delivery packaging validation only; no benchmark, tuning, Rust-source edit, or git commit."
+}

@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "manifest": "/root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/multicore-runner/Cargo.toml",
+  "actual_binary_path": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/cache/build/release/bpe-suite-runner",
+  "binary_sha256": "e158fb259f2107c4ad34defae89196f0e7e6de5b351de48832a2d91cd56f4f42",
+  "build_command": "CARGO_BUILD_JOBS=2 RUSTFLAGS=\"-C target-cpu=native\" cargo build --release --offline --locked --manifest-path benchmarks/bpe-suite/multicore-runner/Cargo.toml --target-dir shared-cache",
+  "profile": {
+    "opt_level": 3,
+    "lto": "fat",
+    "codegen_units": 1,
+    "target_cpu": "native"
+  },
+  "log": "native-fatlto-build.log",
+  "notes": [
+    "Build succeeded. Initial SHA command used incorrect expected executable name; Cargo.toml package generates bpe-suite-runner."
+  ]
+}

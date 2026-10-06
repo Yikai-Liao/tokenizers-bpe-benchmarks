@@ -1,0 +1,130 @@
+{
+  "baseline/prepared.json": {
+    "source": "commit-removal-selective/prepared.json",
+    "sha256": "fe4716dbdfbf41ced78f9435b4cb27fef22116289c1ca3ce605b0e6eea7247b2"
+  },
+  "baseline/batch-protocol.json": {
+    "source": "commit-removal-selective/batch-ablation-v1/protocol.json",
+    "sha256": "b31956ee70164f3f4c57336fc704615c0a2d8ee277d3eeb1cce163514dbcdbec"
+  },
+  "baseline/batch-summary.json": {
+    "source": "commit-removal-selective/batch-ablation-v1/summary.json",
+    "sha256": "38b8e688cdd07e43ac77fbc7a73ef038d36f184d5e62220ebadf5746a155eb8b"
+  },
+  "baseline/batch-results.json": {
+    "source": "commit-removal-selective/batch-ablation-v1/results.json",
+    "sha256": "bbb0df1cd10dd1f75d58b56e9a924bac2b81d71736aea21ba5da3ee8a4d75fa9"
+  },
+  "core-reference/prepared.json": {
+    "source": "yttm-core-boundary/prepared.json",
+    "sha256": "dceb6d568f3668d6ceb35384744981374d2e0b139becc91f7f3716be65fe6ea3"
+  },
+  "core-reference/protocol.json": {
+    "source": "yttm-core-boundary/matched-core-screen-v1/protocol.json",
+    "sha256": "98d85f12b885cd64ff872492e204d8d2dbb0687c2c01a08cbfa1df16f5dc6fa1"
+  },
+  "core-reference/results.json": {
+    "source": "yttm-core-boundary/matched-core-screen-v1/results.json",
+    "sha256": "5328aed617562ad25d11746bdc6cacf29e7af520d68d4109fd6c5dfed303b7db"
+  },
+  "position-storage/summary.json": {
+    "source": "full-position-storage/experiment/validation/timing-screen-v1/summary.json",
+    "sha256": "f9aaad1705dc9b4f2ce0a6574a0e1f8e45fdfedc85f6f480f4efa1771b0990d2"
+  },
+  "position-storage/manifest.json": {
+    "source": "full-position-storage/experiment/validation/timing-screen-v1/manifest.json",
+    "sha256": "c399545f1810a8f27d865e69931b070ddce62aac8f1552d13ebc3fb5ea1cbcd3"
+  },
+  "ready-codec/summary.json": {
+    "source": "full-ready-codec/experiment/validation/paired-core-screen-v1/summary.json",
+    "sha256": "f9eec183de3006a7b8e5fd7248080f1df6225760bf4a09fb082a425c1145a2ae"
+  },
+  "commit-scatter/prepared.json": {
+    "source": "full-commit-scatter/prepared.json",
+    "sha256": "2d27d37986000fb96d89cdfc341113177abb1e2be3a371df3fc06d379551852e"
+  },
+  "commit-scatter/final-gate-summary.json": {
+    "source": "full-commit-scatter/experiment/validation/final-gate-summary.json",
+    "sha256": "37c19d973fec5c95ae418399614ee4e5b29e33e48c49fe71c2766c3d9f2d04ad"
+  },
+  "commit-scatter/w6-summary.json": {
+    "source": "full-commit-scatter/experiment/validation/paired-core-screen-v1/summary.json",
+    "sha256": "2ecc939ea4d4a7e47dfa788b13943d18238c5088c6aec283a50854b6e603149c"
+  },
+  "commit-scatter/w6-manifest.json": {
+    "source": "full-commit-scatter/experiment/validation/paired-core-screen-v1/manifest.json",
+    "sha256": "7c26b0cf73cea57eb559d8e5a5b14255c67228632f70a61d2a4d469e8e0e5d01"
+  },
+  "commit-scatter/t1-summary.json": {
+    "source": "full-commit-scatter/experiment/validation/t1-guard-v1/summary.json",
+    "sha256": "df2b0ebe96babceff835c91c74a3807f79fb0c117e98b2a39e951f48cf554596"
+  },
+  "commit-scatter/t1-manifest.json": {
+    "source": "full-commit-scatter/experiment/validation/t1-guard-v1/manifest.json",
+    "sha256": "3809e95f7c18720edbacecd386ad3eb537b9e83aae937a7fafee07d2e22a0ead"
+  },
+  "commit-scatter/canary-summary.json": {
+    "source": "full-commit-scatter/experiment/validation/canary-v1/summary.json",
+    "sha256": "0f58c994752bdd81a5f1dc5c57aa0ee9038eb65ae02ddfa635a887c9420a28c7"
+  },
+  "commit-scatter/canary-manifest.json": {
+    "source": "full-commit-scatter/experiment/validation/canary-v1/manifest.json",
+    "sha256": "d97e9f76b70b12ec497ea611b40be227e134de42cebeb24941f2ca14b2481e2b"
+  },
+  "commit-scatter/first-test-failure.log": {
+    "source": "full-commit-scatter/experiment/validation/gates-v1/commit-scatter-tests.first-failure.log",
+    "sha256": "68cf51dc1b75f5ead8ce145592ed2b28ef3c307d5be459accaf51cf8ac695bfd"
+  },
+  "commit-scatter/focused-tests.log": {
+    "source": "full-commit-scatter/experiment/validation/gates-v1/commit-scatter-tests.log",
+    "sha256": "260a345bdd3e862b88705d7c80e62e3d1aeef06094846f9bdf7b1f2dcaf36e39"
+  },
+  "commit-scatter/library-tests.log": {
+    "source": "full-commit-scatter/experiment/validation/gates-v1/bpe-library-correctness.log",
+    "sha256": "4b46211a8344d581909feefd1a5b262c473e83cd3faffb5718e42e4091e00d6a"
+  },
+  "commit-scatter/native-build.log": {
+    "source": "full-commit-scatter/experiment/validation/gates-v1/native-fatlto-build.log",
+    "sha256": "d3bbbcfb94b462c1f939719ccaff4155a1dacd06ac4caba0c8b991f25e609107"
+  },
+  "commit-scatter.patch": {
+    "source": "Rust diff from retained commit-removal-selective to frozen full-commit-scatter; unapplied",
+    "sha256": "f7f59c4dae957b467d8e47582df97ce8b186d06ae66c8a61314ae575b41901cd"
+  },
+  "core-budget/summary.json": {
+    "source": "full-core-budget/experiment/validation/diagnostic-screen-v1/summary.json",
+    "sha256": "5bd06209f50b4b2aae240470a45073d79bf50eaee81b9f973d02b0cc5ccbd0d3"
+  },
+  "core-budget/manifest.json": {
+    "source": "full-core-budget/experiment/validation/diagnostic-screen-v1/manifest.json",
+    "sha256": "49462a583905f396e18c5e4ad6fe1bc09162ce221fef8f0427449d2319b00581"
+  },
+  "delivery-validation/build-provenance.json": {
+    "source": "delivery validation after relocation",
+    "sha256": "2c08fb43b94547686f8787fab48006ba617157ec3dd22106a326d2fdff704191"
+  },
+  "delivery-validation/canary.log": {
+    "source": "delivery validation after relocation",
+    "sha256": "12000fd45606fe28a34bffd5b82fb7b04fb7d5ee6d3d822eb7302b5999344531"
+  },
+  "delivery-validation/commit-scatter-patch-check.log": {
+    "source": "delivery validation after relocation",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "delivery-validation/native-fatlto-build.log": {
+    "source": "delivery validation after relocation",
+    "sha256": "59f0c27058862b113acd6891b2435f07e964b40135da420503cb080d1efc5410"
+  },
+  "delivery-validation/source-hash-validation.json": {
+    "source": "delivery validation after relocation",
+    "sha256": "b63ac786cf6b95dc15df316097204b81974fe2ab2adf08b0d338a7350d843d8e"
+  },
+  "delivery-validation/summary.json": {
+    "source": "delivery validation after relocation",
+    "sha256": "576fea41ff4fa5ed6a2aff3943453fe107da9bd2e63e03dfbe991f3404b651ab"
+  },
+  "delivery-validation/tk-train-lib-tests.log": {
+    "source": "delivery validation after relocation",
+    "sha256": "48b3d710012fbeb5d292112d648fdfe0f05755a4d8e5541b74b10c545d5743ca"
+  }
+}

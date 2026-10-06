@@ -1,0 +1,271 @@
+{
+  "manifest_path": "/root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/results/multicore-20261006/source-manifest.json",
+  "manifest_sha256": "6f7aa840c344132bdb9ab0ee977a90e0bc9f4cc9f290c99f4adbcd7954159f1d",
+  "manifest_state": "retained prior Full candidate; final experiment rejected; delivery validation in progress",
+  "rust_files": 8,
+  "vendor_files": 43,
+  "rust_all_match": true,
+  "vendor_all_match": true,
+  "all_match": true,
+  "checks": {
+    "rust": {
+      "tokenizers/tk-collections/src/sorted_positions.rs": {
+        "expected": "29544e778492faaa8b8c33c2b477592e6dab6abb2bd4845ef4ae8636093a3ddc",
+        "actual": "29544e778492faaa8b8c33c2b477592e6dab6abb2bd4845ef4ae8636093a3ddc",
+        "match": true
+      },
+      "tokenizers/tk-train/src/trainers/bpe/engine/execution.rs": {
+        "expected": "f6fb5cf7b85733f0cde9c96badaa7a0b029d4730400883b80e459af07b5b4c13",
+        "actual": "f6fb5cf7b85733f0cde9c96badaa7a0b029d4730400883b80e459af07b5b4c13",
+        "match": true
+      },
+      "tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs": {
+        "expected": "a0b5ccb69580a7d52d1c8e2ebbefe187e4e60b0210d838e157154375ff37265d",
+        "actual": "a0b5ccb69580a7d52d1c8e2ebbefe187e4e60b0210d838e157154375ff37265d",
+        "match": true
+      },
+      "tokenizers/tk-train/src/trainers/bpe/engine/single_producer_diagnostics.rs": {
+        "expected": "a64c2aa3ca585be24cbdce1323de035142b651226e0d054de7657d51e88f1df8",
+        "actual": "a64c2aa3ca585be24cbdce1323de035142b651226e0d054de7657d51e88f1df8",
+        "match": true
+      },
+      "tokenizers/tk-train/src/trainers/bpe/engine/tests.rs": {
+        "expected": "16a0b386a4738917ec6280f6c88840eb74605d58d379d8dd97623fffe9fa41f1",
+        "actual": "16a0b386a4738917ec6280f6c88840eb74605d58d379d8dd97623fffe9fa41f1",
+        "match": true
+      },
+      "tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs": {
+        "expected": "5aaf56f1aa7dd4e005276f456929c080239c97baffc1cc2da7439cfda17ebbec",
+        "actual": "5aaf56f1aa7dd4e005276f456929c080239c97baffc1cc2da7439cfda17ebbec",
+        "match": true
+      },
+      "tokenizers/tk-train/src/trainers/bpe/engine/mod.rs": {
+        "expected": "55fae0241de208c3c32059d68648b2c4346ae636f3c70725a31c286f87db9fba",
+        "actual": "55fae0241de208c3c32059d68648b2c4346ae636f3c70725a31c286f87db9fba",
+        "match": true
+      },
+      "tokenizers/tk-train/src/trainers/bpe/engine/merge.rs": {
+        "expected": "6b96cefbda07d556d3ff19a7def5e7a10282a83a630a2bfe1957c15c4f12dfcf",
+        "actual": "6b96cefbda07d556d3ff19a7def5e7a10282a83a630a2bfe1957c15c4f12dfcf",
+        "match": true
+      }
+    },
+    "vendor": {
+      "vendor/rayon-core/.cargo-ok": {
+        "expected": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91",
+        "actual": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91",
+        "match": true
+      },
+      "vendor/rayon-core/.cargo_vcs_info.json": {
+        "expected": "c6bfcaeeeb689844bb154055fe696ced313b9b5f3523528346dbbe46806c35dd",
+        "actual": "c6bfcaeeeb689844bb154055fe696ced313b9b5f3523528346dbbe46806c35dd",
+        "match": true
+      },
+      "vendor/rayon-core/Cargo.lock": {
+        "expected": "e30b2aa3d7e6f59dda0ef717580cec3d787d3f13a0cd3da46969874736e48684",
+        "actual": "e30b2aa3d7e6f59dda0ef717580cec3d787d3f13a0cd3da46969874736e48684",
+        "match": true
+      },
+      "vendor/rayon-core/Cargo.toml": {
+        "expected": "ab50ad4709436f6bda04e5345444f1197b1eda2bd3b49f9412c0cb318111b5a2",
+        "actual": "ab50ad4709436f6bda04e5345444f1197b1eda2bd3b49f9412c0cb318111b5a2",
+        "match": true
+      },
+      "vendor/rayon-core/Cargo.toml.orig": {
+        "expected": "2fb5b9f5a2ec91a1e3f2d9c26cf611bb5a9eeb30fcccb68cf6d087ad522176ab",
+        "actual": "2fb5b9f5a2ec91a1e3f2d9c26cf611bb5a9eeb30fcccb68cf6d087ad522176ab",
+        "match": true
+      },
+      "vendor/rayon-core/LICENSE-APACHE": {
+        "expected": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+        "actual": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+        "match": true
+      },
+      "vendor/rayon-core/LICENSE-MIT": {
+        "expected": "0621878e61f0d0fda054bcbe02df75192c28bde1ecc8289cbd86aeba2dd72720",
+        "actual": "0621878e61f0d0fda054bcbe02df75192c28bde1ecc8289cbd86aeba2dd72720",
+        "match": true
+      },
+      "vendor/rayon-core/README.md": {
+        "expected": "37a9a028cb507dbaebe7bb60fce9194f0f5b51fb3a52b2ac616969cf6ff4ef95",
+        "actual": "37a9a028cb507dbaebe7bb60fce9194f0f5b51fb3a52b2ac616969cf6ff4ef95",
+        "match": true
+      },
+      "vendor/rayon-core/build.rs": {
+        "expected": "fa31cb198b772600d100a7c403ddedccef637d2e6b2da431fa7f02ca41307fc6",
+        "actual": "fa31cb198b772600d100a7c403ddedccef637d2e6b2da431fa7f02ca41307fc6",
+        "match": true
+      },
+      "vendor/rayon-core/src/broadcast/mod.rs": {
+        "expected": "850859640276aefefba3493ad6f07a3122b869c64fd617212f2c1e178f3c39ee",
+        "actual": "850859640276aefefba3493ad6f07a3122b869c64fd617212f2c1e178f3c39ee",
+        "match": true
+      },
+      "vendor/rayon-core/src/broadcast/test.rs": {
+        "expected": "fe50fc868e67d855a9f71e078b0c3a7780e789652abb4b586accb4ccf035e872",
+        "actual": "fe50fc868e67d855a9f71e078b0c3a7780e789652abb4b586accb4ccf035e872",
+        "match": true
+      },
+      "vendor/rayon-core/src/compile_fail/mod.rs": {
+        "expected": "4d70256295bd64691a8c1994b323559cda1888e85f0b45ca55711541c257dcb6",
+        "actual": "4d70256295bd64691a8c1994b323559cda1888e85f0b45ca55711541c257dcb6",
+        "match": true
+      },
+      "vendor/rayon-core/src/compile_fail/quicksort_race1.rs": {
+        "expected": "35f498cda38f4eb6e00117f78ed68e0fe5a3fa61c25303d9c08a19bda345bc6c",
+        "actual": "35f498cda38f4eb6e00117f78ed68e0fe5a3fa61c25303d9c08a19bda345bc6c",
+        "match": true
+      },
+      "vendor/rayon-core/src/compile_fail/quicksort_race2.rs": {
+        "expected": "cbb40030c7867cae34bb373b6ec5d97c2ac6de39bc917f47879b30eb423924bc",
+        "actual": "cbb40030c7867cae34bb373b6ec5d97c2ac6de39bc917f47879b30eb423924bc",
+        "match": true
+      },
+      "vendor/rayon-core/src/compile_fail/quicksort_race3.rs": {
+        "expected": "8403643e64c969306b1a9b1243378e6ccdd313b57e1878dbd31393618082fd35",
+        "actual": "8403643e64c969306b1a9b1243378e6ccdd313b57e1878dbd31393618082fd35",
+        "match": true
+      },
+      "vendor/rayon-core/src/compile_fail/rc_return.rs": {
+        "expected": "197894803d8df58fc8005d90c86b90cd98f1972f1a4b57438516a565df35903f",
+        "actual": "197894803d8df58fc8005d90c86b90cd98f1972f1a4b57438516a565df35903f",
+        "match": true
+      },
+      "vendor/rayon-core/src/compile_fail/rc_upvar.rs": {
+        "expected": "42d110429621f407ef0dada1306dab116583d2c782a99894204dd8e0ccd2312f",
+        "actual": "42d110429621f407ef0dada1306dab116583d2c782a99894204dd8e0ccd2312f",
+        "match": true
+      },
+      "vendor/rayon-core/src/compile_fail/scope_join_bad.rs": {
+        "expected": "892959949f77cadfc07458473e7a290301182027ca64428df5a8ce887be0892b",
+        "actual": "892959949f77cadfc07458473e7a290301182027ca64428df5a8ce887be0892b",
+        "match": true
+      },
+      "vendor/rayon-core/src/job.rs": {
+        "expected": "06de0c2add2e303b6383bf11f5f0d75775c1efe6aa7bc16de3992117f1012f09",
+        "actual": "06de0c2add2e303b6383bf11f5f0d75775c1efe6aa7bc16de3992117f1012f09",
+        "match": true
+      },
+      "vendor/rayon-core/src/join/mod.rs": {
+        "expected": "0d1d6ba860c65fd991a81459110dfb9ca03e590d830b515e5afc9c7b6bae6b08",
+        "actual": "0d1d6ba860c65fd991a81459110dfb9ca03e590d830b515e5afc9c7b6bae6b08",
+        "match": true
+      },
+      "vendor/rayon-core/src/join/test.rs": {
+        "expected": "b853c3b99a1cca585069c0ccc9eb3f962533d5b3c7875dba6b905aae3880c473",
+        "actual": "b853c3b99a1cca585069c0ccc9eb3f962533d5b3c7875dba6b905aae3880c473",
+        "match": true
+      },
+      "vendor/rayon-core/src/latch.rs": {
+        "expected": "e749d6d15e685ca164cd7f2dcad6b2701ae04bc53cb5144be0c43f012406eddd",
+        "actual": "e749d6d15e685ca164cd7f2dcad6b2701ae04bc53cb5144be0c43f012406eddd",
+        "match": true
+      },
+      "vendor/rayon-core/src/lib.rs": {
+        "expected": "5da845890b55010d8f5e243ac9d112c60c710a0f412dce8ebf6f8b6987bd261c",
+        "actual": "5da845890b55010d8f5e243ac9d112c60c710a0f412dce8ebf6f8b6987bd261c",
+        "match": true
+      },
+      "vendor/rayon-core/src/private.rs": {
+        "expected": "152f6d65ce4741616a1dec796b9442f78a018d38bb040f76c4cd85008333a3bb",
+        "actual": "152f6d65ce4741616a1dec796b9442f78a018d38bb040f76c4cd85008333a3bb",
+        "match": true
+      },
+      "vendor/rayon-core/src/registry.rs": {
+        "expected": "61674f4cdf39edb26df75435de6925d54c5f864f9e1dcd0fb114ad2cc553a1d7",
+        "actual": "61674f4cdf39edb26df75435de6925d54c5f864f9e1dcd0fb114ad2cc553a1d7",
+        "match": true
+      },
+      "vendor/rayon-core/src/scope/mod.rs": {
+        "expected": "b7720b853328173764b33e2d866c33c49148d777254a8d4a51e766b692537914",
+        "actual": "b7720b853328173764b33e2d866c33c49148d777254a8d4a51e766b692537914",
+        "match": true
+      },
+      "vendor/rayon-core/src/scope/test.rs": {
+        "expected": "f358307efb3c0f5dbd8a7f7380aaf23603aae946bf2eb01f8adc35122e6b46d0",
+        "actual": "f358307efb3c0f5dbd8a7f7380aaf23603aae946bf2eb01f8adc35122e6b46d0",
+        "match": true
+      },
+      "vendor/rayon-core/src/sleep/README.md": {
+        "expected": "8790c7795d1a37e0c3016d4ac220ff2fc37f3995d2b5f251bbcb2216362fb9cd",
+        "actual": "8790c7795d1a37e0c3016d4ac220ff2fc37f3995d2b5f251bbcb2216362fb9cd",
+        "match": true
+      },
+      "vendor/rayon-core/src/sleep/counters.rs": {
+        "expected": "3e7880534822abbbd59210c378ca611b75759e8b566b167263fd843cd638dd22",
+        "actual": "3e7880534822abbbd59210c378ca611b75759e8b566b167263fd843cd638dd22",
+        "match": true
+      },
+      "vendor/rayon-core/src/sleep/mod.rs": {
+        "expected": "fde17ce666c202001b7e525a5bf4439be5db086be5c605e7e2dc64c955ef8f31",
+        "actual": "fde17ce666c202001b7e525a5bf4439be5db086be5c605e7e2dc64c955ef8f31",
+        "match": true
+      },
+      "vendor/rayon-core/src/spawn/mod.rs": {
+        "expected": "3520ce5822787a592e5c7da9d0dd8a4a4d9eb08235e598ab63a50bf43fef56f4",
+        "actual": "3520ce5822787a592e5c7da9d0dd8a4a4d9eb08235e598ab63a50bf43fef56f4",
+        "match": true
+      },
+      "vendor/rayon-core/src/spawn/test.rs": {
+        "expected": "b4850681aa5ff607d927b1d3f4ba2b4a3199ddaa283a95ea44547b997cf17e61",
+        "actual": "b4850681aa5ff607d927b1d3f4ba2b4a3199ddaa283a95ea44547b997cf17e61",
+        "match": true
+      },
+      "vendor/rayon-core/src/test.rs": {
+        "expected": "b82d95f84314305ff3268d341f731851e4d33fc895c34219ed8ff08b8d864575",
+        "actual": "b82d95f84314305ff3268d341f731851e4d33fc895c34219ed8ff08b8d864575",
+        "match": true
+      },
+      "vendor/rayon-core/src/thread_pool/mod.rs": {
+        "expected": "f071a1bc766cde10ec844cc3b53e53479c3f1ade97ceaff1cc9e3f9913ade9f3",
+        "actual": "f071a1bc766cde10ec844cc3b53e53479c3f1ade97ceaff1cc9e3f9913ade9f3",
+        "match": true
+      },
+      "vendor/rayon-core/src/thread_pool/test.rs": {
+        "expected": "e9377afa0d5727a9f6874b5abf4589403d8dc8938e4e2c5dc26be4106daa77b9",
+        "actual": "e9377afa0d5727a9f6874b5abf4589403d8dc8938e4e2c5dc26be4106daa77b9",
+        "match": true
+      },
+      "vendor/rayon-core/src/unwind.rs": {
+        "expected": "7baa4511467d008b14856ea8de7ced92b9251c9df4854f69c81f7efc3cf0cd6c",
+        "actual": "7baa4511467d008b14856ea8de7ced92b9251c9df4854f69c81f7efc3cf0cd6c",
+        "match": true
+      },
+      "vendor/rayon-core/tests/double_init_fail.rs": {
+        "expected": "8c208ce45e83ab1dfc5890353d5b2f06fc8005684ae622827a65d05abb35a072",
+        "actual": "8c208ce45e83ab1dfc5890353d5b2f06fc8005684ae622827a65d05abb35a072",
+        "match": true
+      },
+      "vendor/rayon-core/tests/init_zero_threads.rs": {
+        "expected": "5c7f7e0e13e9ead3733253e30d6b52ac5ee66fd6c105999d096bdf31cfccaf95",
+        "actual": "5c7f7e0e13e9ead3733253e30d6b52ac5ee66fd6c105999d096bdf31cfccaf95",
+        "match": true
+      },
+      "vendor/rayon-core/tests/scope_join.rs": {
+        "expected": "56f570c4b6a01704aacf93e7f17f89fe0f40f46ed6f9ede517abfe9adaf91f83",
+        "actual": "56f570c4b6a01704aacf93e7f17f89fe0f40f46ed6f9ede517abfe9adaf91f83",
+        "match": true
+      },
+      "vendor/rayon-core/tests/scoped_threadpool.rs": {
+        "expected": "24d1293fe65ad5f194bbff9d1ef0486c3440d0a3783f04eaaaae4929adef5cb8",
+        "actual": "24d1293fe65ad5f194bbff9d1ef0486c3440d0a3783f04eaaaae4929adef5cb8",
+        "match": true
+      },
+      "vendor/rayon-core/tests/simple_panic.rs": {
+        "expected": "916d40d36c1a0fad3e1dfb31550f0672641feab4b03d480f039143dbe2f2445f",
+        "actual": "916d40d36c1a0fad3e1dfb31550f0672641feab4b03d480f039143dbe2f2445f",
+        "match": true
+      },
+      "vendor/rayon-core/tests/stack_overflow_crash.rs": {
+        "expected": "87b962c66f301ac44f808d992d4e8b861305db0c282f256761a5075c9f018243",
+        "actual": "87b962c66f301ac44f808d992d4e8b861305db0c282f256761a5075c9f018243",
+        "match": true
+      },
+      "vendor/rayon-core/tests/use_current_thread.rs": {
+        "expected": "552ec922f123aafdaeafef8f31c802781ebed16bf35cb5eac128bef0c29199cc",
+        "actual": "552ec922f123aafdaeafef8f31c802781ebed16bf35cb5eac128bef0c29199cc",
+        "match": true
+      }
+    }
+  }
+}

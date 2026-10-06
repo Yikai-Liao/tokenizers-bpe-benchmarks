@@ -1,0 +1,195 @@
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded fastrand v2.5.0
+  Downloaded castaway v0.2.4
+  Downloaded fxhash v0.2.1
+  Downloaded prefetch-index v0.2.1
+  Downloaded partition v0.1.2
+  Downloaded arbitrary-chunks v0.4.1
+  Downloaded rayon-cond v0.4.0
+  Downloaded mem_dbg-derive v0.3.4
+  Downloaded byteorder v1.5.0
+  Downloaded either v1.18.0
+  Downloaded paste v1.0.15
+  Downloaded crossbeam-deque v0.8.8
+  Downloaded rand_chacha v0.10.0
+  Downloaded thiserror-impl v2.0.21
+  Downloaded thiserror v2.0.21
+  Downloaded xxhash-rust v0.8.19
+  Downloaded yada v0.7.0
+  Downloaded colored v3.1.1
+  Downloaded dary_heap v0.3.9
+  Downloaded rand_core v0.10.1
+  Downloaded crossbeam-epoch v0.9.21
+  Downloaded rdst v0.20.14
+  Downloaded crossbeam-utils v0.8.23
+  Downloaded foldhash v0.2.0
+  Downloaded ahash v0.8.12
+  Downloaded smallvec v1.16.2
+  Downloaded tempfile v3.27.0
+  Downloaded ptr_hash v2.1.2
+  Downloaded allocator-api2 v0.2.21
+  Downloaded getrandom v0.4.3
+  Downloaded ryu v1.0.23
+  Downloaded serde_core v1.0.229
+  Downloaded tinyvec v1.13.3
+  Downloaded serde_derive v1.0.229
+  Downloaded bytemuck v1.25.2
+  Downloaded base64 v0.13.1
+  Downloaded zmij v1.0.23
+  Downloaded minimal-lexical v0.2.1
+  Downloaded serde v1.0.229
+  Downloaded unicode_categories v0.1.1
+  Downloaded safe_arch v1.2.0
+  Downloaded rand v0.10.3
+  Downloaded bumpalo v3.20.3
+  Downloaded compact_str v0.9.1
+  Downloaded unicode-normalization-alignments v0.1.12
+  Downloaded memchr v2.8.3
+  Downloaded nom v7.1.3
+  Downloaded mem_dbg v0.4.4
+  Downloaded unicode-normalization v0.1.25
+  Downloaded unicode-segmentation v1.13.3
+  Downloaded zerocopy-derive v0.8.59
+  Downloaded itertools v0.14.0
+  Downloaded itertools v0.15.0
+  Downloaded serde_json v1.0.151
+  Downloaded esaxx-rs v0.1.10
+  Downloaded rayon v1.12.0
+  Downloaded wide v1.7.1
+  Downloaded bitvec v1.1.1
+  Downloaded zerocopy v0.8.59
+  Downloaded syn v2.0.119
+  Downloaded rustix v1.1.5
+  Downloaded spm_precompiled v0.1.4
+  Downloaded libc v0.2.190
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling cfg-if v1.0.5
+   Compiling libc v0.2.190
+   Compiling serde_core v1.0.229
+   Compiling serde v1.0.229
+   Compiling crossbeam-utils v0.8.23
+   Compiling zerocopy v0.8.59
+   Compiling crossbeam-epoch v0.9.21
+   Compiling crossbeam-deque v0.8.8
+   Compiling getrandom v0.3.4
+   Compiling rayon-core v1.13.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/baseline/vendor/rayon-core)
+   Compiling rand_core v0.10.1
+   Compiling once_cell v1.21.4
+   Compiling either v1.18.0
+   Compiling version_check v0.9.5
+   Compiling getrandom v0.4.3
+   Compiling radium v0.7.0
+   Compiling equivalent v1.0.2
+   Compiling memchr v2.8.3
+   Compiling rustix v1.1.5
+   Compiling bitflags v2.13.2
+   Compiling rustversion v1.0.23
+   Compiling cpufeatures v0.3.1
+   Compiling thiserror v2.0.21
+   Compiling zmij v1.0.23
+   Compiling linux-raw-sys v0.12.1
+   Compiling tap v1.0.1
+   Compiling foldhash v0.2.0
+   Compiling allocator-api2 v0.2.21
+   Compiling wyz v0.5.1
+   Compiling ahash v0.8.12
+   Compiling chacha20 v0.10.2
+   Compiling paste v1.0.15
+   Compiling minimal-lexical v0.2.1
+   Compiling funty v2.0.0
+   Compiling partition v0.1.2
+   Compiling bytemuck v1.25.2
+   Compiling arbitrary-chunks v0.4.1
+   Compiling serde_json v1.0.151
+   Compiling fastrand v2.5.0
+   Compiling itoa v1.0.18
+   Compiling byteorder v1.5.0
+   Compiling hashbrown v0.16.1
+   Compiling safe_arch v1.2.0
+   Compiling fxhash v0.2.1
+   Compiling nom v7.1.3
+   Compiling itertools v0.14.0
+   Compiling itertools v0.15.0
+   Compiling syn v3.0.6
+   Compiling syn v2.0.119
+   Compiling bitvec v1.1.1
+   Compiling tinyvec v1.13.3
+   Compiling xxhash-rust v0.8.19
+   Compiling log v0.4.34
+   Compiling smallvec v1.16.2
+   Compiling unicode-segmentation v1.13.3
+   Compiling esaxx-rs v0.1.10
+   Compiling prefetch-index v0.2.1
+   Compiling rayon v1.12.0
+   Compiling rand v0.10.3
+   Compiling base64 v0.13.1
+   Compiling colored v3.1.1
+   Compiling unicode-normalization-alignments v0.1.12
+   Compiling unicode-normalization v0.1.25
+   Compiling wide v1.7.1
+   Compiling castaway v0.2.4
+   Compiling static_assertions v1.1.0
+   Compiling tempfile v3.27.0
+   Compiling yada v0.7.0
+   Compiling bumpalo v3.20.3
+   Compiling hashbrown v0.17.1
+   Compiling unicode_categories v0.1.1
+   Compiling ryu v1.0.23
+   Compiling mem_dbg-derive v0.3.4
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.21
+   Compiling indexmap v2.14.0
+   Compiling mem_dbg v0.4.4
+   Compiling rdst v0.20.14
+   Compiling rayon-cond v0.4.0
+   Compiling ppv-lite86 v0.2.21
+   Compiling rand_chacha v0.10.0
+   Compiling ptr_hash v2.1.2
+   Compiling dary_heap v0.3.9
+   Compiling spm_precompiled v0.1.4
+   Compiling compact_str v0.9.1
+   Compiling bitcannon v0.1.0-dev.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/baseline/tokenizers/bitcannon)
+   Compiling tk-collections v0.1.0-dev.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/baseline/tokenizers/tk-collections)
+   Compiling tk-convert v0.1.0-dev.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/baseline/tokenizers/tk-convert)
+   Compiling tk-encode v0.1.0-dev.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/baseline/tokenizers/tk-encode)
+   Compiling tk-train v0.1.0-dev.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/baseline/tokenizers/tk-train)
+warning: associated function `new` is never used
+  --> /home/lyk/code/tokenizers-local-validation/simplification-20261006/baseline/tokenizers/tk-train/src/trainers/bpe/engine/execution.rs:15:19
+   |
+14 | impl Execution {
+   | -------------- associated function in this implementation
+15 |     pub(super) fn new(workers: usize) -> Result<Self> {
+   |                   ^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: methods `route`, `route_with_diagnostics`, and `dispatch` are never used
+   --> /home/lyk/code/tokenizers-local-validation/simplification-20261006/baseline/tokenizers/tk-train/src/trainers/bpe/engine/merge.rs:338:19
+    |
+335 | impl MergeEvents {
+    | ---------------- methods in this implementation
+...
+338 |     pub(super) fn route(&self, workers: usize) -> Vec<OwnerRoute> {
+    |                   ^^^^^
+...
+341 |     pub(super) fn route_with_diagnostics(
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+...
+378 |     pub(super) fn dispatch(&self, workers: usize) -> Vec<OwnerRoute> {
+    |                   ^^^^^^^^
+
+warning: method `commit_merges` is never used
+   --> /home/lyk/code/tokenizers-local-validation/simplification-20261006/baseline/tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs:536:19
+    |
+533 | impl<'a> PairIndex<'a> {
+    | ---------------------- method in this implementation
+...
+536 |     pub(super) fn commit_merges(
+    |                   ^^^^^^^^^^^^^
+
+warning: `tk-train` (lib) generated 3 warnings
+   Compiling bpe-suite-runner v0.1.0 (/home/lyk/code/tokenizers-local-validation/simplification-20261006/baseline/benchmarks/bpe-suite/multicore-runner)
+    Finished `release` profile [optimized] target(s) in 41.16s

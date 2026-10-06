@@ -1,0 +1,80 @@
+{
+  "source": "batch-ablation-v1/results.json",
+  "all_canonical_ok": true,
+  "binary_sha256": "c871915ecf70dcefad021733008c6e6f48d1354509ae032b02f0ce4e7aff9b09",
+  "cache_sha256": "449b6cb9386a094b9929518e9ce4699cf29291dfc432ae80781214e2e8b29bca",
+  "rows": [
+    {
+      "label": "w1-batch256",
+      "workers": 1,
+      "train_seconds": 6.101454167,
+      "train_cpu_seconds": 6.089311,
+      "maxrss_kib": 491620,
+      "feed_seconds": 1.266543695,
+      "status": "ok",
+      "returncode": 0,
+      "binary_sha256": "c871915ecf70dcefad021733008c6e6f48d1354509ae032b02f0ce4e7aff9b09",
+      "cache_sha256": "449b6cb9386a094b9929518e9ce4699cf29291dfc432ae80781214e2e8b29bca",
+      "batch_limit": 256,
+      "entry": 0,
+      "reduce": 0
+    },
+    {
+      "label": "w6-batch256",
+      "workers": 6,
+      "train_seconds": 2.310132195,
+      "train_cpu_seconds": 11.046794,
+      "maxrss_kib": 522100,
+      "feed_seconds": 1.254818708,
+      "status": "ok",
+      "returncode": 0,
+      "binary_sha256": "c871915ecf70dcefad021733008c6e6f48d1354509ae032b02f0ce4e7aff9b09",
+      "cache_sha256": "449b6cb9386a094b9929518e9ce4699cf29291dfc432ae80781214e2e8b29bca",
+      "batch_limit": 256,
+      "entry": 0,
+      "reduce": 0
+    },
+    {
+      "label": "w1-batch1",
+      "workers": 1,
+      "train_seconds": 6.211878076,
+      "train_cpu_seconds": 6.19913,
+      "maxrss_kib": 491756,
+      "feed_seconds": 1.204333551,
+      "status": "ok",
+      "returncode": 0,
+      "binary_sha256": "c871915ecf70dcefad021733008c6e6f48d1354509ae032b02f0ce4e7aff9b09",
+      "cache_sha256": "449b6cb9386a094b9929518e9ce4699cf29291dfc432ae80781214e2e8b29bca",
+      "batch_limit": 1,
+      "entry": 0,
+      "reduce": 0
+    },
+    {
+      "label": "w6-batch1",
+      "workers": 6,
+      "train_seconds": 4.206382921,
+      "train_cpu_seconds": 22.123611,
+      "maxrss_kib": 521456,
+      "feed_seconds": 1.275926484,
+      "status": "ok",
+      "returncode": 0,
+      "binary_sha256": "c871915ecf70dcefad021733008c6e6f48d1354509ae032b02f0ce4e7aff9b09",
+      "cache_sha256": "449b6cb9386a094b9929518e9ce4699cf29291dfc432ae80781214e2e8b29bca",
+      "batch_limit": 1,
+      "entry": 0,
+      "reduce": 0
+    }
+  ],
+  "speedups": {
+    "batch256": 2.6411710032031306,
+    "batch1": 1.4767742720206807
+  },
+  "w6_batch1_vs_batch256_wall_ratio": 1.8208407856936517,
+  "w6_batch1_wall_slowdown_percent": 82.08407856936518,
+  "w1_batch1_vs_batch256_wall_ratio": 1.0180979658254639,
+  "caveats": [
+    "Each cell n=1; cached-only exploratory boundary, not formal end-to-end timing.",
+    "Both removal flags are off for this ablation; results reflect batch limit in the fixed fast/router/layout configuration.",
+    "Do not attribute the entire difference to scheduler overhead; batch limit changes fresh merge work shape and may interact with layout/fast paths."
+  ]
+}

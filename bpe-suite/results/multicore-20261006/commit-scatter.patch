@@ -1,0 +1,991 @@
+--- a/tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs
++++ b/tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs
+@@ -277,7 +277,7 @@
+                     table.insert(
+                         records[begin as usize].key(),
+                         PairState {
+-                            ledger_count_bits: frequency,
++                            ledger_count_bits: (frequency).into(),
+                             // A complete zero count has no candidate
+                             // payload. A partial zero count may share
+                             // its key with a positive wave elsewhere.
+@@ -324,9 +324,9 @@
+                             }
+                             Entry::Occupied(mut entry) => {
+                                 let old = entry.get_mut();
+-                                old.ledger_count_bits = old
+-                                    .ledger_count_bits
+-                                    .checked_add(state.ledger_count_bits)
++                                *old.count_mut() = old
++                                    .count()
++                                    .checked_add(state.count())
+                                     .ok_or("BPE initial pair frequency exceeds u64")?;
+                                 old.positions
+                                     .append(state.positions, &mut scratch, &lease)?;
+@@ -341,7 +341,7 @@
+     }
+     if minimum_frequency != 0 {
+         for shard in &mut shards {
+-            shard.retain(|_, state| state.ledger_count_bits >= minimum_frequency);
++            shard.retain(|_, state| state.count() >= minimum_frequency);
+         }
+     }
+     Ok(InitialPairTable {
+--- a/tokenizers/tk-train/src/trainers/bpe/engine/merge.rs
++++ b/tokenizers/tk-train/src/trainers/bpe/engine/merge.rs
+@@ -210,7 +210,7 @@
+                     births.push((
+                         event.born_key,
+                         PairState {
+-                            ledger_count_bits: event.born_weight,
++                            ledger_count_bits: (event.born_weight).into(),
+                             positions,
+                         },
+                     ));
+@@ -377,6 +377,28 @@
+     /// Route only metadata. Birth grouping can run inside the owner task.
+     pub(super) fn dispatch(&self, workers: usize) -> Vec<OwnerRoute> {
+         self.dispatch_with_router(ShardRouter::new(workers, false))
++    }
++    /// Fresh scatter commit updates old counts directly through the frozen maps.
++    /// Only birth references need owner routing; keep their original spatial order.
++    pub(super) fn dispatch_births_with_router(&self, router: ShardRouter) -> Vec<OwnerRoute> {
++        let mut routes: Vec<_> = (0..router.shards())
++            .map(|_| OwnerRoute {
++                changes: Vec::new(),
++                births: Vec::new(),
++            })
++            .collect();
++        for (chunk, events) in self.chunks.iter().enumerate() {
++            for (index, change) in events.changes.iter().enumerate() {
++                if !change.positions.is_empty() {
++                    let route = &mut routes[router.owner(change.born_key)];
++                    route.births.push(route.changes.len());
++                    route
++                        .changes
++                        .push(OwnerChange::new(chunk, index, ChangeAction::Birth));
++                }
++            }
++        }
++        routes
+     }
+     pub(super) fn dispatch_with_router(&self, router: ShardRouter) -> Vec<OwnerRoute> {
+         let mut routes: Vec<_> = (0..router.shards())
+@@ -767,6 +789,7 @@
+     pub(super) single_producer_fast: bool,
+     pub(super) direct_encoding: bool,
+     pub(super) group_births_in_commit: bool,
++    pub(super) commit_scatter: bool,
+     pub(super) direct_cold_encoding: bool,
+     pub(super) layout: PairLayout,
+     pub(super) diagnostics: bool,
+@@ -785,6 +808,7 @@
+             diagnostics: std::env::var("TK_SINGLE_DIAG").is_ok_and(|v| v == "1"),
+             direct_encoding: std::env::var("TK_SINGLE_DIRECT").map_or(true, |v| v != "0"),
+             group_births_in_commit: std::env::var("TK_COMMIT_GROUP_FUSION").is_ok_and(|v| v == "1"),
++            commit_scatter: std::env::var("TK_COMMIT_SCATTER").is_ok_and(|v| v == "1"),
+             direct_cold_encoding: std::env::var("TK_COMMIT_DIRECT_COLD").is_ok_and(|v| v == "1"),
+             batch_limit: std::env::var("TK_BATCH_LIMIT")
+                 .ok()
+--- a/tokenizers/tk-train/src/trainers/bpe/engine/mod.rs
++++ b/tokenizers/tk-train/src/trainers/bpe/engine/mod.rs
+@@ -131,12 +131,16 @@
+         trainer.max_token_length.is_some(),
+         progress,
+     )?;
++    // Same weighted-token-ID boundary as the retained Full control.
++    let core_origin = (std::env::var_os("TK_CORE_PHASES").as_deref()
++        == Some(std::ffi::OsStr::new("1")))
++    .then(std::time::Instant::now);
+     if vocabulary.len() >= trainer.vocab_size && prepared_corpus.initial_counts_fit_u64() {
+         drop(prepared_corpus);
+         execution.release_scratch();
+         return Ok(complete_model(trainer, vocabulary, Vec::new()));
+     }
+-    match corpus::slot_bits(trainer.vocab_size.max(vocabulary.len())) {
++    let outcome = match corpus::slot_bits(trainer.vocab_size.max(vocabulary.len())) {
+         16 => train_with_slots::<corpus::HalfSlots>(
+             trainer,
+             vocabulary,
+@@ -170,7 +174,15 @@
+             #[cfg(test)]
+             trace,
+         ),
++    };
++    if let Some(origin) = core_origin {
++        eprintln!(
++            "BPE_CORE_PHASE engine=full workers={workers} batch={} core_seconds={:.9}",
++            merge_options.batch_limit,
++            origin.elapsed().as_secs_f64()
++        );
+     }
++    outcome
+ }
+ fn train_with_slots<S: corpus::SlotStorage>(
+     trainer: &BpeTrainer,
+@@ -215,6 +227,7 @@
+         merge_options.direct_cold_encoding,
+         merge_options.fast_shard_router,
+     );
++    index.configure_scatter(merge_options.commit_scatter);
+     index.configure_removals(
+         merge_options.removal_entry,
+         merge_options.removal_reduce,
+--- /dev/null
++++ b/tokenizers/tk-train/src/trainers/bpe/engine/pair_index/commit_scatter.rs
+@@ -0,0 +1,482 @@
++//! Split Fresh commit by the work being performed, not by mutable map ownership.
++//!
++//! Maps and position lists remain structurally frozen during shared count updates
++//! and cold-cohort construction. Rayon joins every reader before the original
++//! owners erase retired states, insert completed states and publish heap entries.
++//! No task nests pool work while holding worker-local scratch or arena leases.
++use super::*;
++use crate::trainers::bpe::engine::{
++    execution::Execution,
++    merge::{MergeEvents, OwnerRoute},
++};
++use std::ops::Range;
++use tk_collections::{AllocationArena, IdAccumulator};
++
++const REMOVAL_RECORDS_PER_TASK: usize = 2048;
++const MIN_COLD_REFERENCES_PER_TASK: usize = 512;
++
++/// Only the successful transition below the selection floor retires a state.
++/// Later decrements see the retired count and reproduce Fresh's existing ignore
++/// semantics. Unconditional fetch_sub would permit wraparound or double retire.
++fn subtract_shared(count: &AtomicU64, amount: u64, floor: u64) -> Result<bool> {
++    let mut observed = count.load(AtomicOrdering::Relaxed);
++    while observed >= floor {
++        let next = observed
++            .checked_sub(amount)
++            .ok_or("BPE fresh removal exceeds the current count")?;
++        match count.compare_exchange_weak(
++            observed,
++            next,
++            AtomicOrdering::Relaxed,
++            AtomicOrdering::Relaxed,
++        ) {
++            Ok(_) => return Ok(next < floor),
++            Err(actual) => observed = actual,
++        }
++    }
++    Ok(false)
++}
++
++/// Coalesce short buckets without splitting a complete key between tasks.
++/// The stable birth scatter preserves producer spatial order within each bucket.
++fn cold_ranges(events: &MergeEvents, route: &OwnerRoute, target: usize) -> Vec<Range<usize>> {
++    let mut ranges = Vec::new();
++    let mut begin = 0;
++    let mut cursor = 0;
++    while cursor < route.births.len() {
++        let reference = &route.changes[route.births[cursor]];
++        let bucket = events.chunks[reference.chunk].changes[reference.index()].bucket;
++        let length = route.births[cursor..].partition_point(|&index| {
++            let reference = &route.changes[index];
++            events.chunks[reference.chunk].changes[reference.index()].bucket == bucket
++        });
++        cursor += length;
++        if cursor - begin >= target {
++            ranges.push(begin..cursor);
++            begin = cursor;
++        }
++    }
++    if begin < cursor {
++        ranges.push(begin..cursor);
++    }
++    ranges
++}
++
++/// The original Fresh owner codec, with map/heap publication moved to the joined
++/// publish phase. A Fresh key belongs to exactly one rule/direction bucket.
++/// Complete-producer keys carry no birth-position events and cannot overlap it.
++fn build_cold<'a>(
++    events: &MergeEvents,
++    route: &OwnerRoute,
++    range: Range<usize>,
++    identities: usize,
++    execution: &Execution,
++    arena: &'a AllocationArena,
++    floor: u64,
++    direct: bool,
++) -> Result<Vec<(u64, PairState<'a>)>> {
++    struct BirthGroup {
++        weight: u64,
++        head: usize,
++        occurrences: usize,
++    }
++    impl Default for BirthGroup {
++        fn default() -> Self {
++            Self {
++                weight: 0,
++                head: usize::MAX,
++                occurrences: 0,
++            }
++        }
++    }
++    struct Fragment {
++        chunk: usize,
++        index: usize,
++        next: usize,
++    }
++
++    let worker = execution.current_worker();
++    let lease = arena.lease(worker);
++    let mut scratch = (!direct).then(|| execution.encoding(worker));
++    let mut directories = execution.directories();
++    let mut neighbors = IdAccumulator::<BirthGroup>::with_directory(
++        identities,
++        std::mem::take(&mut directories[0]),
++    );
++    let mut fragments = Vec::<Fragment>::new();
++    let mut completed = Vec::new();
++    let mut remaining = &route.births[range];
++    while let Some(&first_index) = remaining.first() {
++        let first_ref = &route.changes[first_index];
++        let first = &events.chunks[first_ref.chunk].changes[first_ref.index()];
++        let bucket = first.bucket;
++        let end = remaining.partition_point(|&index| {
++            let reference = &route.changes[index];
++            events.chunks[reference.chunk].changes[reference.index()].bucket == bucket
++        });
++        let (births, next) = remaining.split_at(end);
++        remaining = next;
++        let left = bucket & 1 == 0;
++        let pair = key_pair(first.born_key);
++        let replacement = if left { pair.1 } else { pair.0 };
++        for &reference_index in births {
++            let reference = &route.changes[reference_index];
++            let index = reference.index();
++            let change = &events.chunks[reference.chunk].changes[index];
++            let pair = key_pair(change.born_key);
++            let neighbor = if left { pair.0 } else { pair.1 };
++            let group = neighbors.touch(neighbor);
++            group.weight = group
++                .weight
++                .checked_add(change.born_weight)
++                .ok_or("BPE birth frequency exceeds u64")?;
++            group.occurrences = group
++                .occurrences
++                .checked_add(change.positions.len())
++                .ok_or("BPE birth position count exceeds resident bounds")?;
++            fragments.push(Fragment {
++                chunk: reference.chunk,
++                index,
++                next: group.head,
++            });
++            group.head = fragments.len() - 1;
++        }
++        for (neighbor, group) in neighbors.drain() {
++            if group.weight < floor {
++                continue;
++            }
++            let key = pair_key(if left {
++                (neighbor, replacement)
++            } else {
++                (replacement, neighbor)
++            });
++            let mut head = group.head;
++            let fragments = &fragments;
++            let sources = std::iter::from_fn(move || {
++                if head == usize::MAX {
++                    return None;
++                }
++                let fragment = &fragments[head];
++                head = fragment.next;
++                Some(fragment)
++            })
++            .map(|fragment| {
++                let chunk = &events.chunks[fragment.chunk];
++                (&chunk.chains, chunk.changes[fragment.index].positions)
++            });
++            let positions = if direct {
++                SortedPositions::from_reversed_iter_direct(
++                    group.occurrences,
++                    sources.flat_map(|(owner, chain)| owner.reversed(chain)),
++                    &lease,
++                )?
++            } else {
++                SortedPositions::from_reversed_iter(
++                    group.occurrences,
++                    sources.flat_map(|(owner, chain)| owner.reversed(chain)),
++                    scratch
++                        .as_deref_mut()
++                        .expect("buffered cold codec owns scratch"),
++                    &lease,
++                )?
++            };
++            debug_assert_eq!(positions.len(), group.occurrences);
++            completed.push((
++                key,
++                PairState {
++                    ledger_count_bits: group.weight.into(),
++                    positions,
++                },
++            ));
++        }
++        fragments.clear();
++    }
++    directories[0] = neighbors.into_directory();
++    Ok(completed)
++}
++
++impl<'a> PairIndex<'a> {
++    pub(super) fn commit_scatter(
++        &mut self,
++        events: &MergeEvents,
++        identities: usize,
++        execution: &Execution,
++        arena: &'a AllocationArena,
++        births: Vec<(u64, PairState<'a>)>,
++        diagnostic_round: Option<&super::super::single_producer_diagnostics::RoundDiagnostics>,
++    ) -> Result<()> {
++        debug_assert!(self.policy == IdentityPolicy::Fresh);
++        let floor = self.minimum_frequency.max(1);
++        let router = ShardRouter::new(self.shards.len(), self.fast_shard_router);
++        let mut routes = events.dispatch_births_with_router(router);
++        let cold_references: usize = routes.iter().map(|route| route.births.len()).sum();
++        let target = cold_references
++            .div_ceil(execution.workers() * 4)
++            .max(MIN_COLD_REFERENCES_PER_TASK);
++        let direct = self.direct_cold_encoding;
++        let shards = &self.shards;
++
++        // Relaxed atomics suffice for the numeric field: these tasks consume a
++        // fully published immutable index, and join precedes all structural writes
++        // and every subsequent exact-selection read. There is no concurrent drop.
++        let (retired, cold) = rayon::join(
++            || {
++                events
++                    .chunks
++                    .par_iter()
++                    .flat_map(|chunk| {
++                        chunk
++                            .changes
++                            .par_chunks(REMOVAL_RECORDS_PER_TASK)
++                            .map(|changes| {
++                                let mut retired = Vec::new();
++                                for change in changes {
++                                    if change.removed_weight == 0 {
++                                        continue;
++                                    }
++                                    let owner = router.owner(change.removed_key);
++                                    if let Some(state) =
++                                        shards[owner].states.get(&change.removed_key)
++                                    {
++                                        if subtract_shared(
++                                            &state.ledger_count_bits,
++                                            change.removed_weight,
++                                            floor,
++                                        )? {
++                                            retired.push((owner, change.removed_key));
++                                        }
++                                    }
++                                }
++                                Ok(retired)
++                            })
++                    })
++                    .collect::<Result<Vec<Vec<(usize, u64)>>>>()
++            },
++            || {
++                routes
++                    .par_iter_mut()
++                    .for_each(|route| route.group_births(events));
++                routes
++                    .par_iter()
++                    .enumerate()
++                    .flat_map(|(owner, route)| {
++                        cold_ranges(events, route, target)
++                            .into_par_iter()
++                            .map(move |range| {
++                                build_cold(
++                                    events, route, range, identities, execution, arena, floor,
++                                    direct,
++                                )
++                                .map(|states| (owner, states))
++                            })
++                    })
++                    .collect::<Result<Vec<_>>>()
++            },
++        );
++        // Both branches have joined even if either returned an error.
++        let retired = retired?;
++        let cold = cold?;
++        drop(routes);
++
++        let mut removals: Vec<Vec<u64>> = (0..self.shards.len()).map(|_| Vec::new()).collect();
++        for (owner, key) in retired.into_iter().flatten() {
++            removals[owner].push(key);
++        }
++        let mut completed: Vec<Vec<(u64, PairState<'a>)>> =
++            (0..self.shards.len()).map(|_| Vec::new()).collect();
++        let mut fast_keys = 0;
++        let mut fast_positions = 0;
++        for (key, state) in births {
++            if diagnostic_round.is_some() {
++                fast_keys += 1;
++                fast_positions += state.positions.len();
++            }
++            completed[router.owner(key)].push((key, state));
++        }
++        let mut cold_keys = 0;
++        let mut cold_positions = 0;
++        for (owner, states) in cold {
++            if diagnostic_round.is_some() {
++                cold_keys += states.len();
++                cold_positions += states
++                    .iter()
++                    .map(|(_, state)| state.positions.len())
++                    .sum::<usize>();
++            }
++            completed[owner].extend(states);
++        }
++        self.shards
++            .par_iter_mut()
++            .zip(removals.into_par_iter())
++            .zip(completed.into_par_iter())
++            .map(|((shard, retired), states)| -> Result<()> {
++                for key in retired {
++                    // Exactly one CAS crossed the floor. The map was frozen
++                    // throughout the shared phase, so the state is still present.
++                    let removed = shard
++                        .states
++                        .remove(&key)
++                        .ok_or("BPE scatter retirement lost its state")?;
++                    debug_assert!(removed.count() < floor);
++                }
++                for (key, state) in states {
++                    let priority = PairPriority {
++                        key,
++                        priority_count: state.count(),
++                    };
++                    if shard.states.insert(key, state).is_some() {
++                        return Err("BPE Fresh scatter birth overlaps an existing key".into());
++                    }
++                    shard.priorities.push(priority);
++                }
++                shard.prepare_prefix(floor);
++                Ok(())
++            })
++            .collect::<Result<Vec<_>>>()?;
++        if let Some(round) = diagnostic_round {
++            round.record_publication(cold_keys, cold_positions, fast_keys, fast_positions);
++        }
++        Ok(())
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn commit_scatter_one_owner_splits_retirement_and_complete_cold_buckets() {
++        use crate::trainers::bpe::engine::merge::{EventChunk, PairChanges};
++        use tk_collections::{PositionChain, PositionChains, PositionEncodingScratch};
++        let execution = Execution::with_owners(4, 1, false).unwrap();
++        let arena = AllocationArena::new(4, 4096);
++        execution.pool.install(|| {
++            let mut chunks = Vec::new();
++            for chunk in 0..8 {
++                let mut chains = PositionChains::new();
++                let mut changes = Vec::new();
++                for index in 0..256 {
++                    let position = chunk * 256 + index;
++                    let bucket = (position % 3) as u32;
++                    let born = match bucket {
++                        0 => (3, 100),
++                        1 => (100, 4),
++                        _ => (5, 101),
++                    };
++                    let mut positions = PositionChain::default();
++                    chains.push(&mut positions, position as u64).unwrap();
++                    changes.push(PairChanges {
++                        removed_key: pair_key((1, 2)),
++                        removed_weight: 1,
++                        born_key: pair_key(born),
++                        born_weight: 3,
++                        positions,
++                        bucket,
++                    });
++                }
++                chunks.push(EventChunk::test(chains, changes, 4));
++            }
++            let events = MergeEvents { buckets: 3, chunks };
++            let mut routes = events.dispatch_births_with_router(ShardRouter::new(1, false));
++            routes[0].group_births(&events);
++            let ranges = cold_ranges(&events, &routes[0], 512);
++            assert_eq!(
++                ranges.len(),
++                3,
++                "one mutable owner supplies three complete cold tasks"
++            );
++            assert_eq!(ranges.iter().map(|range| range.len()).sum::<usize>(), 2048);
++            for range in ranges {
++                let indices = &routes[0].births[range];
++                let buckets: Vec<_> = indices
++                    .iter()
++                    .map(|&index| {
++                        let reference = &routes[0].changes[index];
++                        events.chunks[reference.chunk].changes[reference.index()].bucket
++                    })
++                    .collect();
++                assert!(buckets.iter().all(|bucket| *bucket == buckets[0]));
++            }
++            let make_index = || {
++                let mut states = AHashMap::new();
++                states.insert(
++                    pair_key((1, 2)),
++                    PairState {
++                        ledger_count_bits: 3000_u64.into(),
++                        positions: SortedPositions::from_sorted(
++                            &[7],
++                            &mut PositionEncodingScratch::default(),
++                            &arena.lease(0),
++                        )
++                        .unwrap(),
++                    },
++                );
++                PairIndex::from_initial_pairs(
++                    InitialPairTable {
++                        shards: vec![states],
++                        weighted_mass: 3000,
++                        maximum_word_weight: 1,
++                    },
++                    IdentityPolicy::Fresh,
++                    1500,
++                )
++                .unwrap()
++            };
++            let mut original = make_index();
++            let mut scatter = make_index();
++            scatter.configure_scatter(true);
++            // The training coordinator restores speculative prefixes before
++            // every commit. The fixture skips selection but must keep that gate.
++            original.end_selection();
++            scatter.end_selection();
++            original
++                .commit_merges(&events, 102, &execution, &arena)
++                .unwrap();
++            scatter
++                .commit_merges(&events, 102, &execution, &arena)
++                .unwrap();
++            assert!(!scatter.shards[0].states.contains_key(&pair_key((1, 2))));
++            assert_eq!(scatter.shards[0].states.len(), 3);
++            for (&key, state) in &original.shards[0].states {
++                let actual = &scatter.shards[0].states[&key];
++                assert_eq!(actual.count(), state.count());
++                assert_eq!(
++                    actual.positions.iter().collect::<Vec<_>>(),
++                    state.positions.iter().collect::<Vec<_>>()
++                );
++            }
++            original.begin_selection();
++            scatter.begin_selection();
++            while let Some(expected) = original.best() {
++                assert_eq!(scatter.best(), Some(expected));
++                original.take_best();
++                scatter.take_best();
++            }
++            assert_eq!(scatter.best(), None);
++        });
++    }
++
++    #[test]
++    fn commit_scatter_shared_retirement_is_unique() {
++        let count = AtomicU64::new(10_000);
++        let retired = (0..10_000)
++            .into_par_iter()
++            .map(|_| usize::from(subtract_shared(&count, 1, 9_001).unwrap()))
++            .sum::<usize>();
++        assert_eq!(retired, 1);
++        assert_eq!(count.load(AtomicOrdering::Relaxed), 9_000);
++    }
++
++    #[test]
++    fn commit_scatter_shared_subtraction_checks_full_width_and_underflow() {
++        let count = AtomicU64::new(u64::MAX);
++        assert!(!subtract_shared(&count, u64::MAX - 3, 2).unwrap());
++        assert_eq!(count.load(AtomicOrdering::Relaxed), 3);
++        assert!(subtract_shared(&count, 4, 2).is_err());
++        assert_eq!(count.load(AtomicOrdering::Relaxed), 3);
++        assert!(subtract_shared(&count, 2, 2).unwrap());
++        assert!(!subtract_shared(&count, u64::MAX, 2).unwrap());
++        assert_eq!(count.load(AtomicOrdering::Relaxed), 1);
++        assert_eq!(std::mem::size_of::<PairState<'_>>(), 24);
++    }
++}
+--- a/tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs
++++ b/tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs
+@@ -5,7 +5,13 @@
+ use ahash::AHashMap;
+ use dary_heap::OctonaryHeap;
+ use rayon::prelude::*;
+-use std::{cmp::Ordering, collections::VecDeque};
++use std::{
++    cmp::Ordering,
++    collections::VecDeque,
++    sync::atomic::{AtomicU64, Ordering as AtomicOrdering},
++};
++
++mod commit_scatter;
+ use tk_collections::SortedPositions;
+ use tk_encode::{Result, models::bpe::Pair};
+ 
+@@ -73,8 +79,18 @@
+ }
+ 
+ pub(super) struct PairState<'a> {
+-    pub(super) ledger_count_bits: u64,
++    pub(super) ledger_count_bits: AtomicU64,
+     pub(super) positions: SortedPositions<'a>,
++}
++impl PairState<'_> {
++    #[inline]
++    pub(super) fn count(&self) -> u64 {
++        self.ledger_count_bits.load(AtomicOrdering::Relaxed)
++    }
++    #[inline]
++    pub(super) fn count_mut(&mut self) -> &mut u64 {
++        self.ledger_count_bits.get_mut()
++    }
+ }
+ #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+ pub(super) struct PairPriority {
+@@ -145,6 +161,7 @@
+     removal_reduce: bool,
+     removal_statistics: bool,
+     removal_selective: bool,
++    scatter_commit: bool,
+ }
+ 
+ impl PairShard<'_> {
+@@ -152,20 +169,20 @@
+         if entry {
+             if let std::collections::hash_map::Entry::Occupied(mut item) = self.states.entry(key) {
+                 let state = item.get_mut();
+-                state.ledger_count_bits = state
+-                    .ledger_count_bits
++                *state.count_mut() = state
++                    .count()
+                     .checked_sub(amount)
+                     .ok_or("BPE fresh removal exceeds the current count")?;
+-                if state.ledger_count_bits < floor {
++                if state.count() < floor {
+                     item.remove();
+                 }
+             }
+         } else if let Some(state) = self.states.get_mut(&key) {
+-            state.ledger_count_bits = state
+-                .ledger_count_bits
++            *state.count_mut() = state
++                .count()
+                 .checked_sub(amount)
+                 .ok_or("BPE fresh removal exceeds the current count")?;
+-            if state.ledger_count_bits < floor {
++            if state.count() < floor {
+                 self.states.remove(&key);
+             }
+         }
+@@ -296,7 +313,7 @@
+                 self.priorities.pop();
+                 continue;
+             };
+-            let count = state.ledger_count_bits;
++            let count = state.count();
+             if count < floor {
+                 self.states.remove(&top.key);
+                 self.priorities.pop();
+@@ -360,19 +377,19 @@
+                         .iter()
+                         .map(|(&key, state)| PairPriority {
+                             key,
+-                            priority_count: state.ledger_count_bits,
++                            priority_count: state.count(),
+                         })
+                         .collect()
+                 } else {
+                     ledger =
+                         AHashMap::with_capacity_and_hasher(states.len(), states.hasher().clone());
+                     for (key, state) in std::mem::take(&mut states) {
+-                        ledger.insert(key, state.ledger_count_bits);
+-                        if state.ledger_count_bits > 0 {
++                        ledger.insert(key, state.count());
++                        if state.count() > 0 {
+                             candidates.push(MergeCandidate {
+                                 priority: PairPriority {
+                                     key,
+-                                    priority_count: state.ledger_count_bits,
++                                    priority_count: state.count(),
+                                 },
+                                 positions: state.positions,
+                             });
+@@ -414,6 +431,7 @@
+             removal_reduce: false,
+             removal_statistics: false,
+             removal_selective: false,
++            scatter_commit: false,
+         })
+     }
+     pub(super) fn configure_commit(
+@@ -425,6 +443,9 @@
+         self.fast_shard_router = fast_router;
+         self.group_births_in_commit = group_births;
+         self.direct_cold_encoding = direct_cold;
++    }
++    pub(super) fn configure_scatter(&mut self, enabled: bool) {
++        self.scatter_commit = enabled;
+     }
+     pub(super) fn configure_removals(
+         &mut self,
+@@ -556,6 +577,16 @@
+         use tk_collections::IdAccumulator;
+         let policy = self.policy;
+         let floor = self.minimum_frequency.max(1);
++        if self.scatter_commit && policy == IdentityPolicy::Fresh && execution.workers() > 1 {
++            return self.commit_scatter(
++                events,
++                identities,
++                execution,
++                arena,
++                births,
++                diagnostic_round,
++            );
++        }
+         let router = ShardRouter::new(self.shards.len(), self.fast_shard_router);
+         let group_in_owner = self.group_births_in_commit;
+         let direct_cold = self.direct_cold_encoding && policy == IdentityPolicy::Fresh;
+@@ -681,7 +712,7 @@
+                         }
+                         let priority = PairPriority {
+                             key,
+-                            priority_count: state.ledger_count_bits,
++                            priority_count: state.count(),
+                         };
+                         debug_assert!(
+                             !shard.states.contains_key(&key),
+@@ -857,7 +888,7 @@
+                                 shard.states.insert(
+                                     key,
+                                     PairState {
+-                                        ledger_count_bits: count,
++                                        ledger_count_bits: (count).into(),
+                                         positions,
+                                     },
+                                 );
+@@ -921,7 +952,7 @@
+             shards[owner].insert(
+                 key,
+                 PairState {
+-                    ledger_count_bits: count,
++                    ledger_count_bits: (count).into(),
+                     positions: SortedPositions::from_sorted(&[position], &mut scratch, &lease)
+                         .unwrap(),
+                 },
+@@ -977,7 +1008,7 @@
+                     for (pair, count) in [((2, 3), 3), ((2, 7), 6)] {
+                         assert_eq!(
+                             index.shards[shard_for(pair_key(pair), 2)].states[&pair_key(pair)]
+-                                .ledger_count_bits,
++                                .count(),
+                             count
+                         );
+                     }
+--- a/tokenizers/tk-train/src/trainers/bpe/engine/tests.rs
++++ b/tokenizers/tk-train/src/trainers/bpe/engine/tests.rs
+@@ -370,7 +370,7 @@
+             ] {
+                 let key = pair_index::pair_key(pair);
+                 let state = &initial.shards[pair_index::shard_for(key, workers)][&key];
+-                assert_eq!(state.ledger_count_bits, 7);
++                assert_eq!(state.count(), 7);
+                 assert_eq!(state.positions.iter().collect::<Vec<_>>(), [position]);
+             }
+         });
+@@ -430,7 +430,7 @@
+                 assert_eq!(initial.weighted_mass, 30);
+                 let key = pair_index::pair_key((1, 2));
+                 let state = &initial.shards[pair_index::shard_for(key, workers)][&key];
+-                assert_eq!(state.ledger_count_bits, 19);
++                assert_eq!(state.count(), 19);
+                 assert_eq!(
+                     state.positions.iter().collect::<Vec<_>>(),
+                     if floor == 0 {
+@@ -450,7 +450,7 @@
+                 if floor == 0 {
+                     let key = pair_index::pair_key((u32::MAX - 1, u32::MAX - 2));
+                     let state = &initial.shards[pair_index::shard_for(key, workers)][&key];
+-                    assert_eq!(state.ledger_count_bits, 0);
++                    assert_eq!(state.count(), 0);
+                     assert_eq!(state.positions.iter().collect::<Vec<_>>(), [13]);
+                 }
+             }
+@@ -975,13 +975,7 @@
+             .shards
+             .into_iter()
+             .flat_map(|shard| shard.into_iter())
+-            .map(|(key, state)| {
+-                (
+-                    key,
+-                    state.ledger_count_bits,
+-                    state.positions.iter().collect(),
+-                )
+-            })
++            .map(|(key, state)| (key, state.count(), state.positions.iter().collect()))
+             .collect();
+         entries.sort_unstable_by_key(|entry| entry.0);
+         InitialSnapshot {
+@@ -1182,6 +1176,7 @@
+                                 single_producer_fast,
+                                 direct_encoding,
+                                 group_births_in_commit: false,
++                                commit_scatter: false,
+                                 direct_cold_encoding: false,
+                                 diagnostics: true,
+                                 fast_shard_router: false,
+@@ -1294,6 +1289,7 @@
+                             single_producer_fast: true,
+                             direct_encoding,
+                             group_births_in_commit: false,
++                            commit_scatter: false,
+                             direct_cold_encoding: false,
+                             layout: PairLayout::Grid,
+                             diagnostics: true,
+@@ -1316,10 +1312,7 @@
+                             for (key, state) in &births {
+                                 assert!(
+                                     actual
+-                                        .insert(
+-                                            *key,
+-                                            (state.ledger_count_bits, state.positions.len())
+-                                        )
++                                        .insert(*key, (state.count(), state.positions.len()))
+                                         .is_none()
+                                 );
+                             }
+@@ -1442,6 +1435,7 @@
+                     single_producer_fast: true,
+                     direct_encoding: true,
+                     group_births_in_commit: false,
++                    commit_scatter: false,
+                     direct_cold_encoding: false,
+                     diagnostics: true,
+                     fast_shard_router: false,
+@@ -1511,6 +1505,7 @@
+                             single_producer_fast: true,
+                             direct_encoding: true,
+                             group_births_in_commit,
++                            commit_scatter: false,
+                             direct_cold_encoding,
+                             layout: PairLayout::Whole,
+                             diagnostics: false,
+@@ -1544,6 +1539,84 @@
+ }
+ 
+ #[test]
++fn commit_scatter_preserves_trace_floor_affixes_and_active_reuse() {
++    use merge::{MergeOptions, PairLayout};
++    let fixtures = [
++        counts(&[
++            ("ab", 1000),
++            ("cd", 900),
++            ("abcd", 20),
++            ("cdab", 15),
++            ("ababcdcd", 9),
++        ]),
++        counts(&[
++            ("aaaaaa", 23),
++            ("aaabaaa", 17),
++            ("abaaab", 11),
++            ("cdabcd", 7),
++        ]),
++        counts(&[
++            ("猫猫猫鱼", 19),
++            ("猫鱼猫鱼", 13),
++            ("abcdef", 7),
++            ("abcabc", 3),
++        ]),
++        counts(&[("baaba", 1), ("xyxyxy", 100)]),
++    ];
++    for words in &fixtures {
++        for flavor in 0..3 {
++            for floor in [1, 3, 100] {
++                let mut builder = BpeTrainer::builder()
++                    .vocab_size(48)
++                    .min_frequency(floor)
++                    .show_progress(false);
++                if flavor == 1 {
++                    builder = builder
++                        .continuing_subword_prefix("##".into())
++                        .end_of_word_suffix("</w>".into())
++                        .max_token_length(Some(9));
++                } else if flavor == 2 {
++                    builder = builder.end_of_word_suffix("a".into());
++                }
++                let trainer = builder.build();
++                let mut expected_trace = Vec::new();
++                let expected = trainer
++                    .do_train_observed(words, |pair, count, id| {
++                        expected_trace.push((pair, count, id));
++                    })
++                    .unwrap();
++                for workers in [1, 4] {
++                    for layout in [PairLayout::Grid, PairLayout::Whole] {
++                        let mut trace = Vec::new();
++                        let actual = train_with_merge_options(
++                            &trainer,
++                            words,
++                            workers,
++                            MergeOptions {
++                                single_producer_fast: true,
++                                direct_encoding: true,
++                                commit_scatter: true,
++                                group_births_in_commit: true,
++                                fast_shard_router: true,
++                                layout,
++                                ..Default::default()
++                            },
++                            Some(&mut |pair, count, id| trace.push((pair, count, id))),
++                        )
++                        .unwrap();
++                        assert_eq!(
++                            trace, expected_trace,
++                            "workers={workers} layout={layout:?} flavor={flavor} floor={floor}"
++                        );
++                        assert_eq!(actual, expected);
++                    }
++                }
++            }
++        }
++    }
++}
++
++#[test]
+ fn owner_router_balance_preserves_trace_and_reuse() {
+     use merge::{MergeOptions, PairLayout};
+     for affixes in [false, true] {
+@@ -1578,6 +1651,7 @@
+                         single_producer_fast: true,
+                         direct_encoding: true,
+                         group_births_in_commit: true,
++                        commit_scatter: false,
+                         layout: PairLayout::Whole,
+                         fast_shard_router,
+                         logical_owners,
+@@ -1641,6 +1715,7 @@
+                         single_producer_fast: true,
+                         direct_encoding: true,
+                         group_births_in_commit: true,
++                        commit_scatter: false,
+                         fast_shard_router: true,
+                         layout: PairLayout::Whole,
+                         removal_entry,
+@@ -1704,6 +1779,7 @@
+                     single_producer_fast: true,
+                     direct_encoding: true,
+                     group_births_in_commit: true,
++                    commit_scatter: false,
+                     fast_shard_router: true,
+                     layout: PairLayout::Whole,
+                     removal_reduce: true,

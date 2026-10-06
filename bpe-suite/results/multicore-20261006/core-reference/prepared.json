@@ -1,0 +1,60 @@
+{
+  "state": "frozen matched weighted-token-word core timing v1",
+  "created_unix": 1791197820.4277744,
+  "base": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-rust-port/experiment",
+  "root_writes_all_code": true,
+  "source_sha256": {
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/execution.rs": "f6fb5cf7b85733f0cde9c96badaa7a0b029d4730400883b80e459af07b5b4c13",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs": "aa8581fd4b854ab76b0957b4bcada7f25640271e02677ee651d60d9f622f824b",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs": "a0b5ccb69580a7d52d1c8e2ebbefe187e4e60b0210d838e157154375ff37265d",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/single_producer_diagnostics.rs": "a64c2aa3ca585be24cbdce1323de035142b651226e0d054de7657d51e88f1df8",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/aa_parity.rs": "40664f009adb4553529d98949dbcb3131495dc40d88b396c1e164c91ffed9c63",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/corpus.rs": "8da1e454ca8b844a6475ca02d8084c0fd29acccd33672bbc143860ad23d96ed6",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/tests.rs": "c3d2da1581289998e6fa8199a784b6633b5237e3264c1d08191cd2bef6070fba",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs": "5aaf56f1aa7dd4e005276f456929c080239c97baffc1cc2da7439cfda17ebbec",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/mod.rs": "9b5b075b15a8fcd699eeafe5efd505bb06f84f40c8b44b6bc6b180c682ec7918",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/yttm.rs": "d0987d5f975a791a4d831627df387bb461bab31c12696281b6abfdd2b7e8c69b",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/merge.rs": "b3f94754f41873cf044696b527f0b05cd2973513bb0b0101471bf58d378f0ad6",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/yttm/local.rs": "6ccaf2266e6b75716127c729946e70a4dd52788cbdfdc92b7540821d798e13c7"
+  },
+  "cpp_source_sha256": {
+    "cpp/bpe.h": "ea773fa3c97b06350e73f2d2f3dd20d9a0c581dea6e43ff6a7128d576f409252",
+    "cpp/utils.h": "ec972df7e2cb75cf373a4232464d94a993ad7ba0018ada6ebdb953a5d9964b6e",
+    "cpp/utils.cpp": "414b2c13e29d146967e1575e345a23b44e6b03c7e716eb55bba2f6b0b92ed502",
+    "cpp/utf8.h": "d05fbb09aedb43140d08281297a2e55bafc8402542b019f83143c92024df1735",
+    "cpp/bpe.cpp": "a2a37eb2efa1634c40de8b76195ebae5b4adbfda133da1538b8d0afc58370c66",
+    "cpp/yttm.pyx": "28e8d4ef92c9df46f6bed7888ed2ad7fbc91788283f5fa4e161fc0bb7f0e7235",
+    "cpp/utf8.cpp": "9933d3854947a229c4d1fbbf0da5acf348b475cb9c444a969bfa25d5be9ff6c2",
+    "cpp/third_party/LICENSE": "8d8291caf1cee26d23acf3eb67c9f9a2d58f1c681b16a4fbe8cbfb9e3c0b5a9b",
+    "cpp/third_party/flat_hash_map.h": "04def89871f6e4050bc62d4d16d00384418c9004e451c2bfa5e5c1ced257295d",
+    "cpp-runner.cpp": "7e200cc02b0ba822969b3f8eba805befb8e0f3be863019c857d098563ed87472"
+  },
+  "cpp_base_phase_bpe_sha256": "cf4a6bab52d0e483fa90c035e469e817eab0c3df62252ad3d90522d3140b229a",
+  "cpp_official_commit": "f4162d846057a3118222ca04a01b84297eb8a8db",
+  "cpp_official_bpe_sha256": "bcac09433c015216254c8f52740607de2272d0cb59cf67555c3452822647ce0f",
+  "cpp_flags": [
+    "-std=c++11",
+    "-pthread",
+    "-O3",
+    "-march=native",
+    "-include",
+    "cstdint",
+    "-DYTTM_BENCH_PHASES"
+  ],
+  "rust_flags": "same pinned native fatLTO one-CGU helper as frozen YTTM port",
+  "metric": "core_seconds",
+  "start": "weighted token-ID words complete, before initial pair nodes/postings/counts build",
+  "end": "all worker tasks and cleanup complete, in-memory model result ready, before model serialization",
+  "excluded": [
+    "raw-file read",
+    "pretokenization",
+    "word-frequency statistics",
+    "initial token-ID resolution",
+    "model serialization"
+  ],
+  "core_env": "TK_CORE_PHASES=1 (Rust), compile-time YTTM_BENCH_PHASES (C++)",
+  "changes": "phase timestamps and prints only; all existing algorithms and original C++ queue unchanged",
+  "cpp_model_oracle": "each workers model compared to same-worker pinned official model; EN512 expected42097rules",
+  "rust_model_oracle": "original canonical EN512 SHA f47763f62bb70d8a06fe4e80b408574f854057cbca478ba54272b0a149daffe9; 42102merges/vocab50000",
+  "cross_engine_limit": "official C++ tie/AA/special-token semantics differ from canonical Full; no claim of identical cross-engine model"
+}

@@ -1,0 +1,181 @@
+{
+  "protocol": "Full cached-core same-binary storage mode screen",
+  "binary": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/full-position-storage/experiment/binaries/full-position-storage",
+  "binary_sha256": "18dc23edceb18ee485514e182e6537d6e3d087c9699136aa4d98277f0c41e1e5",
+  "source_sha256": {
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/aa_parity.rs": "40664f009adb4553529d98949dbcb3131495dc40d88b396c1e164c91ffed9c63",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/birth_ownership.rs": "390f48ae7309b67b98e5abad454a3145f9d1cec16b5d903b7e9add5c20244da8",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/core_budget.rs": "f0258cd698d06964ffdbdb7681dadacc55b9eb27043a4768ffb5e42393b3edd8",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/corpus.rs": "8da1e454ca8b844a6475ca02d8084c0fd29acccd33672bbc143860ad23d96ed6",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/execution.rs": "e465d36c6d7883bf77047dbf4a1d270d7ef508eaca3efb13d0ecf42ddaf0594b",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs": "4f96af9d2b12475812e9d013ff68456b2f828287f5c8748d6447ec16b1345508",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/merge.rs": "107574e2d2f8cdd920a125b633107ae64bcbc294ae7b11824790a3f96c37cb33",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/mod.rs": "70c347ace8d3c084c49d8d5c899c25b11eca44829f34d856103071adb00467b0",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs": "d20ae5d65ec0780f3a2e2a451ea50b1d6ddb1c4a23111bd0fc38ae9cd40e4def",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/ready_codec.rs": "579531429173522a5e04278ee3228ed0bdbd0e662d8f6fdd7ccb1e28d68b4728",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/single_producer_diagnostics.rs": "a2ca9b3640efc577bc1f368f3feefe27ff1abf6dfb0f8ecc67541685683ebfd5",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/tests.rs": "9adfec091090f77b8340210c7c64faf0de10f4965b4d61d127c52c07d52052d7",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs": "aa8581fd4b854ab76b0957b4bcada7f25640271e02677ee651d60d9f622f824b",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/yttm/local.rs": "6ccaf2266e6b75716127c729946e70a4dd52788cbdfdc92b7540821d798e13c7",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/yttm.rs": "d0987d5f975a791a4d831627df387bb461bab31c12696281b6abfdd2b7e8c69b",
+    "sources/full/tokenizers/tk-collections/src/sorted_positions.rs": "7c1d43b3c4c5f67daf3c15a514c20b8e01d021b026f4d08b0629e8a9de1235ec"
+  },
+  "source_tree": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/full-position-storage/experiment/sources/full/tokenizers",
+  "core_metric": "core_seconds from exactly one BPE_CORE_PHASE engine=full record; TK_CORE_BUDGET=0",
+  "other_metric_boundary": "cached_word_counts_exploration; core/train are not raw-feed end-to-end",
+  "resource_limits": {
+    "min_available_gib": 1.0,
+    "max_process_rss_gib": 14,
+    "timeout_seconds": 2700
+  },
+  "cpu_set": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "modes": [
+    "compressed",
+    "cold",
+    "all"
+  ],
+  "workers": [
+    1,
+    6
+  ],
+  "repetitions": 3,
+  "mode_order_by_round": {
+    "1": [
+      "compressed",
+      "cold",
+      "all"
+    ],
+    "2": [
+      "cold",
+      "all",
+      "compressed"
+    ],
+    "3": [
+      "all",
+      "compressed",
+      "cold"
+    ]
+  },
+  "cell_order_by_round": {
+    "1": [
+      [
+        "en512",
+        1
+      ],
+      [
+        "zh256",
+        6
+      ],
+      [
+        "zh256",
+        1
+      ],
+      [
+        "en512",
+        6
+      ]
+    ],
+    "2": [
+      [
+        "en512",
+        6
+      ],
+      [
+        "zh256",
+        1
+      ],
+      [
+        "zh256",
+        6
+      ],
+      [
+        "en512",
+        1
+      ]
+    ],
+    "3": [
+      [
+        "zh256",
+        6
+      ],
+      [
+        "en512",
+        1
+      ],
+      [
+        "en512",
+        6
+      ],
+      [
+        "zh256",
+        1
+      ]
+    ]
+  },
+  "fixed_environment": {
+    "TK_CORE_PHASES": "1",
+    "TK_SINGLE_PRODUCER_FAST": "1",
+    "TK_SINGLE_DIRECT": "1",
+    "TK_PAIR_LAYOUT": "whole",
+    "TK_COMMIT_GROUP_FUSION": "1",
+    "TK_FAST_SHARD_ROUTER": "1",
+    "TK_LOGICAL_OWNERS": "0",
+    "TK_COMMIT_DIRECT_COLD": "0",
+    "TK_REMOVAL_ENTRY": "0",
+    "TK_REMOVAL_REDUCE": "0",
+    "TK_REMOVAL_SELECTIVE": "0",
+    "TK_REMOVAL_STATS": "0",
+    "TK_BATCH_LIMIT": "256",
+    "TK_RAYON_IDLE_SPIN": "4096",
+    "TK_RAYON_IDLE_PAUSE": "1",
+    "TK_SINGLE_DIAG": "0",
+    "TK_SINGLE_DIAG_TIMELINE": "0",
+    "TK_PRODUCER_LOCAL_RUNS": "0",
+    "TK_LOCAL_RUN_GRAIN": "1",
+    "TK_CONTINUOUS_WORD_OWNERS": "0",
+    "TK_CONTINUOUS_DEFER_APPLY": "0",
+    "TK_DYNAMIC_PHASE_QUEUE": "0",
+    "TK_PRODUCER_PUBLISH": "0",
+    "TK_READY_CODEC": "0",
+    "TK_YTTM_RUST": "0",
+    "TK_CORE_BUDGET": "0"
+  },
+  "cases": {
+    "en512": {
+      "input": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/peak512/corpora/en-512m.txt",
+      "input_bytes": 536870756,
+      "input_sha256": "863418014204bc2dbe15cd78bd80853e49493c00444d66b59a98f0b4d84e6a11",
+      "cache": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/owner-single-producer/word-count-cache-v1/en512.json",
+      "cache_sha256": "449b6cb9386a094b9929518e9ce4699cf29291dfc432ae80781214e2e8b29bca",
+      "cache_feed": "cached_word_counts_exploration",
+      "split": "whitespace",
+      "vocab_size": 50000,
+      "min_frequency": 2,
+      "canonical_model": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/full-position-storage/experiment/models/en512.json",
+      "canonical_model_sha256": "f47763f62bb70d8a06fe4e80b408574f854057cbca478ba54272b0a149daffe9"
+    },
+    "zh256": {
+      "input": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/preliminary-suite-v1/corpora/zh-256m.txt",
+      "input_bytes": 268435162,
+      "input_sha256": "61537f422d250f93ed669193faec992a516ce049b41ad33fb02b52064780ed98",
+      "cache": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/owner-single-producer/word-count-cache-v1/zh256.json",
+      "cache_sha256": "7f17064c5297042df790dd2025d8e9b5d026803d1ab8d5eb465ce5c991e2dd47",
+      "cache_feed": "cached_word_counts_exploration",
+      "split": "whitespace",
+      "vocab_size": 100000,
+      "min_frequency": 2,
+      "canonical_model": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/full-position-storage/experiment/models/zh256.json",
+      "canonical_model_sha256": "220bda6ff80b90102b6ad994cdf91f56b47808e437dfedf31de4179e2f4a8fbb"
+    }
+  },
+  "started_unix": 1791213480.061566,
+  "completed_rows": 36,
+  "completed_unix": 1791214343.597298
+}

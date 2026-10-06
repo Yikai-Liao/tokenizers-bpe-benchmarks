@@ -1,0 +1,196 @@
+{
+  "stage": "preliminary",
+  "scope": "completed matrix; code review and formal experiment pending",
+  "protocol": 2,
+  "training_revisions": {
+    "full": "f9ff8b97fb38b248ceb89f6ca807fa09743c585c",
+    "hf": "bbccb0513ff9afda385ca5c85c66eddb1318cfc7",
+    "peer": "6ac0de5359d9e0e1ed0608422575a360ef91b908",
+    "peer_before_arena": "2e22a6860a89817222c30975d0de02ea01caa414"
+  },
+  "common_skeleton": "f9ff8b97fb38b248ceb89f6ca807fa09743c585c",
+  "workers": 4,
+  "rustflags": "-C target-cpu=native",
+  "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+  "machine": {
+    "Architecture": "x86_64",
+    "Model name": "Intel(R) Xeon(R) Gold 6140 CPU @ 2.30GHz",
+    "CPU(s)": "6",
+    "Hypervisor vendor": "KVM"
+  },
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "physical_memory_kib": 16344940,
+  "resource_guards": {
+    "min_available_gib": 1.0,
+    "max_process_rss_gib": 14,
+    "timeout_seconds": 2700
+  },
+  "available_memory_before_matrix_bytes": 14333255680,
+  "other_codex_processes_before_matrix": 0,
+  "build_profile": {
+    "opt_level": 3,
+    "lto": "fat",
+    "codegen_units": 1,
+    "allocation_counters": false
+  },
+  "corpus": {
+    "dataset": "wikimedia/wikipedia",
+    "revision": "b04c8d1ceb2f5cd4588862100d08de323dccfbaa",
+    "snapshot": "20231101",
+    "selection": "ordered normalized paragraphs, 32..8192 bytes per line; no replication",
+    "mixed512": "round-robin whole lines from en, zh, ja, de, approximately 128 MiB per language",
+    "smaller_cases": "whole-line prefixes of the corresponding 512 MiB inputs"
+  },
+  "geometry": {
+    "zh512": {
+      "input_bytes": 536870289,
+      "lines": 1445902,
+      "pretoken_occurrences": 7034641,
+      "unique_words": 4099949,
+      "unique_symbols": 183714421,
+      "initial_edges": 179614472,
+      "actual_vocab": 100000,
+      "actual_merges": 79245
+    },
+    "en512": {
+      "input_bytes": 536870756,
+      "lines": 1685781,
+      "pretoken_occurrences": 85369855,
+      "unique_words": 2788295,
+      "unique_symbols": 24574989,
+      "initial_edges": 21786694,
+      "actual_vocab": 50000,
+      "actual_merges": 42102
+    },
+    "mixed512": {
+      "input_bytes": 536870079,
+      "lines": 1506927,
+      "pretoken_occurrences": 72492276,
+      "unique_words": 7139709,
+      "unique_symbols": 199732159,
+      "initial_edges": 192592450,
+      "actual_vocab": 100000,
+      "actual_merges": 99744
+    },
+    "zh256": {
+      "input_bytes": 268435162,
+      "lines": 666896,
+      "pretoken_occurrences": 3079846,
+      "unique_words": 1961505,
+      "unique_symbols": 92951356,
+      "initial_edges": 90989851,
+      "actual_vocab": 100000,
+      "actual_merges": 82241
+    },
+    "mixed256": {
+      "input_bytes": 268435018,
+      "lines": 734369,
+      "pretoken_occurrences": 35339552,
+      "unique_words": 4129543,
+      "unique_symbols": 110384441,
+      "initial_edges": 106254898,
+      "actual_vocab": 100000,
+      "actual_merges": 99744
+    }
+  },
+  "timed_samples": 120,
+  "paired_blocks": 35,
+  "summary_cells": 24,
+  "paired_comparison_rows": 17,
+  "exact_model_comparison": "vocabulary in token-ID order and merges in rank order; all timed outputs matched",
+  "smoke": {
+    "protocol": 2,
+    "passed": true,
+    "runs": 42
+  },
+  "word_hash_seeds": [
+    11,
+    13,
+    17,
+    19
+  ],
+  "internal_hash_seeds": "native_random",
+  "native_correctness_controls": {
+    "hf_native": {
+      "native_correctness_only": true
+    },
+    "peer_native": {
+      "native_correctness_only": true,
+      "runner_adapter": "older ByteLevel normalizer arity"
+    }
+  },
+  "time_boundary": "public do_train; elapsed also includes common file reading, pretokenization and word aggregation; excludes validation and inference model assembly",
+  "hwm_boundary": "process start through end of do_train, including common word counts; before validation",
+  "sampled_rss_boundary": "whole subprocess, including canonical model output after timing; direct file comparison runs in the parent",
+  "paired_ratio": "other arm / Full in each block; peer_no_word_arena / peer for the supplementary arena control",
+  "statistics": "five observations per cell; median and observed range, without a significance claim",
+  "all_timed_runs_sampled_swap_bytes": 0,
+  "warmup_status_counts": {
+    "ok": 22,
+    "memory_guard": 6,
+    "cancelled_for_comparison_adjustment": 1
+  },
+  "interrupted_timed_blocks": [
+    "primary_zh512/zh512/block-02.interrupted-order-fix; excluded, then rerun in full"
+  ],
+  "comparison_adjustment": {
+    "reason": "HF zh512 and mixed512 reached host reserve even after other Codex sessions and tmpfs research caches were released",
+    "failed_hf512_observed_rss_gib": {
+      "zh512": 12.42965,
+      "mixed512": 12.4253
+    },
+    "swap_bytes_in_failed_hf512_runs": 0,
+    "three_way_cases": [
+      "en512",
+      "zh256",
+      "mixed256"
+    ],
+    "supplementary_full_peer_cases": [
+      "zh512",
+      "mixed512"
+    ],
+    "ablation_case": "zh512",
+    "planned_timed_measurements": 120,
+    "user_accepted_smaller_hf_cases": true,
+    "updated_unix": 1791136736.5664253
+  },
+  "execution_order_adjustment": {
+    "old_group_order": [
+      "primary",
+      "primary_zh512",
+      "primary_zh256",
+      "primary_mixed512",
+      "primary_mixed256",
+      "ablation",
+      "peer_arena"
+    ],
+    "new_group_order": [
+      "primary",
+      "ablation",
+      "primary_zh512",
+      "primary_zh256",
+      "primary_mixed512",
+      "primary_mixed256",
+      "peer_arena"
+    ],
+    "reason": "Deliver core ablations first and alternate two-arm comparisons without reversal cancellation",
+    "completed_groups_before_adjustment": [
+      "primary"
+    ],
+    "completed_blocks_before_adjustment": {
+      "primary_zh512": 1
+    },
+    "cancelled_partial_blocks": {
+      "primary_zh512": 2
+    },
+    "updated_unix": 1791139558.5280144
+  },
+  "model_output_note": "Temporary matching outputs were removed after direct comparison. Canonical case models remain in the local experiment directory."
+}

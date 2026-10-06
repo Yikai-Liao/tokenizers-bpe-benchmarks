@@ -1,0 +1,348 @@
+{
+  "rows": [
+    {
+      "label": "full",
+      "kind": "rust",
+      "workers": 1,
+      "core_seconds": 6.61656842,
+      "train_seconds": 7.044117544,
+      "train_cpu_seconds": 7.030749,
+      "process_cpu_seconds": 8.440024000000001,
+      "hwm_kib": 491684,
+      "core_engine": "full",
+      "binary_sha256": "26cab83bd19ce2b566042fffbf5fab44fbbe9c6522c4820b0e19444313a4f327",
+      "model_gate": "canonical 42102/50000",
+      "feed_mode": "cached_word_counts_exploration",
+      "cpu_affinity": [
+        0
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/w1/full",
+      "gate_pass": true
+    },
+    {
+      "label": "yttmSingle",
+      "kind": "rust",
+      "workers": 1,
+      "core_seconds": 24.250825049,
+      "train_seconds": 24.656477659,
+      "train_cpu_seconds": 24.471467,
+      "process_cpu_seconds": 25.849466,
+      "hwm_kib": 1528380,
+      "core_engine": "yttm",
+      "binary_sha256": "26cab83bd19ce2b566042fffbf5fab44fbbe9c6522c4820b0e19444313a4f327",
+      "model_gate": "canonical 42102/50000",
+      "feed_mode": "cached_word_counts_exploration",
+      "cpu_affinity": [
+        0
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/w1/yttmSingle",
+      "gate_pass": true
+    },
+    {
+      "label": "yttmBatch",
+      "kind": "rust",
+      "workers": 1,
+      "core_seconds": 23.264844351,
+      "train_seconds": 23.684455413,
+      "train_cpu_seconds": 23.665888,
+      "process_cpu_seconds": 25.112804999999998,
+      "hwm_kib": 1530800,
+      "core_engine": "yttm",
+      "binary_sha256": "26cab83bd19ce2b566042fffbf5fab44fbbe9c6522c4820b0e19444313a4f327",
+      "model_gate": "canonical 42102/50000",
+      "feed_mode": "cached_word_counts_exploration",
+      "cpu_affinity": [
+        0
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/w1/yttmBatch",
+      "gate_pass": true
+    },
+    {
+      "label": "cppYttm",
+      "kind": "cpp",
+      "workers": 1,
+      "core_seconds": 28.3861,
+      "train_seconds": 69.111493851,
+      "train_cpu_seconds": 68.92999999999999,
+      "process_cpu_seconds": 68.92999999999999,
+      "hwm_kib": 3554480,
+      "core_engine": "cpp",
+      "binary_sha256": "fb0c45cbef6d28d302255fa9597113b8571179f1e2f021195d0f3e17da8ac2bb",
+      "model_gate": "same-worker official C++ oracle: 42,097 ordered rules, character IDs and special IDs equal",
+      "feed_mode": "raw official C++ runner; only core_seconds compared",
+      "cpu_affinity": [
+        0
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/clang-lto-continuation-v1/w1/cppYttm",
+      "gate_pass": true
+    },
+    {
+      "label": "full",
+      "kind": "rust",
+      "workers": 4,
+      "core_seconds": 2.723096404,
+      "train_seconds": 2.973658298,
+      "train_cpu_seconds": 10.100698000000001,
+      "process_cpu_seconds": 11.554095,
+      "hwm_kib": 515156,
+      "core_engine": "full",
+      "binary_sha256": "26cab83bd19ce2b566042fffbf5fab44fbbe9c6522c4820b0e19444313a4f327",
+      "model_gate": "canonical 42102/50000 (saved model had passed suite model equality)",
+      "feed_mode": "cached_word_counts_exploration",
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/clang-lto-continuation-v1/w4/full",
+      "gate_pass": true,
+      "gate_note": "prepared gates pass on saved result; batch field is shared TK_BATCH_LIMIT and was not an engine-specific requirement"
+    },
+    {
+      "label": "yttmSingle",
+      "kind": "rust",
+      "workers": 4,
+      "core_seconds": 10.087496437,
+      "train_seconds": 10.339128512,
+      "train_cpu_seconds": 28.385058,
+      "process_cpu_seconds": 29.797219,
+      "hwm_kib": 1921184,
+      "core_engine": "yttm",
+      "binary_sha256": "26cab83bd19ce2b566042fffbf5fab44fbbe9c6522c4820b0e19444313a4f327",
+      "model_gate": "canonical 42102/50000",
+      "feed_mode": "cached_word_counts_exploration",
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/clang-lto-continuation-v1/w4/yttmSingle",
+      "gate_pass": true
+    },
+    {
+      "label": "yttmBatch",
+      "kind": "rust",
+      "workers": 4,
+      "core_seconds": 8.609338839,
+      "train_seconds": 8.861488516,
+      "train_cpu_seconds": 24.929268999999998,
+      "process_cpu_seconds": 26.304938,
+      "hwm_kib": 1922172,
+      "core_engine": "yttm",
+      "binary_sha256": "26cab83bd19ce2b566042fffbf5fab44fbbe9c6522c4820b0e19444313a4f327",
+      "model_gate": "canonical 42102/50000",
+      "feed_mode": "cached_word_counts_exploration",
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/clang-lto-continuation-v1/w4/yttmBatch",
+      "gate_pass": true
+    },
+    {
+      "label": "cppYttm",
+      "kind": "cpp",
+      "workers": 4,
+      "core_seconds": 14.8652,
+      "train_seconds": 30.132276221,
+      "train_cpu_seconds": 76.08,
+      "process_cpu_seconds": 76.08,
+      "hwm_kib": 4515616,
+      "core_engine": "cpp",
+      "binary_sha256": "fb0c45cbef6d28d302255fa9597113b8571179f1e2f021195d0f3e17da8ac2bb",
+      "model_gate": "same-worker official C++ oracle: 42,097 ordered rules, character IDs and special IDs equal",
+      "feed_mode": "raw official C++ runner; only core_seconds compared",
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/clang-lto-continuation-v1/w4/cppYttm",
+      "gate_pass": true
+    },
+    {
+      "label": "full",
+      "kind": "rust",
+      "workers": 6,
+      "core_seconds": 2.654884734,
+      "train_seconds": 2.876848599,
+      "train_cpu_seconds": 12.426661,
+      "process_cpu_seconds": 13.822985000000001,
+      "hwm_kib": 518300,
+      "core_engine": "full",
+      "binary_sha256": "26cab83bd19ce2b566042fffbf5fab44fbbe9c6522c4820b0e19444313a4f327",
+      "model_gate": "canonical 42102/50000",
+      "feed_mode": "cached_word_counts_exploration",
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/clang-lto-continuation-v1/w6/full",
+      "gate_pass": true
+    },
+    {
+      "label": "yttmSingle",
+      "kind": "rust",
+      "workers": 6,
+      "core_seconds": 9.078867857,
+      "train_seconds": 9.302812385,
+      "train_cpu_seconds": 30.053726,
+      "process_cpu_seconds": 31.502686,
+      "hwm_kib": 1892016,
+      "core_engine": "yttm",
+      "binary_sha256": "26cab83bd19ce2b566042fffbf5fab44fbbe9c6522c4820b0e19444313a4f327",
+      "model_gate": "canonical 42102/50000",
+      "feed_mode": "cached_word_counts_exploration",
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/clang-lto-continuation-v1/w6/yttmSingle",
+      "gate_pass": true
+    },
+    {
+      "label": "yttmBatch",
+      "kind": "rust",
+      "workers": 6,
+      "core_seconds": 7.569664522,
+      "train_seconds": 7.795735411,
+      "train_cpu_seconds": 26.421295999999998,
+      "process_cpu_seconds": 27.793723,
+      "hwm_kib": 1891988,
+      "core_engine": "yttm",
+      "binary_sha256": "26cab83bd19ce2b566042fffbf5fab44fbbe9c6522c4820b0e19444313a4f327",
+      "model_gate": "canonical 42102/50000",
+      "feed_mode": "cached_word_counts_exploration",
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/clang-lto-continuation-v1/w6/yttmBatch",
+      "gate_pass": true
+    },
+    {
+      "label": "cppYttm",
+      "kind": "cpp",
+      "workers": 6,
+      "core_seconds": 10.7268,
+      "train_seconds": 22.581575372,
+      "train_cpu_seconds": 75.27,
+      "process_cpu_seconds": 75.27,
+      "hwm_kib": 4617588,
+      "core_engine": "cpp",
+      "binary_sha256": "fb0c45cbef6d28d302255fa9597113b8571179f1e2f021195d0f3e17da8ac2bb",
+      "model_gate": "same-worker official C++ oracle: 42,097 ordered rules, character IDs and special IDs equal",
+      "feed_mode": "raw official C++ runner; only core_seconds compared",
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "artifact": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/clang-lto-continuation-v1/w6/cppYttm",
+      "gate_pass": true
+    }
+  ],
+  "complete": true,
+  "continuation": "clang-lto-continuation-v1",
+  "first_failure_preserved": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/clang-lto-continuation-v1/continuation.json",
+  "original_partial_preserved": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/yttm-core-boundary/matched-core-screen-v1/results.partial.json",
+  "harness_assertion_correction": "prepared gates pass on saved result; batch field is shared TK_BATCH_LIMIT and was not an engine-specific requirement",
+  "source_hashes_after": {
+    "rust": {
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/execution.rs": "f6fb5cf7b85733f0cde9c96badaa7a0b029d4730400883b80e459af07b5b4c13",
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs": "aa8581fd4b854ab76b0957b4bcada7f25640271e02677ee651d60d9f622f824b",
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs": "a0b5ccb69580a7d52d1c8e2ebbefe187e4e60b0210d838e157154375ff37265d",
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/single_producer_diagnostics.rs": "a64c2aa3ca585be24cbdce1323de035142b651226e0d054de7657d51e88f1df8",
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/aa_parity.rs": "40664f009adb4553529d98949dbcb3131495dc40d88b396c1e164c91ffed9c63",
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/corpus.rs": "8da1e454ca8b844a6475ca02d8084c0fd29acccd33672bbc143860ad23d96ed6",
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/tests.rs": "c3d2da1581289998e6fa8199a784b6633b5237e3264c1d08191cd2bef6070fba",
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs": "5aaf56f1aa7dd4e005276f456929c080239c97baffc1cc2da7439cfda17ebbec",
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/mod.rs": "9b5b075b15a8fcd699eeafe5efd505bb06f84f40c8b44b6bc6b180c682ec7918",
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/yttm.rs": "d0987d5f975a791a4d831627df387bb461bab31c12696281b6abfdd2b7e8c69b",
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/merge.rs": "b3f94754f41873cf044696b527f0b05cd2973513bb0b0101471bf58d378f0ad6",
+      "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/yttm/local.rs": "6ccaf2266e6b75716127c729946e70a4dd52788cbdfdc92b7540821d798e13c7"
+    },
+    "cpp": {
+      "cpp/bpe.h": "ea773fa3c97b06350e73f2d2f3dd20d9a0c581dea6e43ff6a7128d576f409252",
+      "cpp/utils.h": "ec972df7e2cb75cf373a4232464d94a993ad7ba0018ada6ebdb953a5d9964b6e",
+      "cpp/utils.cpp": "414b2c13e29d146967e1575e345a23b44e6b03c7e716eb55bba2f6b0b92ed502",
+      "cpp/utf8.h": "d05fbb09aedb43140d08281297a2e55bafc8402542b019f83143c92024df1735",
+      "cpp/bpe.cpp": "a2a37eb2efa1634c40de8b76195ebae5b4adbfda133da1538b8d0afc58370c66",
+      "cpp/yttm.pyx": "28e8d4ef92c9df46f6bed7888ed2ad7fbc91788283f5fa4e161fc0bb7f0e7235",
+      "cpp/utf8.cpp": "9933d3854947a229c4d1fbbf0da5acf348b475cb9c444a969bfa25d5be9ff6c2",
+      "cpp/third_party/LICENSE": "8d8291caf1cee26d23acf3eb67c9f9a2d58f1c681b16a4fbe8cbfb9e3c0b5a9b",
+      "cpp/third_party/flat_hash_map.h": "04def89871f6e4050bc62d4d16d00384418c9004e451c2bfa5e5c1ced257295d",
+      "cpp-runner.cpp": "7e200cc02b0ba822969b3f8eba805befb8e0f3be863019c857d098563ed87472"
+    }
+  },
+  "binary_sha256": {
+    "rust": "26cab83bd19ce2b566042fffbf5fab44fbbe9c6522c4820b0e19444313a4f327",
+    "cpp_clang_lto": "fb0c45cbef6d28d302255fa9597113b8571179f1e2f021195d0f3e17da8ac2bb",
+    "official_cpp_oracle": "bd71b399ec437e4dcc41d70078fdc44e59d6041c4a39439d545f70f8d4249220"
+  },
+  "own_core_speedups": {
+    "full": {
+      "T1_core_seconds": 6.61656842,
+      "S4_core": 2.4297958787947485,
+      "S6_core": 2.492224364871428,
+      "T4_core_seconds": 2.723096404,
+      "T6_core_seconds": 2.654884734
+    },
+    "yttmSingle": {
+      "T1_core_seconds": 24.250825049,
+      "S4_core": 2.4040479419700436,
+      "S6_core": 2.671128760873207,
+      "T4_core_seconds": 10.087496437,
+      "T6_core_seconds": 9.078867857
+    },
+    "yttmBatch": {
+      "T1_core_seconds": 23.264844351,
+      "S4_core": 2.702280022434601,
+      "S6_core": 3.0734313632241577,
+      "T4_core_seconds": 8.609338839,
+      "T6_core_seconds": 7.569664522
+    },
+    "cppYttm": {
+      "T1_core_seconds": 28.3861,
+      "S4_core": 1.9095673115733391,
+      "S6_core": 2.646278480068613,
+      "T4_core_seconds": 14.8652,
+      "T6_core_seconds": 10.7268
+    }
+  },
+  "measurement_scope": {
+    "metric": "core_seconds only; own one-worker baseline per engine",
+    "boundary": "weighted token-ID words complete, before initial pair nodes/postings/counts build through all worker tasks and cleanup complete, in-memory model result ready, before model serialization",
+    "rust_feed": "cached_word_counts_exploration; cached preprocessing excluded from core metric",
+    "cpp_feed": "raw official input path runs as part of the harness, but raw-feed/API total is not included in the core-to-core comparison",
+    "cpp_comparator": "Clang 19.1.7 full LTO + LLD 19.1.7; binary provenance in validation/clang-lto-provenance.json",
+    "first_attempt": "preserved missing /usr/bin/time dependency failure occurred before any g++ C++ benchmark process started; original Rust w1 rows unchanged",
+    "harness_correction": "saved Rust Full w4 result passed all prepared gates; discarded an added, unrequested check equating shared batch limit with engine mode; no timing rerun"
+  },
+  "gate_audit": {
+    "all_12_rows_pass": true,
+    "cpp_same_worker_oracle_pass": true,
+    "rust_canonical_model_pass": true,
+    "source_hashes_before_after_match": true
+  }
+}

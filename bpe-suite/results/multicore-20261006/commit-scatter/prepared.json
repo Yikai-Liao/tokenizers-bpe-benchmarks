@@ -1,0 +1,72 @@
+{
+  "state": "completed; not adopted; prior Full configuration retained",
+  "created_unix": 1791215560.9418778,
+  "base": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/commit-removal-selective/experiment",
+  "env": "TK_COMMIT_SCATTER=0|1",
+  "mechanism": "Frozen Fresh state maps; atomic checked count decrements and complete cold-bucket builds as stealable tasks; join before owner erasure/insertion/priority publication",
+  "fallbacks": [
+    "one worker uses original exclusive path",
+    "Reusable uses original signed ledger and cohort path"
+  ],
+  "scope": "one structural candidate only; keep G128, full producer fast path, packed corpus barriers and canonical output",
+  "primary_mechanism_reference": "https://github.com/jshun/ligra/blob/master/apps/KCore.C",
+  "source_sha256": {
+    "sources/full/tokenizers/tk-collections/src/sorted_positions.rs": "29544e778492faaa8b8c33c2b477592e6dab6abb2bd4845ef4ae8636093a3ddc",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/aa_parity.rs": "40664f009adb4553529d98949dbcb3131495dc40d88b396c1e164c91ffed9c63",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/corpus.rs": "485f6159c59b4aed3d1beb3ccd659e72963307ae7995397ad40e85857b937513",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/execution.rs": "f6fb5cf7b85733f0cde9c96badaa7a0b029d4730400883b80e459af07b5b4c13",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs": "b024b8b5336e2987c67c68c5aa40029da616c921cf114cf44325add23aca0d98",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/merge.rs": "6800862d4d3c79520efba2a0a06e9e929d7849a652d77217f9aabcf486aa6b00",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/mod.rs": "d3ca9662d21010d3861e2fc4c9116895c199740b6f58333bd755d72ea2bb7d43",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/pair_index/commit_scatter.rs": "eac60d833cb026498ab53a8d31e86d3ae2c33506d9799260c7564dd1d6ab2323",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs": "fe61c83b182fa40381132027eef7bea2549db93387eeb7e20864eef34cb39bb6",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/single_producer_diagnostics.rs": "a64c2aa3ca585be24cbdce1323de035142b651226e0d054de7657d51e88f1df8",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/tests.rs": "4f100a055fac37bca17f0c20318c66d691e414dc4a355f70287b948b10c15f6d",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs": "aa8581fd4b854ab76b0957b4bcada7f25640271e02677ee651d60d9f622f824b"
+  },
+  "vendor_sleep_sha256": "fde17ce666c202001b7e525a5bf4439be5db086be5c605e7e2dc64c955ef8f31",
+  "focused_test_filter": "commit_scatter",
+  "focused_tests_expected": 4,
+  "single_worker": "original algorithm via AtomicU64::get_mut; no atomic RMW or extra phases",
+  "new_costs": [
+    "checked CAS on shared counters",
+    "extra grouping/join and completed-state vectors",
+    "retired position storage kept until readers join"
+  ],
+  "limits": [
+    "single huge bucket/key remains indivisible",
+    "owner publish still serial within each mutable map and priority queue"
+  ],
+  "validation_budget": "canonical gates then up to three w6 pairs per large corpus; same-candidate T1 confirmation only if w6 remains worth retaining; no parameter sweep or second structural candidate",
+  "prior_source_sha256": {
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/aa_parity.rs": "40664f009adb4553529d98949dbcb3131495dc40d88b396c1e164c91ffed9c63",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/corpus.rs": "485f6159c59b4aed3d1beb3ccd659e72963307ae7995397ad40e85857b937513",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/execution.rs": "f6fb5cf7b85733f0cde9c96badaa7a0b029d4730400883b80e459af07b5b4c13",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/initial_pairs.rs": "b024b8b5336e2987c67c68c5aa40029da616c921cf114cf44325add23aca0d98",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/merge.rs": "6800862d4d3c79520efba2a0a06e9e929d7849a652d77217f9aabcf486aa6b00",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/mod.rs": "d3ca9662d21010d3861e2fc4c9116895c199740b6f58333bd755d72ea2bb7d43",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/pair_index/commit_scatter.rs": "40c38606c3e123be35dce3be19209bbcb6923a9eb54f2f572998cd69db515349",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs": "fe61c83b182fa40381132027eef7bea2549db93387eeb7e20864eef34cb39bb6",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/single_producer_diagnostics.rs": "a64c2aa3ca585be24cbdce1323de035142b651226e0d054de7657d51e88f1df8",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/tests.rs": "4f100a055fac37bca17f0c20318c66d691e414dc4a355f70287b948b10c15f6d",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/vocabulary.rs": "aa8581fd4b854ab76b0957b4bcada7f25640271e02677ee651d60d9f622f824b"
+  },
+  "gate_fixture_correction": {
+    "time_unix": 1791216258.8461266,
+    "failure": "synthetic commit test omitted coordinator end_selection; old prefix still certified an erased key",
+    "change": "restore original and scatter speculative prefixes before either commit; production source unchanged",
+    "original_log": "experiment/validation/gates-v1/commit-scatter-tests.first-failure.log"
+  },
+  "completed_unix": 1791217625.4493725,
+  "validation": "experiment/validation/final-gate-summary.json",
+  "decision": {
+    "adopted": false,
+    "retained_arm": "commit-removal-selective",
+    "w6_core_arm_median_change_percent": {
+      "zh256": -4.238718507445904,
+      "en512": 7.266124025383491
+    },
+    "reason": "No stable general improvement across both large workloads; all samples retained",
+    "further_performance_runs": false
+  }
+}

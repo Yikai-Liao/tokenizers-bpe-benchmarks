@@ -1,0 +1,17 @@
+{
+  "base": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/commit-removal-reduce/experiment",
+  "root_writes_all_code": true,
+  "created_unix": 1791187934.7225444,
+  "env": {
+    "TK_REMOVAL_SELECTIVE": "0 aggregate all buckets / 1 skip dense aggregation for one producer chunk",
+    "TK_BATCH_LIMIT": "1 sequential rule execution; 256 original max, changes only Fresh selected rule cap; original conflict and Reusable AA fallback preserved"
+  },
+  "single_worker": "reduction always bypassed because no spatial producers; no T1 work inflation",
+  "source_sha256": {
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/mod.rs": "55fae0241de208c3c32059d68648b2c4346ae636f3c70725a31c286f87db9fba",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/merge.rs": "6b96cefbda07d556d3ff19a7def5e7a10282a83a630a2bfe1957c15c4f12dfcf",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/pair_index.rs": "a0b5ccb69580a7d52d1c8e2ebbefe187e4e60b0210d838e157154375ff37265d",
+    "sources/full/tokenizers/tk-train/src/trainers/bpe/engine/tests.rs": "16a0b386a4738917ec6280f6c88840eb74605d58d379d8dd97623fffe9fa41f1"
+  },
+  "batch_ablation": "same source/binary/corpus/flags, batch1 vs256 own1/6 train times; actual model checked against old canonical, cached feed is exploration only"
+}

@@ -1,0 +1,31 @@
+{
+  "order": [
+    "w1-batch256",
+    "w6-batch256",
+    "w1-batch1",
+    "w6-batch1"
+  ],
+  "case": "en512",
+  "binary_sha256": "c871915ecf70dcefad021733008c6e6f48d1354509ae032b02f0ce4e7aff9b09",
+  "cache": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/owner-single-producer/word-count-cache-v1/en512.json",
+  "cache_sha256": "449b6cb9386a094b9929518e9ce4699cf29291dfc432ae80781214e2e8b29bca",
+  "canonical_sha256": "f47763f62bb70d8a06fe4e80b408574f854057cbca478ba54272b0a149daffe9",
+  "common_env": {
+    "TK_SINGLE_PRODUCER_FAST": "1",
+    "TK_SINGLE_DIRECT": "1",
+    "TK_PAIR_LAYOUT": "whole",
+    "TK_COMMIT_GROUP_FUSION": "1",
+    "TK_COMMIT_DIRECT_COLD": "0",
+    "TK_FAST_SHARD_ROUTER": "1",
+    "TK_LOGICAL_OWNERS": "0",
+    "TK_SINGLE_DIAG": "0",
+    "TK_REMOVAL_ENTRY": "0",
+    "TK_REMOVAL_REDUCE": "0",
+    "TK_REMOVAL_SELECTIVE": "0",
+    "TK_REMOVAL_STATS": "0",
+    "TK_RAYON_IDLE_SPIN": "4096",
+    "TK_RAYON_IDLE_PAUSE": "1",
+    "TK_WORD_COUNTS_CACHE": "/root/code/tokenizers-build/g128-design-validation/agentic-perf-memory-20261004-wuyaAb/scaling-suite-v1/multicore-analysis-v1/owner-single-producer/word-count-cache-v1/en512.json"
+  },
+  "purpose": "cached-only one-round batch cap ablation with removals off; canonical checked each run"
+}

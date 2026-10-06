@@ -1,0 +1,11 @@
+{
+  "input": "/root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/results/multicore-20261006/delivery-validation/canary/input.txt",
+  "split": "bytelevel_regex",
+  "vocab_size": 750,
+  "min_frequency": 2,
+  "prefix": null,
+  "suffix": null,
+  "max_token_length": null,
+  "workers": 6,
+  "output": "/root/code/tokenizers-workspaces/multicore-best-delivery/benchmarks/bpe-suite/results/multicore-20261006/delivery-validation/canary/runs/w6/model.json"
+}
