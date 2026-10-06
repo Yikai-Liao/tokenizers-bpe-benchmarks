@@ -5,7 +5,7 @@
   "performance_evidence": false,
   "baseline_revision": "bbccb0513ff9afda385ca5c85c66eddb1318cfc7",
   "candidate_revision": "d857cfeecc659449550c6f5ff37438c6d0ebffd5",
-  "unit_tests": 14,
+  "unit_tests": 15,
   "successful_process_runs": 112,
   "experiments": [
     {
@@ -108,7 +108,7 @@
   "artifacts": {
     "smoke-records.tar.gz": "401b1a1181dacca0d4ce493d5b987c649970e07da8e058b7ab1967d8d5ddf973",
     "upstream-affix-diagnostic.tar.gz": "8efc11d0b1298284400fdbf37fc9cfbbedaede4a2fbe5c3df13b65e11301a886",
-    "unit-tests.log": "805882ba44c930e6bc13dea11b63e952b1a0decc83830ff055f868f419768a5a",
+    "unit-tests.log": "1f091758a5a1e855eaceb0e7df8abbc9322a7d97c051a05f02477c9e6ebe6ede",
     "integration.log": "223d496d26b481be49385f7772b9d1b5c5153df9c861b809532606a05fcb6541"
   },
   "preliminary_diagnostic": {

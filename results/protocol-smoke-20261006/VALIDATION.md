@@ -2,7 +2,7 @@
 
 This is correctness and workflow evidence, **not performance evidence**.
 
-- Python supervision/protocol tests: 14 passed, including late mismatch,
+- Python supervision/protocol tests: 15 passed, including late mismatch,
   diagnostic retry, changed input/binary/revision/CPU, invalid output, signal,
   timeout, memory guard and interrupted recovery.
 - Native locked runners: official upstream `bbccb0513ff9afda385ca5c85c66eddb1318cfc7`
@@ -28,6 +28,6 @@ source/lock. The passing smoke uses a single-character affix fixture to verify
 that API path. This diagnostic was not erased, relabeled as a passing experiment,
 or used for performance conclusions; the exact comparator remains unchanged.
 
-Validation used Linux, Python 3.14.7 and rustc 1.99.0 locally. CI independently
-runs Python 3.11 and a pinned-upstream runner smoke. No large corpus performance
+Validation used Linux, Python 3.14.7 and rustc 1.99.0 locally. CI is configured to
+run Python 3.11 and a pinned-upstream runner smoke. No large corpus performance
 matrix was rerun as part of this repository restructuring.

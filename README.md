@@ -187,5 +187,5 @@ unstable IDs even across repeated upstream runs; exact-model experiments retain
 that mismatch and reject performance conclusions instead of relaxing comparison.
 
 [Published protocol validation](results/protocol-smoke-20261006/VALIDATION.md) records
-14 passing supervision tests and 112 passing native two-revision process runs.
+15 passing supervision tests and 112 passing native two-revision process runs.
 The preliminary affix mismatch is retained alongside it.

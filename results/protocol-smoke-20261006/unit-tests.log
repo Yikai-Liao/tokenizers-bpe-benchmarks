@@ -26,6 +26,7 @@ block:0:tiny:1:candidate: ok
 block:1:tiny:1:candidate: ok
 block:1:tiny:1:baseline: ok
 ok
+test_prepared_cache_checks_raw_recipe_and_cached_content (test_bench.BenchTests.test_prepared_cache_checks_raw_recipe_and_cached_content) ... ok
 test_raw_cached_shard_is_verified (test_bench.BenchTests.test_raw_cached_shard_is_verified) ... ok
 test_revision_and_cpu_changes_reject_resume (test_bench.BenchTests.test_revision_and_cpu_changes_reject_resume) ... block:0:tiny:1:baseline: ok
 block:0:tiny:1:candidate: ok
@@ -44,6 +45,6 @@ block:1:tiny:1:baseline: ok
 ok
 
 ----------------------------------------------------------------------
-Ran 14 tests in 1.529s
+Ran 15 tests in 1.467s
 
 OK

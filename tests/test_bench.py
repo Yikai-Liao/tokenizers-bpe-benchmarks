@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 from bench.builds import files
 from bench.config import cpu_config, digest, environment, identity, read, write
-from bench.inputs import shard_cache, text_manifest
+from bench.inputs import prepared, shard_cache, text_manifest
 from bench.reports import report
 from bench.runs import canonical_model, execute, plan, recover, run
 
@@ -67,6 +67,11 @@ if behavior=='timeout': time.sleep(10)
 if behavior=='empty': sys.exit(0)
 if behavior=='invalid': print('{}');sys.exit(0)
 if behavior=='malformed': print('not-json');sys.exit(0)
+if j['mode']=='prepare':
+ json.dump({'schema_version':1,'ordered_words':[['a',1]],'hash_seeds':[11,13,17,19],
+            'pretokenizer':j['pretokenizer']},open(j['output'],'w'))
+ print(json.dumps({k:j[k] for k in ('protocol_version','attempt_id','build_id','input_id','mode')}))
+ sys.exit(0)
 wrong=behavior=='mismatch' and j['attempt_id']!=''
 if behavior=='late-mismatch':
  marker=os.path.join(os.path.dirname(sys.argv[0]),'calls')
@@ -114,6 +119,20 @@ print(json.dumps(v))
         text_manifest(self.input, self.manifest)
         with self.assertRaisesRegex(ValueError, "identity changed"):
             run(self.config, self.out)
+
+    def test_prepared_cache_checks_raw_recipe_and_cached_content(self):
+        target = self.root / "prepared"
+        build = self.cfg["arms"]["baseline"]["build"]
+        prepared(self.input, "whitespace", build, target)
+        prepared(self.input, "whitespace", build, target)
+        self.input.write_text("gamma beta\n")
+        with self.assertRaisesRegex(ValueError, "prepared identity changed"):
+            prepared(self.input, "whitespace", build, target)
+        self.input.write_text("alpha beta\n")
+        cache = target / "words.json"
+        cache.write_text(cache.read_text().replace('"a"', '"b"'))
+        with self.assertRaisesRegex(ValueError, "hash mismatch"):
+            prepared(self.input, "whitespace", build, target)
 
     def test_config_and_binary_changes_reject_resume(self):
         run(self.config, self.out)
