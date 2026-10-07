@@ -18,6 +18,60 @@ AFFIXES = {
 }
 
 
+def _cpu_list(value):
+    cpus = set()
+    for part in value.strip().split(","):
+        bounds = part.split("-")
+        if len(bounds) not in (1, 2) or any(not bound.isdecimal() for bound in bounds):
+            raise ValueError("invalid CPU sibling list")
+        first, last = int(bounds[0]), int(bounds[-1])
+        if first > last:
+            raise ValueError("reversed CPU sibling range")
+        group = set(range(first, last + 1))
+        if cpus.intersection(group):
+            raise ValueError("duplicate CPU in sibling list")
+        cpus.update(group)
+    return tuple(sorted(cpus))
+
+
+def select_cpus(workers, cpu_set=None, *, topology_root=Path("/sys/devices/system/cpu")):
+    if cpu_set is not None:
+        # Explicit allocations may deliberately include SMT siblings. The
+        # canonical schema still checks worker capacity and process affinity.
+        return list(cpu_set)
+    if not workers or any(type(worker) is not int or worker < 1 for worker in workers):
+        raise ValueError("workers must be positive integers")
+    required = max(workers)
+    allowed = sorted(os.sched_getaffinity(0))
+    physical = set()
+    sibling_cores = {}
+    cpus = []
+    for cpu in allowed:
+        topology = Path(topology_root) / f"cpu{cpu}" / "topology"
+        try:
+            siblings = _cpu_list((topology / "thread_siblings_list").read_text(encoding="ascii"))
+            if cpu not in siblings:
+                raise ValueError("CPU missing from its sibling list")
+            for sibling in siblings:
+                if sibling in sibling_cores and sibling_cores[sibling] != siblings:
+                    raise ValueError("inconsistent CPU sibling lists")
+                sibling_cores[sibling] = siblings
+        except (OSError, ValueError) as error:
+            raise ValueError(
+                f"cannot determine physical topology for allowed CPU {cpu}; "
+                "provide an explicit --cpu-set instead of assuming physical-core scaling"
+            ) from error
+        if siblings not in physical:
+            physical.add(siblings)
+            cpus.append(cpu)
+    if len(cpus) < required:
+        raise ValueError(
+            f"requested {required} workers but affinity permits only {len(cpus)} physical cores; "
+            "reduce --workers or provide an explicit --cpu-set for a deliberate SMT allocation"
+        )
+    return cpus[:required]
+
+
 def build_reference(path):
     path = Path(path).resolve()
     if path.is_dir():
@@ -89,11 +143,7 @@ def generate(
     }
     execution = dict(
         workers=list(workers),
-        cpu_set=(
-            list(cpu_set)
-            if cpu_set is not None
-            else sorted(os.sched_getaffinity(0))[: max(workers)]
-        ),
+        cpu_set=select_cpus(workers, cpu_set),
         warmups_per_cell=1,
         paired_blocks=3,
         order="balanced-alternating",
@@ -188,7 +238,10 @@ def main(argv=None):
         default="both",
         help="core-only affix cases at the first vocabulary target (default: combined prefix/suffix)",
     )
-    parser.add_argument("--cpu-set", nargs="+", type=int)
+    parser.add_argument(
+        "--cpu-set", nargs="+", type=int,
+        help="explicit ordered allocation (SMT allowed); default: one available CPU per physical core",
+    )
     parser.add_argument("--timeout-seconds", type=float, default=600)
     parser.add_argument("--min-available-gib", type=float, default=3)
     parser.add_argument("--max-process-rss-gib", type=float, default=12)

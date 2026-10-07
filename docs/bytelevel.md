@@ -34,11 +34,26 @@ plans with the existing benchmark schema. It does not read corpus contents,
 validate build binaries, preprocess input, compile, or run measurements. The
 canonical run validates full input/build content before executing any attempt.
 
-The default CPU set is the first eight CPUs in the process's allowed affinity.
-Use `--cpu-set` to select a consistent explicit set. On a smaller machine, specify
-the available worker counts, for example `--workers 1 4`. Worker counts must fit
-the CPU set. Resource limits can be set with `--timeout-seconds`,
-`--min-available-gib`, and `--max-process-rss-gib`.
+The default CPU set contains one available logical CPU per physical core, up to
+the largest requested worker count. The generator visits the process's allowed
+affinity in ascending CPU order and groups Linux `/sys/devices/system/cpu/`
+topology by its `thread_siblings_list` CPU sets, so SMT siblings share one core
+and repeated core IDs across sockets or dies remain distinct. It validates all
+affinity CPUs and chooses the lowest available sibling for each core. A
+W-worker cell uses
+the first W selected CPUs. The default 1 / 4 / 8 matrix therefore requires eight
+available physical cores. On a smaller machine, reduce the worker counts, for
+example `--workers 1 4`; the generator does not silently reduce them or fill the
+allocation with SMT siblings. Missing or invalid topology also requires an
+explicit allocation rather than an assumed physical-core count.
+
+Use `--cpu-set` to select a consistent explicit set. Its order is retained, and
+it may deliberately include SMT siblings; identify such a comparison as SMT
+scaling when reporting results. The existing schema still requires a unique CPU
+set within process affinity and worker counts that fit it. Changed allocations
+require a new output directory; existing plans and measurements are not rewritten.
+Resource limits can be set with `--timeout-seconds`, `--min-available-gib`, and
+`--max-process-rss-gib`.
 
 `--affixes both` is the default. `--affixes all` adds core prefix-only and suffix-only
 cases alongside the combined case; `--affixes none` emits only the plain matrix.

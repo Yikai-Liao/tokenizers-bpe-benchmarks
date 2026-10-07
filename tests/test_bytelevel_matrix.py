@@ -11,6 +11,85 @@ from bench.config import identity, load, read, write
 from scripts import prepare_bytelevel_matrix as matrix
 
 
+class CpuSelectionTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.topology_root = Path(temporary.name)
+
+    def topology(self, cpus):
+        for cpu, core_key in cpus.items():
+            directory = self.topology_root / f"cpu{cpu}" / "topology"
+            directory.mkdir(parents=True)
+            (directory / "physical_package_id").write_text(str(core_key[0]), encoding="ascii")
+            (directory / "core_id").write_text(str(core_key[-1]), encoding="ascii")
+            siblings = sorted(sibling for sibling, key in cpus.items() if key == core_key)
+            # Exercise both sysfs single IDs and range/list syntax.
+            value = (f"{siblings[0]}-{siblings[-1]}" if len(siblings) > 1
+                     and siblings == list(range(siblings[0], siblings[-1] + 1))
+                     else ",".join(map(str, siblings)))
+            (directory / "thread_siblings_list").write_text(value, encoding="ascii")
+
+    def select(self, workers, allowed):
+        with patch.object(matrix.os, "sched_getaffinity", return_value=set(allowed)) as affinity:
+            result = matrix.select_cpus(workers, topology_root=self.topology_root)
+            affinity.assert_called_once_with(0)
+            return result
+
+    def test_default_uses_one_available_cpu_per_physical_core(self):
+        self.topology({cpu: (0, cpu // 2) for cpu in range(8)})
+        self.assertEqual(self.select([1, 4], range(8)), [0, 2, 4, 6])
+
+    def test_noncontiguous_affinity_can_select_only_available_siblings(self):
+        self.topology({0: (0, 0), 1: (0, 0), 2: (0, 1), 3: (0, 1),
+                       8: (0, 2), 10: (0, 2)})
+        self.assertEqual(self.select([1, 3], [10, 3, 8, 1]), [1, 3, 8])
+
+    def test_same_core_id_on_different_packages_is_distinct(self):
+        self.topology({0: (0, 0), 1: (1, 0), 2: (0, 0), 3: (1, 0),
+                       4: (0, 1), 5: (1, 1)})
+        self.assertEqual(self.select([4], range(6)), [0, 1, 4, 5])
+
+    def test_insufficient_physical_cores_require_explicit_worker_choice(self):
+        self.topology({cpu: (0, cpu // 2) for cpu in range(8)})
+        with self.assertRaisesRegex(ValueError, "only 4 physical cores.*reduce --workers.*--cpu-set"):
+            self.select([1, 4, 8], range(8))
+
+    def test_missing_topology_does_not_assume_physical_cores(self):
+        with self.assertRaisesRegex(ValueError, "physical topology.*CPU 2.*--cpu-set"):
+            self.select([1], [2])
+
+    def test_repeated_core_ids_across_dies_are_distinct(self):
+        self.topology({0: (0, 0, 0), 1: (0, 0, 0),
+                       2: (0, 1, 0), 3: (0, 1, 0)})
+        self.assertEqual(self.select([2], range(4)), [0, 2])
+
+    def test_invalid_or_incomplete_topology_requires_explicit_allocation(self):
+        self.topology({2: (0, 1)})
+        siblings = self.topology_root / "cpu2" / "topology" / "thread_siblings_list"
+        for value in ["unknown", "", "3", "2-1", "-1", "2,,3", "2,2", "2-3,3"]:
+            with self.subTest(value=value):
+                siblings.write_text(value, encoding="ascii")
+                with self.assertRaisesRegex(ValueError, "physical topology.*CPU 2.*--cpu-set"):
+                    self.select([1], [2])
+
+    def test_inconsistent_sibling_lists_require_explicit_allocation(self):
+        self.topology({0: (0, 0), 1: (0, 0)})
+        (self.topology_root / "cpu1" / "topology" / "thread_siblings_list").write_text("1", encoding="ascii")
+        with self.assertRaisesRegex(ValueError, "physical topology.*CPU 1.*--cpu-set"):
+            self.select([1], [0, 1])
+
+    def test_missing_topology_is_checked_beyond_requested_prefix(self):
+        self.topology({0: (0, 0)})
+        with self.assertRaisesRegex(ValueError, "physical topology.*CPU 2.*--cpu-set"):
+            self.select([1], [0, 2])
+
+    def test_explicit_override_keeps_order_and_may_include_smt(self):
+        cpus = [3, 2, 0, 1]
+        with patch.object(matrix.os, "sched_getaffinity", side_effect=AssertionError("explicit set must bypass topology")):
+            self.assertEqual(matrix.select_cpus([1, 4], cpus, topology_root=self.topology_root), cpus)
+
+
 class BytelevelMatrixTests(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()
@@ -111,6 +190,18 @@ class BytelevelMatrixTests(unittest.TestCase):
         self.assertFalse((self.out / "inputs").exists())
         for path, content in originals.items():
             self.assertEqual(path.read_bytes(), content)
+
+    @patch("bench.config.os.sched_getaffinity", return_value=set(range(8)))
+    @patch.object(matrix, "select_cpus", return_value=[0, 2, 4, 6])
+    def test_generated_defaults_use_the_selected_physical_allocation(self, select, _):
+        paths = matrix.generate(
+            self.builds["baseline"], {"candidate": self.builds["candidate"]},
+            self.manifests["zh"], self.manifests["en"], self.out,
+            workers=[1, 4],
+        )
+        select.assert_called_once_with([1, 4], None)
+        for path in paths.values():
+            self.assertEqual(load(path)["execution"]["cpu_set"], [0, 2, 4, 6])
 
     @patch("bench.config.os.sched_getaffinity", return_value=set(range(8)))
     @patch.object(matrix, "prepare_core_input")
