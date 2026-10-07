@@ -134,14 +134,14 @@ def shard_cache(shard, cache):
     return dest
 
 
-def corpus(dataset_manifest, size_mib, out, cache):
+def corpus(dataset_manifest, size_mib, out, cache, allow_short=False):
     import re
 
     import pyarrow.parquet as pq
 
     dataset = read(dataset_manifest)
     if dataset.get("transformation") == "code":
-        return code_corpus(dataset, size_mib, out, cache)
+        return code_corpus(dataset, size_mib, out, cache, allow_short)
     out = Path(out).resolve()
     if size_mib < 1:
         raise ValueError("positive size required")
@@ -153,6 +153,8 @@ def corpus(dataset_manifest, size_mib, out, cache):
         paragraph_bytes=[32, 8192],
         selection="ordered nested prefix",
     )
+    if allow_short:
+        recipe["allow_short"] = True
     if out.exists():
         record = read(out / "manifest.json")
         if record["recipe"] != recipe:
@@ -187,10 +189,12 @@ def corpus(dataset_manifest, size_mib, out, cache):
                     break
             if reached:
                 break
-    if total < limit - 8192:
+    if total == 0 or (total < limit - 8192 and not allow_short):
         raise ValueError("manifest shards cannot supply requested corpus")
     record = text_manifest(out / "text.txt", out / "manifest.json")
     record.update(path="text.txt", recipe=recipe, used_shards=used, lines=lines)
+    record["availability"] = dict(requested_bytes=limit, actual_bytes=total,
+        status="target_reached" if total >= limit - 8192 else "source_exhausted")
     record["input_id"] = identity(
         {k: v for k, v in record.items() if k not in ("path", "input_id")}
     )
@@ -198,7 +202,7 @@ def corpus(dataset_manifest, size_mib, out, cache):
     return record
 
 
-def code_corpus(dataset, size_mib, out, cache):
+def code_corpus(dataset, size_mib, out, cache, allow_short=False):
     """Ordered source files, preserving indentation, punctuation and blank lines."""
     import collections
     import pyarrow.parquet as pq
@@ -210,6 +214,8 @@ def code_corpus(dataset, size_mib, out, cache):
                   normalization="preserve source whitespace; LF separator between files",
                   selection="ordered source files; last file truncated at full LF line",
                   file_bytes=[32, 1 << 20])
+    if allow_short:
+        recipe["allow_short"] = True
     if out.exists():
         record = read(out / "manifest.json")
         if record["recipe"] != recipe:
@@ -250,11 +256,13 @@ def code_corpus(dataset, size_mib, out, cache):
                     break
             if done:
                 break
-    if not done or total < limit - 8192:
+    if total == 0 or ((not done or total < limit - 8192) and not allow_short):
         raise ValueError("manifest shards cannot supply requested code corpus within 8192 bytes")
     record = text_manifest(out / "text.txt", out / "manifest.json")
     record.update(path="text.txt", recipe=recipe, used_shards=used,
                   language_files=dict(counts), language_bytes=dict(byte_counts), license_files=dict(licenses))
+    record["availability"] = dict(requested_bytes=limit, actual_bytes=total,
+        status="target_reached" if total >= limit - 8192 else "source_exhausted")
     record["input_id"] = identity({k: v for k, v in record.items() if k not in ("path", "input_id")})
     write(out / "manifest.json", record)
     return record

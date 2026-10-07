@@ -45,6 +45,11 @@ def main():
     p.add_argument("--size-mib", type=int, required=True)
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--cache", type=Path, default=ROOT / ".bench/shards")
+    p = commands.add_parser("corpora", help="prepare all configured corpora in one command; retain shorter sources")
+    p.add_argument("--config", type=Path, default=ROOT / "datasets/corpora.toml")
+    p.add_argument("--size-mib", type=int, help="override the raw-text target for every corpus")
+    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--cache", type=Path, default=ROOT / ".bench/shards")
     p = commands.add_parser("run")
     p.add_argument("--config", type=Path, required=True)
     p.add_argument("--out", type=Path, required=True)
@@ -113,6 +118,10 @@ def main():
         summary = run(args.config, args.out, args.retry_failed)
         if not summary["performance_conclusion_valid"]:
             raise SystemExit(1)
+    elif args.command == "corpora":
+        from .corpora import prepare
+
+        prepare(args.config, args.out, args.cache, args.size_mib)
     elif args.command == "bundle":
         from .bundle import build_bundle
 

@@ -55,6 +55,161 @@
       "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00009-of-00041.parquet",
       "sha256": "465bd99719b0f2d1974402b7922a7a66399675dc6218a0a40057e0512592c07b",
       "bytes": 227378231
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00010-of-00041.parquet",
+      "sha256": "cd8b4e9ee2506ba5f47d552c56e2a7569402a6814d9fa171c0e995e56859e51b",
+      "bytes": 233604795
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00011-of-00041.parquet",
+      "sha256": "881e8efe6dbaddd34791fdc2158123ed344c436263b9052a0d659418fff89c3a",
+      "bytes": 231748583
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00012-of-00041.parquet",
+      "sha256": "d33835c5e69d5f2464cab1ad70b998ec37e084ea0c0ef9f837fac4a9bb030860",
+      "bytes": 239222511
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00013-of-00041.parquet",
+      "sha256": "9abcab8c808952dc6a4822da1591db51de980a792ed37acd3bd243ebd99d200e",
+      "bytes": 241146961
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00014-of-00041.parquet",
+      "sha256": "7419912e150b17ce395ea039620c21a7e1cb54731c7c2fd2ccbbed56674eeccd",
+      "bytes": 222798405
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00015-of-00041.parquet",
+      "sha256": "1d11ff44d5579dbb9e1976330cdf70ec8b04a7a5dfe4113916b71551fb3cf715",
+      "bytes": 234578705
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00016-of-00041.parquet",
+      "sha256": "e559da89b795e365bc1d1bb87576d1a5478c346cf37eb06159caf9579fe1e54e",
+      "bytes": 503153575
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00017-of-00041.parquet",
+      "sha256": "216cd1e4921cc884ebdaed94b61d3e15560f502f73752f3694ed05e6347a6562",
+      "bytes": 230813705
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00018-of-00041.parquet",
+      "sha256": "64fb53939ab6aae24299cdafa2ce88e115d91930be35609b2dcfc1fc3b9f85eb",
+      "bytes": 231055386
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00019-of-00041.parquet",
+      "sha256": "99c23125b0dd115d68f4a921376880e307bdfcbf3bfd66ae4ed90e853e1dadac",
+      "bytes": 195276969
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00020-of-00041.parquet",
+      "sha256": "79ee06627f4ba2fec056fcd23c077a29238bbcbacc3187e8d1a0b47e663e9c7a",
+      "bytes": 225141733
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00021-of-00041.parquet",
+      "sha256": "e9f695672d916793439d8f48893ecde94c61b0eb038a0034c4e1f1f194205979",
+      "bytes": 216445587
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00022-of-00041.parquet",
+      "sha256": "50ba80435bf2fd0b818533a1ca3118454a3ae275dc2250e0b68dc852dd03f3d2",
+      "bytes": 201995404
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00023-of-00041.parquet",
+      "sha256": "b722b7e4039c65382286b6aa5a35f9a4c5d3536b758c346a94af7a2a692cc6bb",
+      "bytes": 212615391
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00024-of-00041.parquet",
+      "sha256": "eb9818bff41110829f39f8100aee5936cf6088c72a5925c2b08bcd3c37ac0170",
+      "bytes": 220729597
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00025-of-00041.parquet",
+      "sha256": "fed7d34add9b161745dd2677ff3c5f782a471f433bae80c59933e9b68225be93",
+      "bytes": 221292721
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00026-of-00041.parquet",
+      "sha256": "ffffb7d303ef78b47c4c835211b35f6052ffa2d5998e3f65d69bb7fe512ee69c",
+      "bytes": 208188233
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00027-of-00041.parquet",
+      "sha256": "1f0c7bcaf2aeb9765a981c8911b95ab3a9e50456bbad64e50e722a53b8608ccc",
+      "bytes": 213980716
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00028-of-00041.parquet",
+      "sha256": "10589a39188af404fa458da252df7dcf22c6f6395a1501d9243ef56ce4c3c148",
+      "bytes": 188376392
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00029-of-00041.parquet",
+      "sha256": "8f24c4250d69dbee36962d587cac632098635fa78e8705db140cce68928bb9d3",
+      "bytes": 217775627
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00030-of-00041.parquet",
+      "sha256": "1de329963a4aaed0c40d820a564487dc98ef113c8ca6b88b11d495d6a4b98774",
+      "bytes": 203945186
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00031-of-00041.parquet",
+      "sha256": "55e58e33710b9326e1ce3aab1319377afd9ce18df089b08aba2ab9286228666e",
+      "bytes": 215470925
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00032-of-00041.parquet",
+      "sha256": "354c4d35fa089351ed4ec1622fd8930f309dddd3dccbf411e4dd8a52eff638d4",
+      "bytes": 214242576
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00033-of-00041.parquet",
+      "sha256": "a5140a1c80805d599b791fbd668d0f49972eecf0cd2d863cede53013f52e0900",
+      "bytes": 202706223
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00034-of-00041.parquet",
+      "sha256": "298528554e93a3fae9f694087a7376b70be223084b2739ef9488418202a948ab",
+      "bytes": 219010799
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00035-of-00041.parquet",
+      "sha256": "460ab2f5a2da091e310d0f86c461a73f22b189f22ac7115e4708a5da9baf4d1c",
+      "bytes": 224459876
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00036-of-00041.parquet",
+      "sha256": "7385c9f0482cd592578c1c22c5eaaad8bc3013bec4e3bfe394b441dc728f78a9",
+      "bytes": 610276598
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00037-of-00041.parquet",
+      "sha256": "f2f7718efc3165ed599ec0d99fef07b98ec4dd0da902ffc330dd5c75016240cb",
+      "bytes": 674143674
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00038-of-00041.parquet",
+      "sha256": "16ff05ab829cb9c983db14b7f77a677d279f8120571e67b2793735851b71ae89",
+      "bytes": 538231796
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00039-of-00041.parquet",
+      "sha256": "63a0be9b1b458b834428c897e37a6e2643e0c33dd4ac08a994f3b3dbeee124e1",
+      "bytes": 464851854
+    },
+    {
+      "url": "https://huggingface.co/datasets/wikimedia/wikipedia/resolve/b04c8d1ceb2f5cd4588862100d08de323dccfbaa/20231101.en/train-00040-of-00041.parquet",
+      "sha256": "fed6addb1da9364fcf42c6953539eecc21bbc2cf3cd33743684e6872ce6c468a",
+      "bytes": 421630218
     }
   ]
 }

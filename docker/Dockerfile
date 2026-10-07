@@ -35,6 +35,7 @@ RUN pip install --no-cache-dir '.[corpus,plots]'
 COPY --from=builder /opt/builds /opt/builds
 COPY experiments experiments
 COPY datasets datasets
+COPY tests/test_corpora.py tests/test_corpora.py
 ENV MPLBACKEND=Agg PYTHONUNBUFFERED=1
 ENTRYPOINT ["python", "-m", "bench"]
 CMD ["suite", "--config", "/config/suite.toml", "--bundle", "/opt/builds/bundle.json", "--out", "/results"]

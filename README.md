@@ -28,39 +28,37 @@ docker run --rm --entrypoint cat "$IMAGE" \
 docker run --rm \
   --mount type=bind,src="$PWD/data",dst=/data \
   --mount type=bind,src="$PWD/cache",dst=/cache \
-  "$IMAGE" corpus --dataset /opt/benchmark/datasets/wikipedia-en.json \
-  --size-mib 513 --out /data/en --cache /cache
-docker run --rm \
-  --mount type=bind,src="$PWD/data",dst=/data \
-  --mount type=bind,src="$PWD/cache",dst=/cache \
-  "$IMAGE" corpus --dataset /opt/benchmark/datasets/wikipedia-zh.json \
-  --size-mib 513 --out /data/zh --cache /cache
-docker run --rm \
-  --mount type=bind,src="$PWD/data",dst=/data \
-  --mount type=bind,src="$PWD/cache",dst=/cache \
-  "$IMAGE" corpus --dataset /opt/benchmark/datasets/github-code-clean.json \
-  --size-mib 513 --out /data/code --cache /cache
-ln -s en/text.txt data/en.txt
-ln -s zh/text.txt data/zh.txt
-ln -s code/text.txt data/code.txt
+  "$IMAGE" corpora --out /data --cache /cache --size-mib 32769
 ```
 
 Preparation commands have network access and save corpora/cache onto the host.
 The measurement command below disables networking and never downloads corpora.
-Downloads verify pinned shard hashes. The extra MiB lets the harness select a
-512 MiB prefix ending at a complete line. English uses Wikipedia; code preserves
+This single command prepares English, Chinese and Code and creates the three
+relative links used by the suite. `--size-mib 32769` targets **up to 32 GiB + 1 MiB
+of UTF-8 text per corpus**, after decompression/filtering, rather than compressed
+download bytes. It matches the example's 32 GiB maximum growth input with a
+complete-line margin. Only required pinned shards download; source exhaustion
+keeps a smaller usable corpus and records `source_exhausted` in
+`data/corpora.json`. The 16 GiB RSS target is observed during training, not inferred
+from text bytes, so even 32 GiB of text may end a curve below that target.
+
+Use `--size-mib 513` for a quick 512 MiB matrix, or a smaller value for VPS checks.
+Three full 32 GiB corpora can occupy about 96 GiB before download cache and nested
+benchmark prefixes. Downloads verify pinned shard hashes. English uses Wikipedia; code preserves
 indentation and selects the configured language extensions. Chinese uses the
 same file for HF `Whitespace` (including punctuation splitting) and ByteLevel.
 To prepare on a different machine from the rented server, copy `data/` and
 `config/` with `rsync -a`, which preserves the relative links.
 
-For a longer memory curve, prepare more **distinct** text into a new directory
-and point the appropriate link at it. For example, request `--size-mib 2048
---out data/en-large` and use `ln -sfn en-large/text.txt data/en.txt`. The pinned
-dataset must contain enough eligible text; extend its pinned shard manifest or
-provide your own larger UTF-8 file if it does not. A 513 MiB input supplies the
-matrix and only the initial growth point. The container retains partial curves
-when a corpus runs out, so reaching the 16 GiB RSS target is not guaranteed.
+The [batch preparation plan](datasets/corpora.toml) can select other pinned dataset
+manifests and per-corpus targets. Export it with `docker run --rm --entrypoint cat
+"$IMAGE" /opt/benchmark/datasets/corpora.toml > config/corpora.toml`, edit it, mount
+`config/` and pass `corpora --config /config/corpora.toml`. Relative manifest names
+resolve beside the plan first, then from the image's bundled datasets.
+The packaged English manifest covers all 41 Wikipedia shards, Chinese all six,
+and Code the first 128 shards. If a source still runs out, provide a larger
+distinct UTF-8 file or another pinned manifest. Do not repeat text to inflate size.
+The container retains partial curves when the mounted corpus runs out.
 
 Edit `config/suite.toml` to fit the server, then run from the directory containing
 `data/`, `config/` and `results/`:

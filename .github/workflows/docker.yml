@@ -73,8 +73,9 @@ jobs:
         env:
           IMAGE: ${{ steps.names.outputs.image }}:${{ steps.names.outputs.unique }}
         run: |
-          python scripts/docker_smoke.py --out .bench/docker-smoke --workers 1 2
-          docker run --rm --network none --cpus 2 --cpuset-cpus 0,1 \
+          # Private hosted runners may expose two SMT siblings of one core.
+          python scripts/docker_smoke.py --out .bench/docker-smoke --workers 1
+          docker run --rm --network none --cpus 1 --cpuset-cpus 0 \
             --mount type=bind,src="$PWD/.bench/docker-smoke/data",dst=/data,readonly \
             --mount type=bind,src="$PWD/.bench/docker-smoke/config",dst=/config,readonly \
             --mount type=bind,src="$PWD/.bench/docker-smoke/results",dst=/results \
@@ -83,6 +84,8 @@ jobs:
           test -s .bench/docker-smoke/results/report/small-core-scaling.png
           test -s .bench/docker-smoke/results/report/memory-growth.png
           docker run --rm --network none --entrypoint cat "$IMAGE" /opt/builds/bundle.json > .bench/docker-smoke/bundle.json
+          docker run --rm --network none --entrypoint python "$IMAGE" \
+            /opt/benchmark/tests/test_corpora.py
       - name: Publish tested image
         env:
           IMAGE: ${{ steps.names.outputs.image }}

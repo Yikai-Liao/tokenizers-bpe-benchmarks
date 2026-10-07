@@ -9,6 +9,8 @@
 !experiments/**
 !datasets/
 !datasets/**
+!tests/
+!tests/test_corpora.py
 !pyproject.toml
 !README.md
 !assets/
