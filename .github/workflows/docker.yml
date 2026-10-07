@@ -76,10 +76,12 @@ jobs:
           # Private hosted runners may expose two SMT siblings of one core.
           mkdir -p .bench/docker-smoke
           docker run --rm --network none \
+            --user "$(id -u):$(id -g)" \
             --mount type=bind,src="$PWD/.bench/docker-smoke",dst=/smoke \
             --entrypoint python "$IMAGE" /opt/benchmark/scripts/docker_smoke.py \
             --out /smoke --workers 1
           docker run --rm --network none --cpus 1 --cpuset-cpus 0 \
+            --user "$(id -u):$(id -g)" \
             --mount type=bind,src="$PWD/.bench/docker-smoke/data",dst=/data,readonly \
             --mount type=bind,src="$PWD/.bench/docker-smoke/config",dst=/config,readonly \
             --mount type=bind,src="$PWD/.bench/docker-smoke/results",dst=/results \

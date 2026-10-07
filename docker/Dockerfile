@@ -37,6 +37,6 @@ COPY experiments experiments
 COPY datasets datasets
 COPY tests/test_corpora.py tests/test_corpora.py
 COPY scripts/docker_smoke.py scripts/docker_smoke.py
-ENV MPLBACKEND=Agg PYTHONUNBUFFERED=1
+ENV MPLBACKEND=Agg PYTHONUNBUFFERED=1 PYTHONPATH=/opt/benchmark MPLCONFIGDIR=/tmp/matplotlib
 ENTRYPOINT ["python", "-m", "bench"]
 CMD ["suite", "--config", "/config/suite.toml", "--bundle", "/opt/builds/bundle.json", "--out", "/results"]

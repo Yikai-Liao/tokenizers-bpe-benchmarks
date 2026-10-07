@@ -26,6 +26,7 @@ mkdir -p data cache config results
 docker run --rm --entrypoint cat "$IMAGE" \
   /opt/benchmark/experiments/dedicated-server.toml > config/suite.toml
 docker run --rm \
+  --user "$(id -u):$(id -g)" \
   --mount type=bind,src="$PWD/data",dst=/data \
   --mount type=bind,src="$PWD/cache",dst=/cache \
   "$IMAGE" corpora --out /data --cache /cache --size-mib 32769
@@ -65,6 +66,7 @@ Edit `config/suite.toml` to fit the server, then run from the directory containi
 
 ```sh
 docker run --rm --network none \
+  --user "$(id -u):$(id -g)" \
   --mount type=bind,src="$PWD/data",dst=/data,readonly \
   --mount type=bind,src="$PWD/config",dst=/config,readonly \
   --mount type=bind,src="$PWD/results",dst=/results \

@@ -112,6 +112,7 @@ mkdir -p data cache config results
 docker run --rm --entrypoint cat "$IMAGE" \
   /opt/benchmark/experiments/dedicated-server.toml > config/suite.toml
 docker run --rm \
+  --user "$(id -u):$(id -g)" \
   --mount type=bind,src="$PWD/data",dst=/data \
   --mount type=bind,src="$PWD/cache",dst=/cache \
   "$IMAGE" corpora --out /data --cache /cache --size-mib 32769
@@ -168,6 +169,7 @@ required for resume.
 docker run --rm --entrypoint lscpu "$IMAGE" -e=CPU,CORE,SOCKET,NODE,ONLINE
 docker run --rm --entrypoint numactl "$IMAGE" --hardware
 docker run --rm --network none \
+  --user "$(id -u):$(id -g)" \
   --mount type=bind,src="$PWD/data",dst=/data,readonly \
   --mount type=bind,src="$PWD/config",dst=/config,readonly \
   --mount type=bind,src="$PWD/results",dst=/results \
@@ -280,6 +282,7 @@ invalid matrix yield nonzero exit status. Regenerate reports without training:
 
 ```sh
 docker run --rm --network none \
+  --user "$(id -u):$(id -g)" \
   --mount type=bind,src="$PWD/results",dst=/results \
   "$IMAGE" suite-report --out /results
 ```
@@ -300,10 +303,12 @@ local validation may use four:
 ```sh
 mkdir -p smoke
 docker run --rm --network none \
+  --user "$(id -u):$(id -g)" \
   --mount type=bind,src="$PWD/smoke",dst=/smoke \
   --entrypoint python "$IMAGE" /opt/benchmark/scripts/docker_smoke.py \
   --out /smoke --workers 1 4
 docker run --rm --network none \
+  --user "$(id -u):$(id -g)" \
   --mount type=bind,src="$PWD/smoke/data",dst=/data,readonly \
   --mount type=bind,src="$PWD/smoke/config",dst=/config,readonly \
   --mount type=bind,src="$PWD/smoke/results",dst=/results \
