@@ -1,7 +1,7 @@
 schema_version = 1
-# Target up to 32 GiB plus a complete-line margin for growth. Source exhaustion
+# Recommended target: up to 4 GiB per corpus. Source exhaustion
 # retains a smaller corpus and is reported; this does not predict a 16 GiB RSS.
-size_mib = 32769
+size_mib = 4096
 
 [[corpora]]
 name = "en"

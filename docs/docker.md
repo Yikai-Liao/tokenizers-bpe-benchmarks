@@ -88,7 +88,7 @@ mkdir -p data cache config results
 cp experiments/dedicated-server.toml config/suite.toml
 uv run python -m bench bundle --portable-release --config docker/sources.toml \
   --out .bench/bundle --cache .bench/builds
-uv run --extra corpus python -m bench corpora --out data --cache cache --size-mib 32769
+uv run --extra corpus python -m bench corpora --out data --cache cache --size-mib 4096
 # Native paths are relative to config/suite.toml rather than container mounts.
 sed -i 's|path = "/data/|path = "../data/|g' config/suite.toml
 # Edit core counts, RSS guards and NUMA placement for the host before running.
@@ -115,14 +115,15 @@ docker run --rm \
   --user "$(id -u):$(id -g)" \
   --mount type=bind,src="$PWD/data",dst=/data \
   --mount type=bind,src="$PWD/cache",dst=/cache \
-  "$IMAGE" corpora --out /data --cache /cache --size-mib 32769
+  "$IMAGE" corpora --out /data --cache /cache --size-mib 4096
 ```
 
 `corpora` prepares all three files and relative links in one command. Its
 `--size-mib` counts UTF-8 text **after** decompression and filtering, separately
-for each corpus. 32769 MiB targets 32 GiB plus a complete-line margin, matching
-the example's `growth.max_mib = 32768`. The matrix still uses 512 MiB prefixes.
-Downloading up to 32 GiB of each corpus supplies room for several growth steps;
+for each corpus. The recommended default is 4096 MiB (4 GiB) of raw UTF-8 text.
+The matrix uses 512 MiB prefixes; growth stops at the available source. For longer
+runs, `--size-mib 32769` targets 32 GiB plus a complete-line margin, matching
+the example's `growth.max_mib = 32768`;
 it does not predict whether an algorithm will reach 16 GiB RSS.
 
 The batch command downloads only required pinned shards, retains a shorter
@@ -137,7 +138,7 @@ For a quick matrix-only check, choose `--size-mib 513`. To customize datasets or
 individual size targets, mount a copy of [corpora.toml](../datasets/corpora.toml)
 and pass `corpora --config /config/corpora.toml`; a CLI `--size-mib` overrides all
 plan targets. Use a new output directory for changed recipes. Three complete
-32 GiB corpora use about 96 GiB, plus compressed cache and measurement prefixes.
+4 GiB corpora use about 12 GiB, plus compressed cache and measurement prefixes.
 Do not duplicate the same text to inflate input size: that mainly increases
 frequencies and barely increases the distinct strings responsible for memory.
 You can prepare on another machine and transfer `data/` and `config/` with

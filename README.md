@@ -30,22 +30,23 @@ docker run --rm \
   --user "$(id -u):$(id -g)" \
   --mount type=bind,src="$PWD/data",dst=/data \
   --mount type=bind,src="$PWD/cache",dst=/cache \
-  "$IMAGE" corpora --out /data --cache /cache --size-mib 32769
+  "$IMAGE" corpora --out /data --cache /cache --size-mib 4096
 ```
 
 Preparation commands have network access and save corpora/cache onto the host.
 The measurement command below disables networking and never downloads corpora.
 This single command prepares English, Chinese and Code and creates the three
-relative links used by the suite. `--size-mib 32769` targets **up to 32 GiB + 1 MiB
-of UTF-8 text per corpus**, after decompression/filtering, rather than compressed
-download bytes. It matches the example's 32 GiB maximum growth input with a
-complete-line margin. Only required pinned shards download; source exhaustion
+relative links used by the suite. The recommended default, `--size-mib 4096`, targets
+**up to 4 GiB of UTF-8 text per corpus**, after decompression/filtering, rather than
+compressed download bytes. Only required pinned shards download; source exhaustion
 keeps a smaller usable corpus and records `source_exhausted` in
 `data/corpora.json`. The 16 GiB RSS target is observed during training, not inferred
-from text bytes, so even 32 GiB of text may end a curve below that target.
+from text bytes. Growth stops at the available corpus and retains a partial curve
+if the RSS target is not reached.
 
 Use `--size-mib 513` for a quick 512 MiB matrix, or a smaller value for VPS checks.
-Three full 32 GiB corpora can occupy about 96 GiB before download cache and nested
+For longer growth runs, increase `--size-mib`; `32769` supplies up to 32 GiB plus
+a complete-line margin per corpus. Three full 4 GiB corpora can occupy about 12 GiB before download cache and nested
 benchmark prefixes. Downloads verify pinned shard hashes. English uses Wikipedia; code preserves
 indentation and selects the configured language extensions. Chinese uses the
 same file for HF `Whitespace` (including punctuation splitting) and ByteLevel.

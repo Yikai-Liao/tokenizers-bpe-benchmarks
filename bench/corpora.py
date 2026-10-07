@@ -24,7 +24,7 @@ def prepare(config, out, cache, size_mib=None):
         if name in names:
             raise ValueError("duplicate corpus name")
         names.add(name)
-        target = size_mib if size_mib is not None else entry.get("size_mib", plan.get("size_mib", 32769))
+        target = size_mib if size_mib is not None else entry.get("size_mib", plan.get("size_mib", 4096))
         if type(target) is not int or target < 1:
             raise ValueError("size_mib must be a positive integer")
         dataset = (config.parent / entry["dataset"]).resolve()
