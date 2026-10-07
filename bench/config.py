@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 import os
+import tomllib
 from pathlib import Path
 
 PROTOCOL = 1
@@ -11,6 +12,8 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def read(path):
+    if Path(path).suffix == ".toml":
+        return tomllib.loads(Path(path).read_text())
     return json.loads(
         Path(path).read_text(),
         parse_constant=lambda x: (_ for _ in ()).throw(ValueError(x)),
@@ -109,6 +112,7 @@ def load(path):
     cfg["comparison"] = "exact-model"
     execution = dict(
         warmups_per_cell=1,
+        warmup_scope="cell",
         paired_blocks=5,
         timeout_seconds=600,
         min_available_gib=3,
@@ -116,16 +120,21 @@ def load(path):
         order="balanced-alternating",
     )
     execution.update(cfg["execution"])
+    if execution["warmup_scope"] not in ("cell", "representative"):
+        raise ValueError("unsupported warmup_scope")
     cpu_config(execution)
     for field in ("warmups_per_cell", "paired_blocks"):
         if type(execution[field]) is not int:
             raise ValueError(f"invalid {field}")
         positive(execution[field], field, field == "warmups_per_cell")
     for field in ("timeout_seconds", "min_available_gib", "max_process_rss_gib"):
-        positive(execution[field], field, field == "min_available_gib")
+        positive(execution[field], field, field in ("min_available_gib", "timeout_seconds"))
     if execution["order"] != "balanced-alternating":
         raise ValueError("unsupported schedule")
     cfg["execution"] = execution
+    from .topology import validate_numa
+
+    execution["numa"] = validate_numa(execution.get("numa", {}), execution["cpu_set"])
     if len(cfg["arms"]) < 2 or "baseline" not in cfg["arms"]:
         raise ValueError("at least baseline and one comparison arm required")
     base = Path(path).resolve().parent

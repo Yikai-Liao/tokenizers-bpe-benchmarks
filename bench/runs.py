@@ -14,6 +14,7 @@ from .builds import files, read_cpu
 from .builds import validate as validate_build
 from .config import PROTOCOL, ROOT, environment, identity, load, read, write
 from .inputs import validate as validate_input
+from .topology import cgroup_memory, numa_prefix
 
 TERMINAL = {
     "ok",
@@ -49,6 +50,7 @@ def host():
             ["lscpu", "-p=CPU,CORE,SOCKET,NODE"], text=True
         ),
         supervisor_affinity=sorted(os.sched_getaffinity(0)),
+        cgroup_memory=[{k: v for k, v in row.items() if k != "current"} for row in cgroup_memory()],
     )
 
 
@@ -93,11 +95,13 @@ def plan(config):
 
 
 def available_memory():
-    return next(
+    available = next(
         int(line.split()[1]) * 1024
         for line in Path("/proc/meminfo").read_text().splitlines()
         if line.startswith("MemAvailable:")
     )
+    return min([available] + [max(0, r["limit"] - r["current"])
+                              for r in cgroup_memory() if r["limit"] is not None])
 
 
 def stop(proc):
@@ -202,7 +206,7 @@ def validate_result(value, job, cpus, model):
     return metrics
 
 
-def execute(out, cfg, case, workers, arm, build, inp, slot):
+def execute(out, cfg, case, workers, arm, build, inp, slot, compare_model=True):
     attempt_id = uuid.uuid4().hex
     folder = out / "attempts" / attempt_id
     folder.mkdir(parents=True)
@@ -237,9 +241,9 @@ def execute(out, cfg, case, workers, arm, build, inp, slot):
     proc = None
     try:
         if available_memory() < cfg["execution"]["min_available_gib"] * 2**30:
-            row.update(status="resource_guard", reason="host memory before launch")
+            row.update(status="resource_guard", guard_reason="available_memory", reason="available memory before launch")
         else:
-            cmd = [
+            cmd = numa_prefix(cfg["execution"].get("numa", {})) + [
                 "taskset",
                 "--cpu-list",
                 ",".join(map(str, cpus)),
@@ -250,11 +254,12 @@ def execute(out, cfg, case, workers, arm, build, inp, slot):
             row["environment"] = env
             row["command"] = cmd
             start = time.monotonic()
-            peak = swap = 0
+            peak = swap = peak_hwm = 0
             minimum = available_memory()
             with (
                 (folder / "stdout.log").open("w") as stdout,
                 (folder / "stderr.log").open("w") as stderr,
+                (folder / "memory.jsonl").open("w") as trace,
             ):
                 proc = subprocess.Popen(
                     cmd, env=env, stdout=stdout, stderr=stderr, start_new_session=True
@@ -280,17 +285,25 @@ def execute(out, cfg, case, workers, arm, build, inp, slot):
                             for line in Path(f"/proc/{proc.pid}/status")
                             .read_text()
                             .splitlines()
-                            if line.startswith(("VmRSS:", "VmSwap:"))
+                            if line.startswith(("VmRSS:", "VmSwap:", "VmHWM:"))
                         }
                         peak = max(peak, values.get("VmRSS", 0))
                         swap = max(swap, values.get("VmSwap", 0))
+                        peak_hwm = max(peak_hwm, values.get("VmHWM", 0))
+                        trace.write(__import__("json").dumps(dict(
+                            elapsed_seconds=time.monotonic() - start, **values)) + "\n")
                     except FileNotFoundError:
                         pass
                     if memory < cfg["execution"]["min_available_gib"] * 2**30:
                         reason = "resource_guard"
-                    elif peak > cfg["execution"]["max_process_rss_gib"] * 2**30:
+                        row["guard_reason"] = "available_memory"
+                    elif max(peak, peak_hwm) > cfg["execution"]["max_process_rss_gib"] * 2**30:
                         reason = "resource_guard"
-                    elif time.monotonic() - start > cfg["execution"]["timeout_seconds"]:
+                        row["guard_reason"] = "rss_limit"
+                    elif swap > 0:
+                        reason = "resource_guard"
+                        row["guard_reason"] = "swap_detected"
+                    elif cfg["execution"]["timeout_seconds"] > 0 and time.monotonic() - start > cfg["execution"]["timeout_seconds"]:
                         reason = "timeout"
                     if reason:
                         stop(proc)
@@ -302,6 +315,7 @@ def execute(out, cfg, case, workers, arm, build, inp, slot):
                     or ("ok" if proc.returncode == 0 else "process_error"),
                     supervisor_wall_seconds=time.monotonic() - start,
                     sampled_peak_rss_bytes=peak,
+                    process_peak_rss_bytes=max(peak, peak_hwm),
                     sampled_peak_swap_bytes=swap,
                     minimum_host_available_bytes=minimum,
                 )
@@ -312,21 +326,22 @@ def execute(out, cfg, case, workers, arm, build, inp, slot):
                     row["metrics"] = validate_result(value, job, cpus, model)
                     row["runner_result"] = value
                     row["model_sha256"] = identity(model)
-                    refs = out / "models"
-                    refs.mkdir(exist_ok=True)
-                    ref = refs / (case["name"] + ".json")
-                    if not ref.exists():
-                        if arm != "baseline":
-                            raise ValueError(
-                                "baseline reference must be established first"
-                            )
-                        write(ref, model)
-                    reference = read(ref)
-                    if reference != model:
-                        row.update(
-                            status="model_mismatch",
-                            difference=first_difference(reference, model),
-                        )
+                    row["process_peak_rss_bytes"] = max(row["process_peak_rss_bytes"],
+                        row["metrics"]["process_hwm_kib_before_validation"] * 1024)
+                    # A short peak can occur between supervisor samples.
+                    if row["process_peak_rss_bytes"] > cfg["execution"]["max_process_rss_gib"] * 2**30:
+                        row.update(status="resource_guard", guard_reason="rss_limit")
+                    if compare_model:
+                        refs = out / "models"
+                        refs.mkdir(exist_ok=True)
+                        ref = refs / (case["name"] + ".json")
+                        if not ref.exists():
+                            if arm != "baseline":
+                                raise ValueError("baseline reference must be established first")
+                            write(ref, model)
+                        reference = read(ref)
+                        if reference != model:
+                            row.update(status="model_mismatch", difference=first_difference(reference, model))
                 except (ValueError, KeyError, TypeError, OSError) as error:
                     row.update(status="invalid_output", error=str(error))
     except BaseException as error:
@@ -399,8 +414,10 @@ def schedule(cfg):
     arms = ["baseline"] + [name for name in cfg["arms"] if name != "baseline"]
     cells = [(case, w) for case in cfg["cases"] for w in cfg["execution"]["workers"]]
     for warmup in range(cfg["execution"]["warmups_per_cell"]):
-        for case, w in cells:
-            for arm in arms:
+        warmup_cells = cells if cfg["execution"].get("warmup_scope", "cell") == "cell" else [(cfg["cases"][0], max(cfg["execution"]["workers"]))]
+        warmup_arms = arms if cfg["execution"].get("warmup_scope", "cell") == "cell" else ["baseline"]
+        for case, w in warmup_cells:
+            for arm in warmup_arms:
                 yield case, w, arm, f"warmup:{warmup}:{case['name']}:{w}:{arm}"
     for block in range(cfg["execution"]["paired_blocks"]):
         rotated = cells[block % len(cells) :] + cells[: block % len(cells)]
@@ -414,7 +431,7 @@ def schedule(cfg):
                 yield case, w, arm, f"block:{block}:{case['name']}:{w}:{arm}"
 
 
-def run(config, out, retry_failed=False):
+def run(config, out, retry_failed=False, continue_on_failure=False, observer=None):
     from .reports import report
 
     out = Path(out).resolve()
@@ -443,14 +460,21 @@ def run(config, out, retry_failed=False):
             if any(r["status"] == "ok" for r in previous):
                 continue
             if previous and not retry_failed:
+                if continue_on_failure:
+                    continue
                 report(out)
                 raise ValueError(
                     "failed/interrupted attempt exists; use --retry-failed for an explicit diagnostic retry"
                 )
             row = execute(out, cfg, case, w, arm, arms[arm], inputs[case["name"]], slot)
             records.append(row)
-            print(f"{slot}: {row['status']}", flush=True)
+            if observer:
+                observer(row)
+            else:
+                print(f"{slot}: {row['status']}", flush=True)
             if row["status"] != "ok":
                 report(out)
+                if continue_on_failure:
+                    continue
                 raise RuntimeError(f"attempt {row['attempt_id']}: {row['status']}")
         return report(out)

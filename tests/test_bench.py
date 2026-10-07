@@ -66,6 +66,7 @@ behavior=BEHAVIOR
 if behavior=='crash': sys.exit(137)
 if behavior=='signal': os.kill(os.getpid(),9)
 if behavior=='timeout': time.sleep(10)
+if behavior=='pause': time.sleep(0.15)
 if behavior=='empty': sys.exit(0)
 if behavior=='invalid': print('{}');sys.exit(0)
 if behavior=='malformed': print('not-json');sys.exit(0)
@@ -242,6 +243,18 @@ print(json.dumps(v))
                     read(out / "attempts" / r["attempt_id"] / "result.json")["status"],
                     status,
                 )
+
+    def test_zero_timeout_allows_a_process_to_complete(self):
+        self.add_binary("baseline", "pause")
+        self.cfg["execution"]["timeout_seconds"] = 0
+        write(self.config, self.cfg)
+        cfg, arms, inputs, spec = plan(self.config)
+        self.out.mkdir()
+        write(self.out / "spec.json", spec)
+        row = execute(self.out, cfg, cfg["cases"][0], 1, "baseline",
+                      arms["baseline"], inputs["tiny"], "block:0:tiny:1:baseline")
+        self.assertEqual(row["status"], "ok")
+        self.assertGreaterEqual(row["supervisor_wall_seconds"], 0.15)
 
     def test_memory_guard_and_orphan_recovery(self):
         cfg, arms, inputs, spec = plan(self.config)

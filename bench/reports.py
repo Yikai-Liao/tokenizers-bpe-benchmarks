@@ -15,6 +15,7 @@ FIELDS = (
     "pipeline_cpu_seconds",
     "process_hwm_kib_before_validation",
     "sampled_peak_rss_bytes",
+    "process_peak_rss_bytes",
 )
 
 
@@ -51,7 +52,7 @@ def report(out):
                     arm: [
                         (
                             b[arm].get(field)
-                            if field.startswith("sampled_")
+                            if field.startswith("sampled_") or field == "process_peak_rss_bytes"
                             else b[arm]["metrics"].get(field)
                         )
                         for b in blocks

@@ -140,6 +140,8 @@ def corpus(dataset_manifest, size_mib, out, cache):
     import pyarrow.parquet as pq
 
     dataset = read(dataset_manifest)
+    if dataset.get("transformation") == "code":
+        return code_corpus(dataset, size_mib, out, cache)
     out = Path(out).resolve()
     if size_mib < 1:
         raise ValueError("positive size required")
@@ -192,5 +194,67 @@ def corpus(dataset_manifest, size_mib, out, cache):
     record["input_id"] = identity(
         {k: v for k, v in record.items() if k not in ("path", "input_id")}
     )
+    write(out / "manifest.json", record)
+    return record
+
+
+def code_corpus(dataset, size_mib, out, cache):
+    """Ordered source files, preserving indentation, punctuation and blank lines."""
+    import collections
+    import pyarrow.parquet as pq
+
+    if type(size_mib) is not int or size_mib < 1:
+        raise ValueError("positive integer MiB required")
+    out = Path(out).resolve()
+    recipe = dict(dataset=dataset, size_mib=size_mib, tool_sha256=digest(Path(__file__)),
+                  normalization="preserve source whitespace; LF separator between files",
+                  selection="ordered source files; last file truncated at full LF line",
+                  file_bytes=[32, 1 << 20])
+    if out.exists():
+        record = read(out / "manifest.json")
+        if record["recipe"] != recipe:
+            raise ValueError("corpus recipe changed; use a new directory")
+        return validate(out / "manifest.json", "pipeline", "none")
+    out.mkdir(parents=True)
+    limit, total = size_mib << 20, 0
+    counts, byte_counts, licenses = collections.Counter(), collections.Counter(), collections.Counter()
+    used, done = [], False
+    with (out / "text.txt").open("wb") as stream:
+        for shard in dataset["shards"]:
+            path = shard_cache(shard, cache)
+            used.append(shard)
+            for batch in pq.ParquetFile(path).iter_batches(batch_size=64, columns=["code", "path", "license"]):
+                for row in batch.to_pylist():
+                    language = next((lang for lang, exts in dataset["languages"].items()
+                                     if any(row["path"].endswith(ext) for ext in exts)), None)
+                    if language is None:
+                        continue
+                    data = (row["code"] or "").encode("utf-8")
+                    if not 32 <= len(data) <= (1 << 20):
+                        continue
+                    if not data.endswith(b"\n"):
+                        data += b"\n"
+                    if total + len(data) > limit:
+                        data = data[:limit - total]
+                        data = data[:data.rfind(b"\n") + 1]
+                        done = True
+                    stream.write(data)
+                    total += len(data)
+                    counts[language] += 1
+                    byte_counts[language] += len(data)
+                    licenses[row["license"] or "unknown"] += 1
+                    if done or total == limit:
+                        done = True
+                        break
+                if done:
+                    break
+            if done:
+                break
+    if not done or total < limit - 8192:
+        raise ValueError("manifest shards cannot supply requested code corpus within 8192 bytes")
+    record = text_manifest(out / "text.txt", out / "manifest.json")
+    record.update(path="text.txt", recipe=recipe, used_shards=used,
+                  language_files=dict(counts), language_bytes=dict(byte_counts), license_files=dict(licenses))
+    record["input_id"] = identity({k: v for k, v in record.items() if k not in ("path", "input_id")})
     write(out / "manifest.json", record)
     return record

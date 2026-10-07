@@ -1,0 +1,65 @@
+schema_version = 1
+name = "dedicated-server"
+
+[execution]
+workers = [1, 4, 8]
+repetitions = 3
+warmups = 1
+timeout_seconds = 0
+min_available_gib = 2
+max_process_rss_gib = 48
+plots = true
+# Automatic allocation uses distinct physical cores, preferring one NUMA node.
+# Uncomment to explicitly select the node or ordered physical CPU allocation:
+# cpu_node = 0
+# cpu_set = [0, 2, 4, 6, 8, 10, 12, 14]
+
+[execution.numa]
+policy = "default"
+# For NUMA servers: policy = "bind", nodes = [0], cpu_node = 0 above.
+# Cross-node bandwidth experiment: policy = "interleave", nodes = [0, 1].
+
+[trainer]
+vocab_size = 100000
+min_frequency = 2
+
+[small]
+enabled = true
+size_mib = 1
+
+[growth]
+enabled = true
+workers = 8
+repetitions = 1
+start_mib = 512
+factor = 2
+max_mib = 32768
+rss_target_gib = 16
+
+[[cases]]
+name = "code-bytelevel"
+path = "/data/code.txt"
+size_mib = 512
+pretokenizer = "bytelevel_regex"
+growth = true
+
+[[cases]]
+name = "en-bytelevel"
+path = "/data/en.txt"
+size_mib = 512
+pretokenizer = "bytelevel_regex"
+growth = true
+
+[[cases]]
+name = "zh-bytelevel"
+path = "/data/zh.txt"
+size_mib = 512
+pretokenizer = "bytelevel_regex"
+growth = true
+
+[[cases]]
+name = "zh-whitespace"
+path = "/data/zh.txt"
+size_mib = 512
+pretokenizer = "whitespace"
+growth = true

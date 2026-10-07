@@ -129,7 +129,7 @@ def source_snapshot(source, revision, destination, exclude_source_paths=()):
     return {"commit": sha, "dirty": dirty, "snapshot_files": manifest}
 
 
-def setup(source, revision, work, vendored_rayon, exclude_source_paths=()):
+def setup(source, revision, work, vendored_rayon, exclude_source_paths=(), adapter="tk_train_v1"):
     work.mkdir(parents=True, exist_ok=False)
     snapshot = work / "source"
     snapshot.mkdir()
@@ -149,6 +149,10 @@ def setup(source, revision, work, vendored_rayon, exclude_source_paths=()):
     runner = work / "runner"
     shutil.copytree(ROOT / "runner/src", runner / "src")
     manifest = (ROOT / "runner/Cargo.toml").read_text().replace("@SOURCE@", "../source")
+    if adapter == "tk_train_pr2348":
+        manifest = manifest.replace("default = []", 'default = ["pr2348"]', 1)
+    elif adapter != "tk_train_v1":
+        raise ValueError("unsupported public API adapter")
     if vendored_rayon:
         if not (snapshot / "vendor/rayon-core/Cargo.toml").is_file():
             raise ValueError("vendored profile requires recorded rayon-core source")
@@ -158,7 +162,7 @@ def setup(source, revision, work, vendored_rayon, exclude_source_paths=()):
 
 
 def create_lock(
-    source, revision, profile, vendored_rayon=False, exclude_source_paths=()
+    source, revision, profile, vendored_rayon=False, exclude_source_paths=(), adapter="tk_train_v1"
 ):
     import tempfile
 
@@ -167,7 +171,7 @@ def create_lock(
         raise ValueError("lock profile exists; create a new named profile")
     with tempfile.TemporaryDirectory() as temp:
         runner, _ = setup(
-            source, revision, Path(temp) / "work", vendored_rayon, exclude_source_paths
+            source, revision, Path(temp) / "work", vendored_rayon, exclude_source_paths, adapter
         )
         subprocess.run(
             [
@@ -208,6 +212,7 @@ def build(
     vendored_rayon=False,
     build_env=None,
     exclude_source_paths=(),
+    adapter="tk_train_v1",
 ):
     import tempfile
 
@@ -231,7 +236,7 @@ def build(
     cpu = subprocess.check_output(["lscpu", "-J"], text=True)
     with tempfile.TemporaryDirectory(dir=cache) as temp:
         work = Path(temp) / "work"
-        runner, source_info = setup(source, revision, work, vendored_rayon, exclude_source_paths)
+        runner, source_info = setup(source, revision, work, vendored_rayon, exclude_source_paths, adapter)
         shutil.copyfile(lockfile, runner / "Cargo.lock")
         modes = {
             str(p.relative_to(work)): p.stat().st_mode & 0o777
@@ -243,7 +248,7 @@ def build(
             builder_sha256=digest(Path(__file__)),
             cargo_configuration=cargo_configs(env),
             protocol_version=1,
-            adapter="tk_train_v1",
+            adapter=adapter,
             source=source_info,
             files=files(work),
             toolchain=toolchain,
@@ -281,10 +286,16 @@ def build(
         # replacing the shared target binary between build completion and copy.
         with (cache / ".target.lock").open("a") as lock:
             fcntl.flock(lock, fcntl.LOCK_EX)
-            with (dest / "build.log").open("w") as stream:
-                subprocess.run(
-                    cmd, env=env, check=True, stdout=stream, stderr=subprocess.STDOUT
-                )
+            try:
+                with (dest / "build.log").open("w") as stream:
+                    subprocess.run(
+                        cmd, env=env, check=True, stdout=stream, stderr=subprocess.STDOUT
+                    )
+            except subprocess.CalledProcessError:
+                import sys
+
+                print("\n".join((dest / "build.log").read_text().splitlines()[-60:]), file=sys.stderr)
+                raise
             shutil.copy2(target / "release/bpe-bench-runner", binary)
         if files(dest / "source") != {
             key.removeprefix("source/"): value

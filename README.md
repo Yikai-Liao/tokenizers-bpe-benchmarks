@@ -5,6 +5,136 @@ and ordered merges. The supported entry point is `python -m bench`. Python owns
 input/build identities, process supervision and reports; one Rust runner measures
 each source version through the `tk_train_v1` public API adapter.
 
+For a portable four-build image, manual GitHub Actions, TOML corpus matrices,
+three-round matrix medians, single-run RSS growth and generated figures, see
+[Docker and Dedicated Server runs](docs/docker.md). The standard adapter follows
+current HF main; `tk_train_pr2348` explicitly handles the historical Normalizer
+signature. Sources and workloads are configurable independently.
+
+## Run the Docker benchmark on another machine
+
+The target machine needs Docker. Choose the unique image tag shown by the manual
+[image workflow](https://github.com/Yikai-Liao/tokenizers-bpe-benchmarks/actions/workflows/docker.yml).
+The same image provides corpus preparation, the example config, all four compiled
+runners and plotting dependencies. No repository clone or host Python is needed.
+
+```sh
+IMAGE=ghcr.io/yikai-liao/tokenizers-bpe-benchmarks:latest
+# Replace latest with run-<run-id>-<attempt> or an image digest for repeatable runs.
+docker pull "$IMAGE"
+mkdir -p data cache config results
+docker run --rm --entrypoint cat "$IMAGE" \
+  /opt/benchmark/experiments/dedicated-server.toml > config/suite.toml
+docker run --rm \
+  --mount type=bind,src="$PWD/data",dst=/data \
+  --mount type=bind,src="$PWD/cache",dst=/cache \
+  "$IMAGE" corpus --dataset /opt/benchmark/datasets/wikipedia-en.json \
+  --size-mib 513 --out /data/en --cache /cache
+docker run --rm \
+  --mount type=bind,src="$PWD/data",dst=/data \
+  --mount type=bind,src="$PWD/cache",dst=/cache \
+  "$IMAGE" corpus --dataset /opt/benchmark/datasets/wikipedia-zh.json \
+  --size-mib 513 --out /data/zh --cache /cache
+docker run --rm \
+  --mount type=bind,src="$PWD/data",dst=/data \
+  --mount type=bind,src="$PWD/cache",dst=/cache \
+  "$IMAGE" corpus --dataset /opt/benchmark/datasets/github-code-clean.json \
+  --size-mib 513 --out /data/code --cache /cache
+ln -s en/text.txt data/en.txt
+ln -s zh/text.txt data/zh.txt
+ln -s code/text.txt data/code.txt
+```
+
+Preparation commands have network access and save corpora/cache onto the host.
+The measurement command below disables networking and never downloads corpora.
+Downloads verify pinned shard hashes. The extra MiB lets the harness select a
+512 MiB prefix ending at a complete line. English uses Wikipedia; code preserves
+indentation and selects the configured language extensions. Chinese uses the
+same file for HF `Whitespace` (including punctuation splitting) and ByteLevel.
+To prepare on a different machine from the rented server, copy `data/` and
+`config/` with `rsync -a`, which preserves the relative links.
+
+For a longer memory curve, prepare more **distinct** text into a new directory
+and point the appropriate link at it. For example, request `--size-mib 2048
+--out data/en-large` and use `ln -sfn en-large/text.txt data/en.txt`. The pinned
+dataset must contain enough eligible text; extend its pinned shard manifest or
+provide your own larger UTF-8 file if it does not. A 513 MiB input supplies the
+matrix and only the initial growth point. The container retains partial curves
+when a corpus runs out, so reaching the 16 GiB RSS target is not guaranteed.
+
+Edit `config/suite.toml` to fit the server, then run from the directory containing
+`data/`, `config/` and `results/`:
+
+```sh
+docker run --rm --network none \
+  --mount type=bind,src="$PWD/data",dst=/data,readonly \
+  --mount type=bind,src="$PWD/config",dst=/config,readonly \
+  --mount type=bind,src="$PWD/results",dst=/results \
+  "$IMAGE"
+```
+
+A private GHCR package needs `docker login ghcr.io` with a token allowed to read
+packages before pulling. Docker and the image workflow compile all four sources
+with ordinary `cargo --release`, without `target-cpu=native`.
+
+The [complete TOML example](experiments/dedicated-server.toml) tests code ByteLevel,
+English ByteLevel, Chinese ByteLevel and Chinese Whitespace in that order:
+
+| Setting | Example | Meaning |
+| --- | --- | --- |
+| `execution.workers` | `[1, 4, 8]` | Core counts for both throughput matrices |
+| `execution.repetitions` | `3` | Median of three measured runs per combination |
+| `execution.warmups` | `1` | One representative workload before the whole suite |
+| `execution.timeout_seconds` | `0` | No timeout |
+| `trainer.vocab_size` | `100000` | Target vocabulary; actual vocabulary/merges are recorded |
+| `cases[].size_mib` | `512` | Main matrix input prefix per corpus |
+| `small.enabled`, `small.size_mib` | `true`, `1` | Separate 1 MiB matrix with the same trainer |
+| `growth.workers`, `growth.repetitions` | `8`, `1` | One run per input size for every algorithm/corpus |
+| `growth.start_mib`, `growth.factor`, `growth.max_mib` | `512`, `2`, `32768` | Exponential raw-input prefix growth |
+| `growth.rss_target_gib` | `16` | Soft target: keep the completed crossing point, then stop |
+| `execution.max_process_rss_gib` | `48` | Separate safety guard; choose for the host and above the soft target |
+| `execution.min_available_gib` | `2` | Minimum available host/cgroup memory |
+
+`cases[].path` names the **container** path, for example `/data/code.txt`.
+There is no Docker memory hard limit. Change input sizes, workers and RSS guards
+to fit your host; the example assumes at least eight available physical cores
+and enough memory to finish a step beyond the 16 GiB target.
+
+Inspect the topology before choosing NUMA placement:
+
+```sh
+docker run --rm --entrypoint lscpu "$IMAGE" -e=CPU,CORE,SOCKET,NODE,ONLINE
+docker run --rm --entrypoint numactl "$IMAGE" --hardware
+```
+
+The default picks one logical CPU per physical core, preferring one NUMA node.
+For a node-local comparison, set `cpu_node = 0` inside the existing `[execution]`
+table and replace the example's memory policy with:
+
+```toml
+[execution.numa]
+policy = "bind"
+nodes = [0]
+```
+
+For a separate cross-node experiment, choose an ordered `execution.cpu_set` from
+the topology output, spanning both nodes without SMT siblings, and use
+`policy = "interleave"`, `nodes = [0, 1]`. A run uses the first W CPUs in that
+list. NUMA policies are checked before measurement; if Docker blocks the required
+syscalls, use an appropriate seccomp profile or `--security-opt seccomp=unconfined`
+for the controlled benchmark. Use a new results directory for each config or
+NUMA policy. See [CPU affinity and NUMA details](docs/docker.md#run-cpu-affinity-and-numa).
+
+Each completed run logs timings, peak RSS, elapsed time and approximate remaining
+time. The container writes three English figures under `results/report/`:
+`core-scaling`, `small-core-scaling` and `memory-growth`, each as 600 dpi PNG,
+editable SVG and PDF. Throughput uses original input MiB per Feed + Train second;
+growth prefers distinct Feed strings' UTF-8 bytes on the x-axis. CSV tables include
+absolute values and paired ratios against HF main at the same core count.
+All jobs, model outputs, logs, sampled RSS, source/build identities and failed
+attempts remain in `results/`; keep the whole directory. Repeat the exact command
+to resume, or see [report regeneration and phase options](docs/docker.md).
+
 ## Measurement boundaries
 
 | Mode | Input | Main wall-time metric | Public calls |
@@ -32,18 +162,21 @@ IDs or sort merges.
 
 Requirements: Linux with `/proc`, `taskset`, `lscpu`, Python 3.11.8+, Git and a Rust
 compiler supporting the selected source. Python supervision uses only the standard
-library. Corpus preparation additionally uses PyArrow (`uv pip install -e '.[corpus]'`).
+library. For direct host runs, install uv and run `uv sync --all-extras` from this
+repository. uv manages Python and project dependencies, including PyArrow and
+plotting libraries; no manual venv setup is needed. The Docker flow above does
+not require uv on the host.
 The runner release profile uses fat LTO and one codegen unit.
 
 ```sh
 # Run commands from this repository. A local checkout supplies both revisions.
-python -m bench lock --source /path/to/tokenizers --revision BASELINE_SHA \
+uv run python -m bench lock --source /path/to/tokenizers --revision BASELINE_SHA \
   --lockfile locks/my-baseline/Cargo.lock
-python -m bench lock --source /path/to/tokenizers --revision CANDIDATE_SHA \
+uv run python -m bench lock --source /path/to/tokenizers --revision CANDIDATE_SHA \
   --lockfile locks/my-candidate/Cargo.lock
-python -m bench build --source /path/to/tokenizers --revision BASELINE_SHA \
+uv run python -m bench build --source /path/to/tokenizers --revision BASELINE_SHA \
   --lockfile locks/my-baseline/Cargo.lock
-python -m bench build --source /path/to/tokenizers --revision CANDIDATE_SHA \
+uv run python -m bench build --source /path/to/tokenizers --revision CANDIDATE_SHA \
   --lockfile locks/my-candidate/Cargo.lock
 ```
 
@@ -89,9 +222,9 @@ are preserved for this purpose.
 ## Identify input and run
 
 ```sh
-python -m bench text --input /path/to/text.txt --manifest .bench/text.json
+uv run python -m bench text --input /path/to/text.txt --manifest .bench/text.json
 # Only core needs a preparation step. Select a validated build for preprocessing.
-python -m bench prepare-input --input /path/to/text.txt \
+uv run python -m bench prepare-input --input /path/to/text.txt \
   --pretokenizer whitespace --build .bench/builds/BUILD_ID/build.json \
   --out .bench/words
 ```
@@ -101,8 +234,8 @@ Copy [pipeline-small.json](experiments/pipeline-small.json) or
 input manifest and the CPU set for your host, then run:
 
 ```sh
-python -m bench run --config experiments/my-experiment.json --out .bench/runs/my-experiment
-python -m bench report --out .bench/runs/my-experiment
+uv run python -m bench run --config experiments/my-experiment.json --out .bench/runs/my-experiment
+uv run python -m bench report --out .bench/runs/my-experiment
 ```
 
 Paths in configurations resolve relative to the configuration file. A worker count
@@ -150,10 +283,12 @@ whitespace and filters 32–8192 UTF-8 bytes. Smaller sizes are nested ordered
 prefixes, not independent random samples.
 
 ```sh
-python -m bench corpus --dataset datasets/wikipedia-zh.json \
+uv run --extra corpus python -m bench corpus --dataset datasets/wikipedia-zh.json \
   --size-mib 512 --out .bench/inputs/zh512
-python -m bench corpus --dataset datasets/wikipedia-en.json \
+uv run --extra corpus python -m bench corpus --dataset datasets/wikipedia-en.json \
   --size-mib 256 --out .bench/inputs/en256
+uv run --extra corpus python -m bench corpus --dataset datasets/github-code-clean.json \
+  --size-mib 512 --out .bench/inputs/code512
 ```
 
 `results/` is reserved for selected experiments produced by the new protocol;
@@ -176,8 +311,8 @@ identities. A moving candidate branch is not a substitute for either SHA.
 ## Validation
 
 ```sh
-python -m unittest discover -s tests -v
-python -m bench --help
+uv run python -m unittest discover -s tests -v
+uv run python -m bench --help
 ```
 
 CI runs supervision/protocol tests and a deterministic core/pipeline integration
@@ -187,7 +322,7 @@ specified quiet machine, outside CI. Active modules never import the archive.
 Local two-revision smoke command (after building both sources):
 
 ```sh
-PYTHONPATH=. python tests/integration.py --baseline /path/to/baseline/build.json \
+PYTHONPATH=. uv run python tests/integration.py --baseline /path/to/baseline/build.json \
   --candidate /path/to/candidate/build.json --out .bench/two-revision-smoke
 ```
 

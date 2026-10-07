@@ -2,6 +2,9 @@
 name = "bpe-bench-runner"
 version = "0.1.0"
 edition = "2024"
+[features]
+default = []
+pr2348 = []
 [dependencies]
 tk-train = { path = "@SOURCE@/tokenizers/tk-train", default-features = false }
 tk-encode = { path = "@SOURCE@/tokenizers/tk-encode", default-features = false }

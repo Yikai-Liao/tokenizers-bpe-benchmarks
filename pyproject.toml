@@ -5,6 +5,7 @@ requires-python = ">=3.11.8"
 description = "Reproducible paired BPE core and public pipeline measurements"
 [project.optional-dependencies]
 corpus = ["pyarrow>=17"]
+plots = ["matplotlib>=3.9,<4", "PyMuPDF>=1.24,<2"]
 [project.scripts]
 bpe-bench = "bench.__main__:main"
 [build-system]

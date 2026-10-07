@@ -1,0 +1,26 @@
+schema_version = 1
+baseline = "hf-main"
+# Ordinary cargo --release builds; no target-cpu=native or custom Rust flags.
+# Each ref is resolved once at image build time; the image retains exact SHAs,
+# source snapshots, generated runner locks and compiler provenance.
+
+[[sources]]
+name = "hf-main"
+repository = "https://github.com/huggingface/tokenizers.git"
+ref = "refs/heads/main"
+
+[[sources]]
+name = "hf-pr2348"
+repository = "https://github.com/huggingface/tokenizers.git"
+ref = "refs/pull/2348/head"
+adapter = "tk_train_pr2348"
+
+[[sources]]
+name = "fork-main"
+repository = "https://github.com/Yikai-Liao/tokenizers.git"
+ref = "refs/heads/main"
+
+[[sources]]
+name = "fork-yttm"
+repository = "https://github.com/Yikai-Liao/tokenizers.git"
+ref = "refs/heads/bpe/yttm-rust-reference"

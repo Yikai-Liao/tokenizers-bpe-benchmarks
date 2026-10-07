@@ -1,7 +1,9 @@
 //! Public API adapter and one shared preprocessing definition for both modes.
 use crate::protocol::{Error, Job};
+#[cfg(not(feature = "pr2348"))]
+use tk_encode::pipeline::Normalizer;
 use tk_encode::{
-    pipeline::{Normalizer, PreTokenizer, PreTokenizerScratch, Span},
+    pipeline::{PreTokenizer, PreTokenizerScratch, Span},
     pre_tokenizers::{
         split::{Split, SplitPattern},
         whitespace::{Whitespace, WhitespaceSplit},
@@ -10,6 +12,12 @@ use tk_encode::{
     utils::byte_level::GPT2_REGEX_STR,
 };
 use tk_train::BpeTrainer;
+#[cfg(not(feature = "pr2348"))]
+pub(super) fn normalize_bytes(piece: &str) -> Result<String, Error> {
+    tk_encode::normalizers::byte_level::ByteLevel::new()
+        .normalize(piece, 0)
+        .map(|text| text.into_owned())
+}
 pub fn trainer(job: &Job) -> BpeTrainer {
     let cfg = &job.trainer;
     let mut builder = BpeTrainer::builder()
@@ -84,9 +92,7 @@ impl Processor {
                 .map(|span| {
                     let piece = &line[span.range()];
                     if self.kind == "bytelevel_regex" {
-                        tk_encode::normalizers::byte_level::ByteLevel::new()
-                            .normalize(piece, 0)
-                            .map(|s| s.into_owned())
+                        super::normalize_bytes(piece)
                     } else {
                         Ok(piece.to_owned())
                     }

@@ -22,6 +22,7 @@ def main():
             help="explicit tracked path/subtree omitted from a Git revision snapshot; recorded in build identity",
         )
         p.add_argument("--vendored-rayon", action="store_true")
+        p.add_argument("--adapter", choices=("tk_train_v1", "tk_train_pr2348"), default="tk_train_v1")
         p.add_argument("--lockfile", type=Path, required=True)
         if name == "build":
             p.add_argument("--cache", type=Path, default=ROOT / ".bench/builds")
@@ -50,6 +51,23 @@ def main():
     p.add_argument("--retry-failed", action="store_true")
     p = commands.add_parser("report")
     p.add_argument("--out", type=Path, required=True)
+    p = commands.add_parser("bundle", help="build portable runners from Git source TOML")
+    p.add_argument("--portable-release", action="store_true", help="require ordinary release builds without custom Rust flags")
+    p.add_argument("--config", type=Path, required=True)
+    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--cache", type=Path, default=ROOT / ".bench/builds")
+    p = commands.add_parser("suite", help="run corpus matrix and soft-target RSS growth from TOML")
+    p.add_argument("--config", type=Path, required=True)
+    p.add_argument("--bundle", type=Path, default=Path("/opt/builds/bundle.json"))
+    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--phase", choices=("all", "matrix", "small", "growth"), default="all")
+    p.add_argument("--retry-failed", action="store_true")
+    p = commands.add_parser("suite-report", help="regenerate suite tables and plots")
+    p.add_argument("--out", type=Path, required=True)
+    p = commands.add_parser("suite-follow", help="log completed attempts from a running suite")
+    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--started-file", type=Path)
+    p.add_argument("--finished-file", type=Path)
     args = parser.parse_args()
     if args.command == "lock":
         from .builds import create_lock
@@ -57,7 +75,7 @@ def main():
         print(
             create_lock(
                 args.source, args.revision, args.lockfile,
-                args.vendored_rayon, args.exclude_source_path,
+                args.vendored_rayon, args.exclude_source_path, args.adapter,
             )
         )
     elif args.command == "build":
@@ -74,6 +92,7 @@ def main():
                 args.vendored_rayon,
                 read(args.build_env) if args.build_env else None,
                 args.exclude_source_path,
+                args.adapter,
             )["record_path"]
         )
     elif args.command == "text":
@@ -94,6 +113,23 @@ def main():
         summary = run(args.config, args.out, args.retry_failed)
         if not summary["performance_conclusion_valid"]:
             raise SystemExit(1)
+    elif args.command == "bundle":
+        from .bundle import build_bundle
+
+        build_bundle(args.config, args.out, args.cache, args.portable_release)
+    elif args.command == "suite":
+        from .suite import suite
+
+        if not suite(args.config, args.bundle, args.out, args.phase, args.retry_failed)["complete"]:
+            raise SystemExit(1)
+    elif args.command == "suite-report":
+        from .suite_report import suite_report
+
+        suite_report(args.out)
+    elif args.command == "suite-follow":
+        from .progress import follow
+
+        follow(args.out, args.started_file, args.finished_file)
     else:
         from .reports import report
 

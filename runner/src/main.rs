@@ -1,5 +1,6 @@
 mod adapters;
 mod core;
+mod feed_stats;
 mod model_output;
 mod pipeline;
 mod protocol;

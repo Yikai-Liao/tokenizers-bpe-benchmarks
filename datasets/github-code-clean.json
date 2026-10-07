@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "dataset": "codeparrot/github-code-clean",
+  "revision": "c48d40f9e70f0196f8236901ee35807f7d6c44c0",
+  "transformation": "code",
+  "license": "Per-file repository license; see dataset card and corpus license counts",
+  "metadata_source": "https://huggingface.co/api/datasets/codeparrot/github-code-clean/tree/c48d40f9e70f0196f8236901ee35807f7d6c44c0/data",
+  "languages": {
+    "Python": [
+      ".py"
+    ],
+    "JavaScript": [
+      ".js"
+    ],
+    "TypeScript": [
+      ".ts",
+      ".tsx"
+    ],
+    "Rust": [
+      ".rs"
+    ],
+    "Go": [
+      ".go"
+    ],
+    "C": [
+      ".c",
+      ".h"
+    ],
+    "C++": [
+      ".cpp",
+      ".hpp",
+      ".cc"
+    ],
+    "Java": [
+      ".java"
+    ],
+    "Shell": [
+      ".sh"
+    ],
+    "SQL": [
+      ".sql"
+    ]
+  },
+  "shards": [
+    {
+      "url": "https://huggingface.co/datasets/codeparrot/github-code-clean/resolve/c48d40f9e70f0196f8236901ee35807f7d6c44c0/data/train-00000-of-00880.parquet",
+      "sha256": "c05e4cad93aac3f978a2385f8c055a10d247b107afd8bf9cb8c762f8403bdc0f",
+      "bytes": 355122552
+    },
+    {
+      "url": "https://huggingface.co/datasets/codeparrot/github-code-clean/resolve/c48d40f9e70f0196f8236901ee35807f7d6c44c0/data/train-00001-of-00880.parquet",
+      "sha256": "2e1b2e8bc5823fd68a80a036f1a5db894aa89bd491992bda2dfd96c41187025f",
+      "bytes": 361424967
+    },
+    {
+      "url": "https://huggingface.co/datasets/codeparrot/github-code-clean/resolve/c48d40f9e70f0196f8236901ee35807f7d6c44c0/data/train-00002-of-00880.parquet",
+      "sha256": "8cfdccbe955f2fb32598d661b0faa82d185b3d81301f812e34de066433bf5e3e",
+      "bytes": 355166159
+    },
+    {
+      "url": "https://huggingface.co/datasets/codeparrot/github-code-clean/resolve/c48d40f9e70f0196f8236901ee35807f7d6c44c0/data/train-00003-of-00880.parquet",
+      "sha256": "66e95e1983dc0b40abbeb4f6fd1baf13422bbfd23be4c639ade82fec2e584130",
+      "bytes": 360987950
+    },
+    {
+      "url": "https://huggingface.co/datasets/codeparrot/github-code-clean/resolve/c48d40f9e70f0196f8236901ee35807f7d6c44c0/data/train-00004-of-00880.parquet",
+      "sha256": "34de538558d885892fccc56987edc87d0333b90cbe0a5d7bf87d0a694ce83308",
+      "bytes": 351702387
+    },
+    {
+      "url": "https://huggingface.co/datasets/codeparrot/github-code-clean/resolve/c48d40f9e70f0196f8236901ee35807f7d6c44c0/data/train-00005-of-00880.parquet",
+      "sha256": "1a1376ee654eca7fc33f369082ee7ee5b0b756b9f331edf349695bcd26ffbf78",
+      "bytes": 360062432
+    },
+    {
+      "url": "https://huggingface.co/datasets/codeparrot/github-code-clean/resolve/c48d40f9e70f0196f8236901ee35807f7d6c44c0/data/train-00006-of-00880.parquet",
+      "sha256": "37ae5a7aaae4935f0d0e0e8023e7e2866489885b7f9e270230f750dcdc94aaf3",
+      "bytes": 355582821
+    },
+    {
+      "url": "https://huggingface.co/datasets/codeparrot/github-code-clean/resolve/c48d40f9e70f0196f8236901ee35807f7d6c44c0/data/train-00007-of-00880.parquet",
+      "sha256": "3d0375650b22a8be3024399828b7229958e54e7bb1a8b5cabf4657ad8b2ff2e7",
+      "bytes": 356836045
+    }
+  ]
+}

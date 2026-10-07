@@ -22,6 +22,7 @@ pub fn run(job: &Job) -> Result<Value, Error> {
         |line| processor.process(line),
     )?;
     let feed_seconds = begin.elapsed().as_secs_f64();
+    let feed_unique_words = trainer.get_word_count();
     let train_begin = Instant::now();
     let train_cpu = cpu_seconds()?;
     let (vocab, merges, special) = trainer.train_vocab()?;
@@ -30,11 +31,13 @@ pub fn run(job: &Job) -> Result<Value, Error> {
     let pipeline_seconds = begin.elapsed().as_secs_f64();
     let pipeline_cpu_seconds = cpu_seconds()? - cpu;
     let process_hwm_kib_before_validation = hwm()?;
+    let feed_unique_utf8_bytes = crate::feed_stats::measure(&trainer, feed_unique_words)?;
     model_output::write(&job.output, &vocab, &merges)?;
     Ok(
         json!({"metrics":{"feed_seconds":feed_seconds,"train_seconds":train_seconds,
         "pipeline_seconds":pipeline_seconds,"pipeline_cpu_seconds":pipeline_cpu_seconds,
-        "train_cpu_seconds":train_cpu_seconds,"process_hwm_kib_before_validation":process_hwm_kib_before_validation},
+        "train_cpu_seconds":train_cpu_seconds,"process_hwm_kib_before_validation":process_hwm_kib_before_validation,
+        "feed_unique_words":feed_unique_words,"feed_unique_utf8_bytes":feed_unique_utf8_bytes},
         "output":{"model_path":job.output,"actual_vocab":vocab.len(),"actual_merges":merges.len(),"special_tokens":special.len()},
         "timing_boundary":"public-feed-and-train-before-serialization"}),
     )
