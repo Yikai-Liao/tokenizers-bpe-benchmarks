@@ -2,10 +2,11 @@
 
 The matrix generator creates standard pipeline and core configurations for Chinese
 and English text manifests, plain vocabulary targets 32,000 / 50,000 / 65,536, and
-workers 1 / 4 / 8. Each language also has one representative combined-affix case
-at 32,000, with prefix `##` and suffix `</w>`. Each cell uses one warmup and three
-balanced alternating measurement
-blocks, with exact vocabulary-ID and ordered-merge comparison. Multiple comparison
+workers 1 / 4 / 8. Core also has one representative combined-affix case per language
+at 32,000, with prefix `##` and suffix `</w>`. Pipeline has only the six plain cases;
+core has eight cases by default. Each cell uses one warmup and three
+balanced alternating measurement blocks, with exact vocabulary-ID and ordered-merge
+comparison. Multiple comparison
 arms share one baseline attempt in each block.
 
 The 32k and 50k targets exercise the trainer's narrow mutable slot domain. The
@@ -39,12 +40,28 @@ the available worker counts, for example `--workers 1 4`. Worker counts must fit
 the CPU set. Resource limits can be set with `--timeout-seconds`,
 `--min-available-gib`, and `--max-process-rss-gib`.
 
-`--affixes both` is the default. `--affixes all` adds prefix-only and suffix-only
+`--affixes both` is the default. `--affixes all` adds core prefix-only and suffix-only
 cases alongside the combined case; `--affixes none` emits only the plain matrix.
-Affix cases use the first value of `--vocab-sizes`, so `--vocab-sizes 50000` puts
+All affix cases are core-only. They use the first value of `--vocab-sizes`, so
+`--vocab-sizes 50000` puts
 the representative affix comparison at 50k without multiplying every target by
 every affix profile. All profiles share the same prepared input per language;
 the affixes are applied by the actual trainer in each attempt.
+
+Decorated initial IDs depend on caller word traversal. The canonical core loader
+reconstructs lexically ordered input with fixed caller-map hash seeds
+`[11, 13, 17, 19]`, so all arms receive the same traversal. Pipeline feed uses
+randomly seeded count maps and unordered entry storage; different processes can
+assign different numeric IDs to affix-decorated initial symbols, even when both
+models are semantically valid. Numeric pair IDs also break frequency ties during
+selection, so comparing string merges alone does not restore repeatability.
+A regular pipeline affix performance cell could
+therefore fail exact-ID comparison across repetitions of the baseline itself.
+The generator keeps those representative cases in core and preserves strict
+exact-model comparison. It does not renumber IDs or weaken the comparator.
+The existing one-word affix integration smoke remains useful for that fixture's
+public behavior, but it does not establish determinism for a real-corpus pipeline
+affix matrix.
 
 For additional candidates, repeat `--arm NAME=BUILD`:
 

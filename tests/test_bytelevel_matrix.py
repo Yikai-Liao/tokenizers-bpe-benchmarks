@@ -71,7 +71,7 @@ class BytelevelMatrixTests(unittest.TestCase):
             self.assertEqual(cfg["execution"]["paired_blocks"], 3)
             self.assertEqual(cfg["execution"]["warmups_per_cell"], 1)
             self.assertEqual(cfg["execution"]["order"], "balanced-alternating")
-            self.assertEqual(len(cfg["cases"]), 8)
+            self.assertEqual(len(cfg["cases"]), 8 if mode == "core" else 6)
             for language in ("zh", "en"):
                 cases = [
                     case for case in cfg["cases"]
@@ -92,13 +92,22 @@ class BytelevelMatrixTests(unittest.TestCase):
                 self.assertTrue(
                     all(case["input_manifest"] == str(expected) for case in cases)
                 )
-                affix = next(
-                    case for case in cfg["cases"]
-                    if case["name"] == f"{language}-affix-both-vocab-32000"
-                )
-                self.assertEqual(affix["trainer"]["prefix"], "##")
-                self.assertEqual(affix["trainer"]["suffix"], "</w>")
-                self.assertEqual(affix["input_manifest"], str(expected))
+                if mode == "core":
+                    affix = next(
+                        case for case in cfg["cases"]
+                        if case["name"] == f"{language}-affix-both-vocab-32000"
+                    )
+                    self.assertEqual(affix["trainer"]["prefix"], "##")
+                    self.assertEqual(affix["trainer"]["suffix"], "</w>")
+                    self.assertEqual(affix["input_manifest"], str(expected))
+                else:
+                    self.assertTrue(
+                        all(
+                            case["trainer"]["prefix"] is None
+                            and case["trainer"]["suffix"] is None
+                            for case in cfg["cases"]
+                        )
+                    )
         self.assertFalse((self.out / "inputs").exists())
         for path, content in originals.items():
             self.assertEqual(path.read_bytes(), content)
@@ -147,9 +156,9 @@ class BytelevelMatrixTests(unittest.TestCase):
     @patch("bench.config.os.sched_getaffinity", return_value=set(range(8)))
     def test_optional_single_affixes_use_first_target_and_shared_inputs(self, _):
         paths = self.generate(vocab_sizes=[50_000], affixes=tuple(matrix.AFFIXES))
-        for path in paths.values():
+        for mode, path in paths.items():
             cfg = load(path)
-            self.assertEqual(len(cfg["cases"]), 8)
+            self.assertEqual(len(cfg["cases"]), 8 if mode == "core" else 2)
             for language in ("zh", "en"):
                 cases = [
                     case for case in cfg["cases"]
@@ -159,7 +168,10 @@ class BytelevelMatrixTests(unittest.TestCase):
                 self.assertEqual(
                     {(case["trainer"]["prefix"], case["trainer"]["suffix"])
                      for case in cases},
-                    {(None, None), ("##", None), (None, "</w>"), ("##", "</w>")},
+                    (
+                        {(None, None), ("##", None), (None, "</w>"), ("##", "</w>")}
+                        if mode == "core" else {(None, None)}
+                    ),
                 )
                 self.assertTrue(
                     all(case["trainer"]["vocab_size"] == 50_000 for case in cases)

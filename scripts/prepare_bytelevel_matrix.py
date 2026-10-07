@@ -101,14 +101,19 @@ def generate(
         min_available_gib=min_available_gib,
         max_process_rss_gib=max_process_rss_gib,
     )
-    profiles = [
+    plain_profiles = [
         (f"vocab-{size}", size, None, None) for size in vocab_sizes
-    ] + [
+    ]
+    affix_profiles = [
         (f"affix-{name}-vocab-{vocab_sizes[0]}", vocab_sizes[0], *AFFIXES[name])
         for name in affixes
     ]
     configs = {}
     for mode in ("pipeline", "core"):
+        # Decorated initial IDs depend on caller word traversal. Core fixes
+        # reconstruction order/hash seeds; pipeline feed can vary across
+        # processes, so its regular exact-ID performance matrix stays plain.
+        profiles = plain_profiles + (affix_profiles if mode == "core" else [])
         cfg = dict(
             schema_version=1,
             name=f"bytelevel-{mode}",
@@ -181,7 +186,7 @@ def main(argv=None):
         "--affixes",
         choices=("none", "both", "all"),
         default="both",
-        help="affix cases at the first vocabulary target (default: combined prefix/suffix)",
+        help="core-only affix cases at the first vocabulary target (default: combined prefix/suffix)",
     )
     parser.add_argument("--cpu-set", nargs="+", type=int)
     parser.add_argument("--timeout-seconds", type=float, default=600)
