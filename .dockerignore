@@ -11,6 +11,8 @@
 !datasets/**
 !tests/
 !tests/test_corpora.py
+!scripts/
+!scripts/docker_smoke.py
 !pyproject.toml
 !README.md
 !assets/

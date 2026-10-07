@@ -292,18 +292,22 @@ uv run --extra plots python scripts/preview_figures.py --out .bench/figure-previ
 
 ## Small VPS verification
 
-`scripts/docker_smoke.py` creates deterministic fixtures and a three-round matrix
+The image's `scripts/docker_smoke.py` creates deterministic fixtures and a three-round matrix
 with single-run growth. It checks orchestration/models/figures, not performance.
 The action uses one physical core, including runners exposing only SMT siblings;
 local validation may use four:
 
 ```sh
-python3 scripts/docker_smoke.py --out .bench/docker-smoke --workers 1 4
-docker run --rm --network none --cpuset-cpus 0,1,2,3 \
-  --mount type=bind,src="$PWD/.bench/docker-smoke/data",dst=/data,readonly \
-  --mount type=bind,src="$PWD/.bench/docker-smoke/config",dst=/config,readonly \
-  --mount type=bind,src="$PWD/.bench/docker-smoke/results",dst=/results \
-  bpe-bench:local
+mkdir -p smoke
+docker run --rm --network none \
+  --mount type=bind,src="$PWD/smoke",dst=/smoke \
+  --entrypoint python "$IMAGE" /opt/benchmark/scripts/docker_smoke.py \
+  --out /smoke --workers 1 4
+docker run --rm --network none \
+  --mount type=bind,src="$PWD/smoke/data",dst=/data,readonly \
+  --mount type=bind,src="$PWD/smoke/config",dst=/config,readonly \
+  --mount type=bind,src="$PWD/smoke/results",dst=/results \
+  "$IMAGE"
 ```
 
 For real-corpus verification on a six-core VPS, use 1, 2, 4 and 6 cores, a 32 MiB
