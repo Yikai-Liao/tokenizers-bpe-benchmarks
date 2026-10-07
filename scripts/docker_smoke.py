@@ -29,9 +29,6 @@ min_available_gib = 0.1
 max_process_rss_gib = 1
 timeout_seconds = 180
 plots = true
-[small]
-enabled = true
-size_mib = 1
 [trainer]
 vocab_size = 300
 min_frequency = 2

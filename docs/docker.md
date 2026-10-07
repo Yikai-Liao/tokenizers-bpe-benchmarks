@@ -214,13 +214,17 @@ without specializing the harness.
 
 `execution.warmups = 1` runs one representative workload before the entire suite:
 HF main, the first corpus, at the largest matrix core count. It is excluded from
-measurements; small-corpus and growth phases do not repeat it in an `all` run.
+measurements; growth does not repeat it in an `all` run.
 Set it to 0 to skip warmup. These native runners have no JIT compilation.
 
 `execution.repetitions = 3` gives three measured blocks, using fresh processes
 and rotating algorithm order. Absolute Feed + Train time
 and process peak RSS use medians. **Throughput uses actual raw input MiB divided
-by median Feed + Train seconds**. Every algorithm at a matrix cell uses the same
+by median Feed + Train seconds** in `core-scaling`; `train-core-scaling` divides
+the same input bytes by median Train seconds, excluding Feed. Both figures use
+the same measured attempts, with their own min/max whiskers and paired speedups
+for the displayed timing stage. There is no separate 1 MiB matrix in the example.
+Every algorithm at a matrix cell uses the same
 raw input. Relative time/RSS and speedup use medians of paired ratios against HF
 main at the same core count. Exact model IDs and ordered merges are checked;
 any mismatch invalidates performance comparisons and remains in the audit trail.
@@ -228,8 +232,10 @@ any mismatch invalidates performance comparisons and remains in the audit trail.
 `growth.repetitions = 1` is required. Input grows from `start_mib` by `factor`
 (default 2), bounded by `max_mib` and the mounted corpus. Each algorithm has its
 own stopping point. The RSS target can be any positive value; its emphasized
-left-axis tick and horizontal line are computed from the config, even when it
-falls between normal ticks. A crossing observation is not an exact capacity.
+left-axis tick and horizontal line are computed from the config when the target
+falls within that panel's RSS range, even between normal ticks. A target above
+the observed range remains stated in the caption. A crossing observation is not
+an exact capacity.
 
 The memory figure's preferred x-axis is **the sum of UTF-8 bytes of distinct
 strings in the public Feed word map**, excluding their frequencies and map/object
@@ -263,14 +269,18 @@ No timeout is imposed when `execution.timeout_seconds = 0`.
 | `report/growth-curves.csv` | Per-curve completion/stopping summaries |
 | `report/memory-growth.csv` | Every growth point, raw/Feed bytes and diagnostics |
 | `report/core-scaling.png`, `.svg`, `.pdf` | Linear throughput vs cores; end labels show paired speedup |
-| `report/small-core-scaling.png`, `.svg`, `.pdf` | Independent 1 MiB throughput comparison with the same trainer |
+| `report/train-core-scaling.png`, `.svg`, `.pdf` | Throughput vs cores using Train time only, from the same matrix runs |
 | `report/memory-growth.png`, `.svg`, `.pdf` | Linear peak RSS vs Feed size, with the configured soft target |
 | `report/fonts.json`, `*.alignment.json`, `*.text-audit.json`, `*.collision-audit.json` | Actual font hashes and rendered figure checks |
-| `matrix/attempts/`, `small-matrix/attempts/`, `growth/<case>/<arm>/attempts/` | Jobs, metrics, models, logs and sampled `memory.jsonl` |
+| `matrix/attempts/`, `growth/<case>/<arm>/attempts/` | Jobs, metrics, models, logs and sampled `memory.jsonl` |
 
 Each figure contains four aligned panels in the order shown above, using consistent
 method colors and symbols. Throughput and memory axes start at zero. Curves use
-observed points without extrapolation. The image bundles exact Liberation Sans
+observed points without extrapolation. Throughput panels use independent Y-axis
+limits; memory panels use independent X- and Y-axis limits, with the soft target
+line visible where it falls within that panel's range. Compare curves using the printed tick
+values, since curve heights and horizontal extents differ in scale across corpora.
+The image bundles exact Liberation Sans
 regular/bold files (an Arial-compatible family) and their license; PNG renders
 with them and PDF embeds them. PNG is exported at 600 dpi (4320 × 3600 for the four-panel layout). SVG keeps editable text and needs those fonts on
 the viewing machine. Multi-panel alignment, PDF text sizes and collisions are
@@ -317,7 +327,7 @@ docker run --rm --network none \
 ```
 
 For real-corpus verification on a six-core VPS, use 1, 2, 4 and 6 cores, a 32 MiB
-main matrix and 1 MiB small matrix, with three repetitions and a 100,000 target
+matrix, with three repetitions and a 100,000 target
 vocabulary. Growth can start at 8 MiB and double to 128 MiB using six cores, a
 2 GiB soft target and a host-appropriate safety RSS guard. Run the 512 MiB/8-core
 experiment with a 16 GiB soft target on the larger Dedicated Server.

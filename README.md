@@ -83,13 +83,12 @@ English ByteLevel, Chinese ByteLevel and Chinese Whitespace in that order:
 
 | Setting | Example | Meaning |
 | --- | --- | --- |
-| `execution.workers` | `[1, 4, 8]` | Core counts for both throughput matrices |
+| `execution.workers` | `[1, 4, 8]` | Core counts for the matrix; both timing figures use these same runs |
 | `execution.repetitions` | `3` | Median of three measured runs per combination |
 | `execution.warmups` | `1` | One representative workload before the whole suite |
 | `execution.timeout_seconds` | `0` | No timeout |
 | `trainer.vocab_size` | `100000` | Target vocabulary; actual vocabulary/merges are recorded |
 | `cases[].size_mib` | `512` | Main matrix input prefix per corpus |
-| `small.enabled`, `small.size_mib` | `true`, `1` | Separate 1 MiB matrix with the same trainer |
 | `growth.workers`, `growth.repetitions` | `8`, `1` | One run per input size for every algorithm/corpus |
 | `growth.start_mib`, `growth.factor`, `growth.max_mib` | `512`, `2`, `32768` | Exponential raw-input prefix growth |
 | `growth.rss_target_gib` | `16` | Soft target: keep the completed crossing point, then stop |
@@ -128,8 +127,11 @@ NUMA policy. See [CPU affinity and NUMA details](docs/docker.md#run-cpu-affinity
 
 Each completed run logs timings, peak RSS, elapsed time and approximate remaining
 time. The container writes three English figures under `results/report/`:
-`core-scaling`, `small-core-scaling` and `memory-growth`, each as 600 dpi PNG,
-editable SVG and PDF. Throughput uses original input MiB per Feed + Train second;
+`core-scaling`, `train-core-scaling` and `memory-growth`, each as 600 dpi PNG,
+editable SVG and PDF. The first uses original input MiB per median Feed + Train
+second; the second uses the same runs' Train time, excluding Feed. Each figure's
+endpoint labels use paired speedups for its own timing stage. No separate 1 MiB
+matrix runs. Throughput Y limits and both memory axes vary by corpus;
 growth prefers distinct Feed strings' UTF-8 bytes on the x-axis. CSV tables include
 absolute values and paired ratios against HF main at the same core count.
 All jobs, model outputs, logs, sampled RSS, source/build identities and failed

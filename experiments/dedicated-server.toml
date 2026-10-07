@@ -23,10 +23,6 @@ policy = "default"
 vocab_size = 100000
 min_frequency = 2
 
-[small]
-enabled = true
-size_mib = 1
-
 [growth]
 enabled = true
 workers = 8

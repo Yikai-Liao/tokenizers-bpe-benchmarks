@@ -87,7 +87,7 @@ jobs:
             --mount type=bind,src="$PWD/.bench/docker-smoke/results",dst=/results \
             "$IMAGE"
           test -s .bench/docker-smoke/results/report/core-scaling.png
-          test -s .bench/docker-smoke/results/report/small-core-scaling.png
+          test -s .bench/docker-smoke/results/report/train-core-scaling.png
           test -s .bench/docker-smoke/results/report/memory-growth.png
           docker run --rm --network none --entrypoint cat "$IMAGE" /opt/builds/bundle.json > .bench/docker-smoke/bundle.json
           docker run --rm --network none --entrypoint python "$IMAGE" \

@@ -1,9 +1,9 @@
-"""Two comparable four-panel figures for measured or explicitly synthetic data.
+"""Four-panel throughput and memory figures for measured or synthetic data.
 
-Figure 1 asks how throughput changes with core count across corpus types.
-Figure 2 asks how RSS changes with distinct Feed strings across the same types.
-Both are quantitative grids; corpus panels stratify the same comparison. Keep
-secondary metrics in the CSV so that the two figures retain one question each.
+The two throughput figures compare Feed + Train and Train-only core scaling.
+The memory figure compares RSS against distinct Feed strings across corpus types.
+These are quantitative grids; corpus panels stratify the same comparison. Keep
+secondary metrics in the CSV so that each figure retains one question.
 """
 
 import importlib.util
@@ -55,10 +55,12 @@ def _audit_pdf(target):
 
 def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=False,
            input_mib=512, vocabulary=100000, repetitions=3, cores=int(8),
-           soft_target_gib=16, feed_axis=True, baseline_label="HF main", filename_prefix=""):
+           soft_target_gib=16, feed_axis=True, baseline_label="HF main", filename_prefix="",
+           timing="pipeline"):
     """Render actual points only; min/max whiskers describe observed repetitions.
 
-    ``time_rows`` contain case, arm, workers and pipeline_samples_seconds.
+    ``time_rows`` contain case, arm, workers and pipeline/train_samples_seconds.
+    ``timing`` selects Feed + Train or Train-only samples and paired speedups.
     ``growth_rows`` contain case, arm, input_bytes, peak_rss_bytes and optional
     feed_unique_utf8_bytes. An incomplete curve ends at its last observed point.
     The caller must select one shared Feed or raw-input axis for all growth rows.
@@ -141,23 +143,25 @@ def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=Fal
         _audit_pdf(target)
         plt.close(fig)
 
-    if any(r["pipeline_samples_seconds"] for r in time_rows):
-        title = "BPE training throughput across cores"
+    if timing not in ("pipeline", "train"):
+        raise ValueError("timing must be pipeline or train")
+    sample_field = f"{timing}_samples_seconds"
+    ratio_field = "paired_speedup_over_baseline" if timing == "pipeline" else "paired_train_speedup_over_baseline"
+    stage = "Feed + Train" if timing == "pipeline" else "Train only"
+    if any(r[sample_field] for r in time_rows):
+        title = f"BPE throughput: {stage}"
         footer = ("Points: median of three runs; whiskers: observed min-max. Higher throughput is better."
                   if repetitions == 3 else
                   f"Points: median of {repetitions} runs; whiskers: observed min-max. Higher throughput is better.")
-        footer += f"\nEndpoint labels: speedup vs {baseline_label} at the same core count. Linear axes; shared limits."
+        footer += f"\nEndpoint labels: speedup vs {baseline_label} at the same core count. Y limits vary by panel."
         sizes = {r.get("input_bytes", input_mib * 2**20) >> 20 for r in time_rows}
         input_label = f"{input_mib:,} MiB per corpus" if len(sizes) == 1 else "Input size varies by corpus"
         fig, axes = canvas(title, f"{input_label}  |  Target vocabulary size {vocabulary:,}", footer)
-        observed = [r.get("input_bytes", input_mib * 2**20) / 2**20 / value
-                    for r in time_rows for value in r["pipeline_samples_seconds"] if value > 0]
-        high = max(observed) * 1.18
         max_cores = max(r["workers"] for r in time_rows)
         xleft = 0
         xright = max_cores + 0.6
 
-        def endpoint_labels(ax, endpoints):
+        def endpoint_labels(ax, endpoints, high):
             ordered = sorted(endpoints)
             gap = high * min(0.10, 0.80 / max(1, len(ordered)))
             positions = []
@@ -173,25 +177,29 @@ def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=Fal
                             arrowprops=dict(arrowstyle="-", color=color, lw=0.5))
 
         for ax, case in zip(axes.flat, cases):
+            observed = [r.get("input_bytes", input_mib * 2**20) / 2**20 / value
+                        for r in time_rows if r["case"] == case
+                        for value in r[sample_field] if value > 0]
+            high = max(observed, default=1) * 1.18
             endpoints = []
             for arm, (name, color, marker) in methods.items():
                 selected = sorted((r for r in time_rows if r["case"] == case and r["arm"] == arm
-                                   and r["pipeline_samples_seconds"]), key=lambda r: r["workers"])
+                                   and r[sample_field]), key=lambda r: r["workers"])
                 if not selected:
                     continue
                 import statistics
                 xs = [r["workers"] for r in selected]
                 volumes = [r.get("input_bytes", input_mib * 2**20) / 2**20 for r in selected]
-                ys = [volume / statistics.median(r["pipeline_samples_seconds"])
+                ys = [volume / statistics.median(r[sample_field])
                       for volume, r in zip(volumes, selected)]
-                errors = [[y - volume / max(r["pipeline_samples_seconds"]) for y, volume, r in zip(ys, volumes, selected)],
-                          [volume / min(r["pipeline_samples_seconds"]) - y for y, volume, r in zip(ys, volumes, selected)]]
+                errors = [[y - volume / max(r[sample_field]) for y, volume, r in zip(ys, volumes, selected)],
+                          [volume / min(r[sample_field]) - y for y, volume, r in zip(ys, volumes, selected)]]
                 ax.errorbar(xs, ys, yerr=errors, color=color, marker=marker,
                             markersize=4, linewidth=1.3, elinewidth=0.7, capsize=2)
-                ratio = selected[-1].get("paired_speedup_over_baseline")
+                ratio = selected[-1].get(ratio_field)
                 if ratio is not None:
                     endpoints.append((ys[-1], color, ratio, xs[-1]))
-            endpoint_labels(ax, endpoints)
+            endpoint_labels(ax, endpoints, high)
             ax.set_xlim(xleft, xright)
             ax.set_ylim(0, high)
             ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
@@ -205,26 +213,31 @@ def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=Fal
         observed = [r[axis_field] / 2**20 for r in growth_rows if r.get(axis_field, 0) > 0]
         if not observed:
             raise ValueError("growth figure requires measured positive x values")
-        xhigh = max(observed) * 1.08
-        upper = max(soft_target_gib, max(r["peak_rss_bytes"] / 2**30 for r in growth_rows)) * 1.08
-        unit = 10 ** math.floor(math.log10(upper / 8))
-        step = next(unit * multiple for multiple in (1, 2, 4, 5, 8, 10) if unit * multiple >= upper / 8)
-        ymax = math.ceil(upper / step) * step
-        yticks = [i * step for i in range(math.ceil(ymax / step) + 1)
-                  if abs(i * step - soft_target_gib) > step * 0.45]
-        yticks = sorted(yticks + [soft_target_gib])
-        footer = f"One run per size. Dashed line: {soft_target_gib:g} GiB soft target. Curves may end when the corpus runs out."
+        footer = f"One run per size. Soft target: {soft_target_gib:g} GiB; dashed line shown where within axis range."
         footer += ("\nFeed size sums UTF-8 bytes of distinct pre-tokenized strings; excludes their frequencies."
-                   if feed_axis else "\nNested raw-text prefixes. Linear axes; shared limits.")
+                   if feed_axis else "\nNested raw-text prefixes.")
+        footer += "\nLinear axes; X and Y limits vary by panel. Curves stop at the last completed size."
         fig, axes = canvas("BPE memory growth", f"{cores} cores  |  Target vocabulary size {vocabulary:,}  |  Single runs", footer)
         for ax, case in zip(axes.flat, cases):
+            observed = [r[axis_field] / 2**20 for r in growth_rows
+                        if r["case"] == case and r.get(axis_field, 0) > 0]
+            xhigh = max(observed, default=1) * 1.08
+            peaks = [r["peak_rss_bytes"] / 2**30 for r in growth_rows
+                     if r["case"] == case and r.get(axis_field, 0) > 0]
+            upper = max(peaks, default=1) * 1.08
+            yticks = list(MaxNLocator(nbins=5, steps=[1, 2, 2.5, 5, 10]).tick_values(0, upper))
+            ymax = yticks[-1]
+            if 0 < soft_target_gib <= ymax:
+                step = yticks[1] - yticks[0]
+                yticks = sorted([tick for tick in yticks if abs(tick - soft_target_gib) > step * 0.45]
+                                + [soft_target_gib])
+                ax.axhline(soft_target_gib, color="#8C4D04", linewidth=1.4, linestyle=(0, (4, 3)))
             for arm, (name, color, marker) in methods.items():
                 selected = sorted((r for r in growth_rows if r["case"] == case and r["arm"] == arm
                                    and r.get(axis_field, 0) > 0), key=lambda r: r["input_bytes"])
                 ax.plot([r[axis_field] / 2**20 for r in selected],
                         [r["peak_rss_bytes"] / 2**30 for r in selected],
                         color=color, marker=marker, markersize=4, linewidth=1.3)
-            ax.axhline(soft_target_gib, color="#8C4D04", linewidth=1.4, linestyle=(0, (4, 3)))
             ax.set_xlim(0, xhigh)
             ax.set_ylim(0, ymax)
             ax.yaxis.set_major_locator(FixedLocator(yticks))

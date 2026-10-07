@@ -188,6 +188,25 @@ growth = true
         with self.assertRaisesRegex(ValueError, "suite identity changed"):
             self.run_suite()
 
+    def test_train_only_report_uses_paired_train_times_from_same_attempts(self):
+        from bench.suite_report import matrix_rows
+
+        self.run_suite()
+        for path in (self.out / "matrix/attempts").glob("*/result.json"):
+            row = read(path)
+            block = int(row["slot"].split(":")[1])
+            values = [1, 4, 9] if row["arm"] == "baseline" else [0.2, 4, 3]
+            row["metrics"].update(train_seconds=values[block],
+                                  feed_seconds=100 - values[block], pipeline_seconds=100)
+            write(path, row)
+        rows, _ = matrix_rows(self.out, read(self.out / "suite-spec.json"))
+        candidate = next(row for row in rows if row["arm"] != "baseline")
+        self.assertEqual(candidate["paired_speedup_over_baseline"], 1)
+        self.assertEqual(candidate["paired_train_speedup_over_baseline"], 3)
+        self.assertEqual(candidate["median_train_seconds"], 3)
+        self.assertCountEqual(candidate["train_samples_seconds"], [0.2, 4, 3])
+        self.assertAlmostEqual(candidate["train_throughput_mib_per_second"], candidate["input_bytes"] / 2**20 / 3)
+
     def test_small_phase_uses_small_prefixes_and_reports_independent_baselines(self):
         self.config.write_text(self.config.read_text().replace("[growth]", "[small]\nenabled = true\nsize_mib = 1\n[growth]"))
         with patch("bench.suite.load_bundle", return_value=(self.bundle, self.fixture.cfg["arms"])):

@@ -36,30 +36,37 @@ def matrix_rows(out, spec, name="matrix"):
             for arm in cfg["arms"]:
                 successful = [r for r in latest.values() if r["arm"] == arm]
                 times = [r["metrics"]["pipeline_seconds"] for r in successful]
+                train_times = [r["metrics"]["train_seconds"] for r in successful]
                 peaks = [r["process_peak_rss_bytes"] for r in successful]
                 matches = [(r, baseline[r["slot"].split(":")[1]]) for r in successful
                            if r["slot"].split(":")[1] in baseline]
                 wall = median(times)
+                train_wall = median(train_times)
                 rss = median(peaks)
                 time_ratios = [r["metrics"]["pipeline_seconds"] / b["metrics"]["pipeline_seconds"]
                                for r, b in matches if b["metrics"]["pipeline_seconds"] > 0]
                 speedups = [b["metrics"]["pipeline_seconds"] / r["metrics"]["pipeline_seconds"]
                             for r, b in matches if r["metrics"]["pipeline_seconds"] > 0]
+                train_speedups = [b["metrics"]["train_seconds"] / r["metrics"]["train_seconds"]
+                                  for r, b in matches if r["metrics"]["train_seconds"] > 0]
                 memory_ratios = [r["process_peak_rss_bytes"] / b["process_peak_rss_bytes"]
                                  for r, b in matches if b["process_peak_rss_bytes"] > 0]
                 results.append(dict(case=case["name"], workers=workers, arm=arm,
                     input_bytes=inp["bytes"], input_id=inputs[case["name"]]["input_id"],
                     completed_repetitions=len(successful), expected_repetitions=cfg["execution"]["paired_blocks"],
                     median_pipeline_seconds=wall,
-                    median_train_seconds=median([r["metrics"]["train_seconds"] for r in successful]),
+                    median_train_seconds=train_wall,
                     median_feed_seconds=median([r["metrics"]["feed_seconds"] for r in successful]),
                     median_peak_rss_bytes=rss,
                     throughput_mib_per_second=inp["bytes"] / 2**20 / wall if wall else None,
+                    train_throughput_mib_per_second=inp["bytes"] / 2**20 / train_wall if train_wall else None,
                     paired_time_over_baseline=median(time_ratios) if not mismatch else None,
                     paired_speedup_over_baseline=median(speedups) if not mismatch else None,
+                    paired_train_speedup_over_baseline=median(train_speedups) if not mismatch else None,
                     paired_rss_over_baseline=median(memory_ratios) if not mismatch else None,
                     paired_repetitions=len(matches), correctness_failed=mismatch,
-                    pipeline_samples_seconds=times, peak_rss_samples_bytes=peaks))
+                    pipeline_samples_seconds=times, train_samples_seconds=train_times,
+                    peak_rss_samples_bytes=peaks))
     return results, paired
 
 
@@ -78,7 +85,7 @@ def label(arm, spec):
     return spec["bundle"]["baseline"] if arm == "baseline" else arm
 
 
-def figures(folder, rows, curves, spec, small_rows):
+def figures(folder, rows, curves, spec):
     from .plots import CASES, METHODS, render
 
     cfg = spec["config"]
@@ -106,11 +113,11 @@ def figures(folder, rows, curves, spec, small_rows):
            repetitions=cfg["execution"]["repetitions"], cores=cfg["growth"]["workers"],
            soft_target_gib=cfg["growth"]["rss_target_gib"], feed_axis=feed_axis,
            baseline_label=methods["baseline"][0])
-    if small_rows:
-        render(folder, small_rows, [], cases=cases, methods=methods,
-               input_mib=cfg["small"]["size_mib"],
+    if rows:
+        render(folder, rows, [], cases=cases, methods=methods,
+               input_mib=cfg["cases"][0]["size_mib"],
                vocabulary=cfg.get("trainer", {}).get("vocab_size", 32000),
-               repetitions=cfg["execution"]["repetitions"], filename_prefix="small-",
+               repetitions=cfg["execution"]["repetitions"], filename_prefix="train-", timing="train",
                baseline_label=methods["baseline"][0])
 
 
@@ -158,6 +165,8 @@ def suite_report(out):
     lines = ["# BPE corpus suite", "", f"Baseline: {summary['baseline']}. Complete: {complete}.", "",
              "Matrix time and RSS use medians of measured repetitions; growth uses one run per size.",
              "Throughput = actual raw input MiB / median public Feed + Train time, excluding serialization.",
+             "Train-only throughput uses the same attempts and input bytes / median Train time, excluding Feed and serialization.",
+             "Endpoint speedups use paired ratios for the stage shown. Throughput Y limits and both memory axis limits vary by corpus.",
              "Growth x-axis: sum of UTF-8 bytes of distinct Feed strings, excluding frequencies; raw input fallback if unavailable.",
              "Process peak RSS includes startup/input and sampled serialization. MiB/GiB are binary units.", "",
              "## Source revisions", "", "| Build | Requested ref | Commit |", "| --- | --- | --- |"]
@@ -173,13 +182,13 @@ def suite_report(out):
                      f"{fmt(row['median_peak_rss_bytes']/2**30 if row['median_peak_rss_bytes'] is not None else None)} | "
                      f"{fmt(row['paired_speedup_over_baseline'])} | {fmt(row['paired_rss_over_baseline'])} |")
     if rows:
-        lines += ["", "![Core scaling](core-scaling.png)"]
+        lines += ["", "![Feed + Train core scaling](core-scaling.png)", "",
+                  "![Train-only core scaling](train-core-scaling.png)"]
     if small_rows:
         lines += ["", "## Small corpus scale-up", "",
                   f"{spec['config']['small']['size_mib']} MiB nested prefixes; same trainer, workers and repetitions as the main matrix.",
                   "Ratios use this small corpus's baseline at the same core count. See `small-matrix.csv` for complete absolute/relative rows.",
-                  f"Performance comparison valid: {summary['small_performance_conclusion_valid']}.", "",
-                  "![Small corpus core scaling](small-core-scaling.png)"]
+                  f"Performance comparison valid: {summary['small_performance_conclusion_valid']}. Historical data retained; no small-corpus figure."]
     lines += ["", "## Memory growth", "",
               "Each point is one fresh process. Input grows exponentially until a completed run reaches the soft RSS target.",
               "The crossing run finishes; there is no bisection or precise capacity search.",
@@ -205,5 +214,5 @@ def suite_report(out):
                   "See `../matrix/report/REPORT.md` and per-attempt logs for failures."]
     (folder / "REPORT.md").write_text("\n".join(lines) + "\n")
     if spec["config"]["execution"]["plots"]:
-        figures(folder, rows, curves, spec, small_rows)
+        figures(folder, rows, curves, spec)
     return summary

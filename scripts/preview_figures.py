@@ -1,4 +1,4 @@
-"""Generate exactly two synthetic layout previews with the production renderer."""
+"""Generate three synthetic layout previews with the production renderer."""
 
 import argparse
 import json
@@ -33,6 +33,9 @@ def main():
                 value = baseline / ratio
                 times.append(dict(case=case, arm=arm, workers=workers,
                                   paired_speedup_over_baseline=ratio,
+                                  paired_train_speedup_over_baseline=ratio * 0.85 / (0.85 - method_index * 0.1),
+                                  train_samples_seconds=[value * factor * (0.85 - method_index * 0.1)
+                                                         for factor in (0.93, 1, 1.065)],
                                   pipeline_samples_seconds=[value * 0.93, value, value * 1.065]))
             for point, input_mib in enumerate((512, 1024, 2048, 4096, 8192, 16384, 32768, 65536)):
                 distinct_mib = (8 + corpus_index * 3) * 1.84**point
@@ -47,6 +50,7 @@ def main():
         dict(synthetic=True, purpose="Style preview only; no benchmark conclusions",
              time_rows=times, growth_rows=growth), indent=2) + "\n")
     render(args.out, times, growth, mock=True)
+    render(args.out, times, [], mock=True, timing="train", filename_prefix="train-")
     print(args.out.resolve())
 
 
