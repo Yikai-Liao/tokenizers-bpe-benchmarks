@@ -149,7 +149,7 @@ def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=Fal
         footer += f"\nEndpoint labels: speedup vs {baseline_label} at the same core count. Linear axes; shared limits."
         sizes = {r.get("input_bytes", input_mib * 2**20) >> 20 for r in time_rows}
         input_label = f"{input_mib:,} MiB per corpus" if len(sizes) == 1 else "Input size varies by corpus"
-        fig, axes = canvas(title, f"{input_label}  |  Vocabulary size {vocabulary:,}", footer)
+        fig, axes = canvas(title, f"{input_label}  |  Target vocabulary size {vocabulary:,}", footer)
         observed = [r.get("input_bytes", input_mib * 2**20) / 2**20 / value
                     for r in time_rows for value in r["pipeline_samples_seconds"] if value > 0]
         high = max(observed) * 1.18
@@ -216,7 +216,7 @@ def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=Fal
         footer = f"One run per size. Dashed line: {soft_target_gib:g} GiB soft target. Curves may end when the corpus runs out."
         footer += ("\nFeed size sums UTF-8 bytes of distinct pre-tokenized strings; excludes their frequencies."
                    if feed_axis else "\nNested raw-text prefixes. Linear axes; shared limits.")
-        fig, axes = canvas("BPE memory growth", f"{cores} cores  |  Vocabulary size {vocabulary:,}  |  Single runs", footer)
+        fig, axes = canvas("BPE memory growth", f"{cores} cores  |  Target vocabulary size {vocabulary:,}  |  Single runs", footer)
         for ax, case in zip(axes.flat, cases):
             for arm, (name, color, marker) in methods.items():
                 selected = sorted((r for r in growth_rows if r["case"] == case and r["arm"] == arm

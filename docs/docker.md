@@ -39,6 +39,8 @@ and figures, then publishes `ghcr.io/<owner>/<repository>:run-<run-id>-<attempt>
 and the requested tag (default `latest`). Use the unique tag/digest on a rented
 server. Source revisions and
 validation results are uploaded as workflow artifacts.
+A private GHCR package requires `docker login ghcr.io` with a token permitted to
+read packages before pulling.
 
 ```sh
 IMAGE=ghcr.io/yikai-liao/tokenizers-bpe-benchmarks:latest
@@ -46,8 +48,7 @@ IMAGE=ghcr.io/yikai-liao/tokenizers-bpe-benchmarks:latest
 docker pull "$IMAGE"
 ```
 
-A private GHCR package requires `docker login ghcr.io` with a token permitted to
-read packages before pulling. The local build below is for harness developers;
+The local build below is for harness developers;
 benchmark servers can use the published image directly.
 
 [The source manifest](../docker/sources.toml) selects:

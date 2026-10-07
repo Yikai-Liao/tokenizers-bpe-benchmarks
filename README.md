@@ -17,6 +17,8 @@ The target machine needs Docker. Choose the unique image tag shown by the manual
 [image workflow](https://github.com/Yikai-Liao/tokenizers-bpe-benchmarks/actions/workflows/docker.yml).
 The same image provides corpus preparation, the example config, all four compiled
 runners and plotting dependencies. No repository clone or host Python is needed.
+For a private GHCR package, first use `docker login ghcr.io` with a token permitted
+to read packages, then pull the image below.
 
 ```sh
 IMAGE=ghcr.io/yikai-liao/tokenizers-bpe-benchmarks:latest
@@ -73,8 +75,7 @@ docker run --rm --network none \
   "$IMAGE"
 ```
 
-A private GHCR package needs `docker login ghcr.io` with a token allowed to read
-packages before pulling. Docker and the image workflow compile all four sources
+Docker and the image workflow compile all four sources
 with ordinary `cargo --release`, without `target-cpu=native`.
 
 The [complete TOML example](experiments/dedicated-server.toml) tests code ByteLevel,
