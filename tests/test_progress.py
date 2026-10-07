@@ -63,6 +63,17 @@ class ProgressTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "portable release"):
                     build_bundle(path, Path(folder) / "out", Path(folder) / "cache", portable_release=True)
 
+    def test_reuse_removes_planned_run_and_prunes_after_crossing_on_resume(self):
+        point = dict(arm="baseline", requested_mib=8, classification="target_crossed",
+                     repetitions=3, peak_rss_bytes=2**30, source="matrix_median")
+        with tempfile.TemporaryDirectory() as folder:
+            write(Path(folder) / "growth/text/baseline/point-8.json", point)
+            self.progress.ingest(folder)
+            self.progress.ingest(folder)
+        self.assertFalse(any(k[0] == "growth/text/baseline" for k in self.progress.pending))
+        self.assertEqual(len(self.logs), 1)
+        self.assertIn("reused 3 matrix runs", self.logs[0])
+
 
 if __name__ == "__main__":
     unittest.main()

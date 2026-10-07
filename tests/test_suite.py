@@ -59,6 +59,14 @@ class CapacityTests(unittest.TestCase):
         self.assertEqual([p["requested_mib"] for p in value["points"]], [16, 32, 55])
         self.assertEqual(value["status"], "corpus_or_size_cap")
 
+    def test_fractional_factor_matches_progress_and_advances_small_sizes(self):
+        from bench.progress import sizes
+
+        value = growth_curve(lambda _: {"classification": "below_target"}, 1, 12, 1.5)
+        expected = [1, 2, 3, 5, 8, 12]
+        self.assertEqual([p["requested_mib"] for p in value["points"]], expected)
+        self.assertEqual(list(sizes(1, 12, 1.5)), expected)
+
     def test_failure_preserves_completed_points(self):
         value = growth_curve(lambda n: {"classification": "below_target" if n == 16 else "inconclusive"}, 16, 64, 2)
         self.assertEqual(value["status"], "inconclusive")
@@ -176,9 +184,13 @@ growth = true
         self.assertEqual(len(value["growth_curves"]), 2)
         self.assertFalse(value["all_growth_targets_crossed"])
         attempts = list(self.out.rglob("attempts/*/result.json"))
-        self.assertEqual(len(attempts), 10)
+        self.assertEqual(len(attempts), 8)
+        for curve in value["growth_curves"]:
+            first = curve["points"][0]
+            self.assertEqual(first["source"], "matrix_median")
+            self.assertEqual(len(first["reused_attempt_ids"]), 3)
         self.assertTrue(self.run_suite()["complete"])
-        self.assertEqual(len(list(self.out.rglob("attempts/*/result.json"))), 10)
+        self.assertEqual(len(list(self.out.rglob("attempts/*/result.json"))), 8)
         self.assertTrue((self.out / "report" / "matrix.csv").exists())
         self.assertTrue((self.out / "report" / "memory-growth.csv").exists())
 
@@ -187,6 +199,25 @@ growth = true
         self.fixture.input.write_bytes(self.fixture.input.read_bytes().replace(b"alpha", b"gamma"))
         with self.assertRaisesRegex(ValueError, "suite identity changed"):
             self.run_suite()
+
+    def test_matrix_reuse_rejects_incomplete_or_changed_job(self):
+        from bench.memory import matrix_reference
+
+        self.run_suite()
+        path = next(p for p in (self.out / "matrix/attempts").glob("*/result.json")
+                    if read(p)["arm"] == "baseline")
+        row = read(path)
+        row["job"]["pretokenizer"] = "none"
+        write(path, row)
+        self.assertIsNone(matrix_reference(self.out, "text", 1, "baseline"))
+        self.assertIsNotNone(matrix_reference(self.out, "text", 1, "candidate"))
+
+    def test_reused_crossing_uses_any_completed_peak_and_keeps_median(self):
+        from bench.memory import classify_reference
+
+        value = classify_reference(dict(peak_rss_bytes=100, peak_rss_samples_bytes=[90, 100, 170]), 160)
+        self.assertEqual(value["classification"], "target_crossed")
+        self.assertEqual(value["peak_rss_bytes"], 100)
 
     def test_train_only_report_uses_paired_train_times_from_same_attempts(self):
         from bench.suite_report import matrix_rows

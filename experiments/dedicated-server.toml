@@ -28,7 +28,7 @@ enabled = true
 workers = 8
 repetitions = 1
 start_mib = 512
-factor = 2
+factor = 1.5
 max_mib = 32768
 rss_target_gib = 16
 

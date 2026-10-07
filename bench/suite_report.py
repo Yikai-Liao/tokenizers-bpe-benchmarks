@@ -85,7 +85,29 @@ def label(arm, spec):
     return spec["bundle"]["baseline"] if arm == "baseline" else arm
 
 
-def figures(folder, rows, curves, spec):
+def memory_points(out, curves, spec):
+    from .memory import matrix_reference, classify_reference
+
+    points = [{**p, "case": c["case"], "arm": c["arm"]} for c in curves for p in c["points"]
+              if p["classification"] != "inconclusive"]
+    references = []
+    for case in spec["config"]["cases"]:
+        if not any(c["case"] == case["name"] for c in curves):
+            continue
+        for name in spec["bundle"]["sources"]:
+            arm = "baseline" if name == spec["bundle"]["baseline"] else name
+            reference = matrix_reference(out, case["name"], spec["config"]["growth"]["workers"], arm)
+            if reference is None:
+                continue
+            reference = classify_reference(reference, spec["config"]["growth"]["rss_target_gib"] * 2**30)
+            references.append(reference)
+            points = [p for p in points if not (p["case"] == reference["case"]
+                      and p["arm"] == arm and p["input_id"] == reference["input_id"])]
+            points.append(reference)
+    return points, references
+
+
+def figures(folder, rows, curves, spec, points, references):
     from .plots import CASES, METHODS, render
 
     cfg = spec["config"]
@@ -104,14 +126,13 @@ def figures(folder, rows, curves, spec):
         methods[arm] = METHODS.get(arm, (name, default[1], default[2]))
     if spec["bundle"]["baseline"] != "hf-main":
         methods["baseline"] = (spec["bundle"]["baseline"], *methods["baseline"][1:])
-    points = [dict(case=c["case"], arm=c["arm"], **p) for c in curves for p in c["points"]
-              if p["classification"] != "inconclusive"]
     feed_axis = bool(points) and all(p.get("feed_unique_utf8_bytes", 0) for p in points)
     render(folder, rows, points, cases=cases, methods=methods,
            input_mib=cfg["cases"][0]["size_mib"],
            vocabulary=cfg.get("trainer", {}).get("vocab_size", 32000),
            repetitions=cfg["execution"]["repetitions"], cores=cfg["growth"]["workers"],
            soft_target_gib=cfg["growth"]["rss_target_gib"], feed_axis=feed_axis,
+           memory_reference_rows=references,
            baseline_label=methods["baseline"][0])
     if rows:
         render(folder, rows, [], cases=cases, methods=methods,
@@ -151,8 +172,10 @@ def suite_report(out):
         not want_small or bool(small_matrix and small_matrix["performance_conclusion_valid"])) and (
         len(curves) == len(wanted_growth) * len(spec["bundle"]["sources"])
         and all(c["status"] != "inconclusive" for c in curves))
+    plotted_points, references = memory_points(out, curves, spec)
     summary = dict(complete=complete, baseline=spec["bundle"]["baseline"],
                    matrix=rows, small_matrix=small_rows, growth_curves=curves,
+                   memory_references=references,
                    all_growth_targets_crossed=bool(curves) and all(c["status"] == "target_crossed" for c in curves),
                    matrix_performance_conclusion_valid=matrix["performance_conclusion_valid"] if matrix else None,
                    small_performance_conclusion_valid=small_matrix["performance_conclusion_valid"] if small_matrix else None)
@@ -160,10 +183,12 @@ def suite_report(out):
     write_csv(folder / "matrix.csv", rows)
     write_csv(folder / "small-matrix.csv", small_rows)
     write_csv(folder / "growth-curves.csv", curves)
-    growth_rows = [dict(case=c["case"], arm=c["arm"], **p) for c in curves for p in c["points"]]
+    growth_rows = [{**p, "case": c["case"], "arm": c["arm"]} for c in curves for p in c["points"]]
     write_csv(folder / "memory-growth.csv", growth_rows)
+    write_csv(folder / "memory-reference.csv", references)
+    write_csv(folder / "memory-plotted.csv", plotted_points)
     lines = ["# BPE corpus suite", "", f"Baseline: {summary['baseline']}. Complete: {complete}.", "",
-             "Matrix time and RSS use medians of measured repetitions; growth uses one run per size.",
+             "Matrix time and RSS use medians of measured repetitions; new growth sizes use one run each.",
              "Throughput = actual raw input MiB / median public Feed + Train time, excluding serialization.",
              "Train-only throughput uses the same attempts and input bytes / median Train time, excluding Feed and serialization.",
              "Endpoint speedups use paired ratios for the stage shown. Throughput Y limits and both memory axis limits vary by corpus.",
@@ -190,7 +215,12 @@ def suite_report(out):
                   "Ratios use this small corpus's baseline at the same core count. See `small-matrix.csv` for complete absolute/relative rows.",
                   f"Performance comparison valid: {summary['small_performance_conclusion_valid']}. Historical data retained; no small-corpus figure."]
     lines += ["", "## Memory growth", "",
-              "Each point is one fresh process. Input grows exponentially until a completed run reaches the soft RSS target.",
+              "New sizes use one fresh process. Matching main-matrix points reuse measured RSS medians and original attempt IDs.",
+              "Reuse requires the same input identity, trainer, pretokenizer, build, core count, affinity and NUMA policy.",
+              "Any completed matrix replicate crossing the target stops that growth curve; the plotted reference is still the median.",
+              "Vertical markers label the raw-text size. Candidate labels are 100 × candidate median RSS / baseline median RSS at that input.",
+              "See `memory-reference.csv` and summary.json for reused samples; `memory-plotted.csv` records plotted points. Raw growth records are retained.",
+              "Input grows exponentially until a completed run reaches the soft RSS target.",
               "The crossing run finishes; there is no bisection or precise capacity search.",
               "Corpus exhaustion preserves the observed partial curve. Safety-guarded or failed runs are excluded from completed RSS curves and retained in the raw CSV.",
               "Feed size is observed, not targeted. ByteLevel strings use their encoded UTF-8 representation.",
@@ -214,5 +244,5 @@ def suite_report(out):
                   "See `../matrix/report/REPORT.md` and per-attempt logs for failures."]
     (folder / "REPORT.md").write_text("\n".join(lines) + "\n")
     if spec["config"]["execution"]["plots"]:
-        figures(folder, rows, curves, spec)
+        figures(folder, rows, curves, spec, plotted_points, references)
     return summary

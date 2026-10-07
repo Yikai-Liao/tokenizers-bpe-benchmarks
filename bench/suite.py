@@ -3,6 +3,7 @@
 import codecs
 import copy
 import fcntl
+import math
 from pathlib import Path
 
 from . import runs
@@ -50,7 +51,7 @@ def load_suite(path):
         raise ValueError("cpu_node must be a nonnegative integer")
     growth = options(cfg.get("growth", {}), dict(
         enabled=True, workers=8, repetitions=1, start_mib=512, max_mib=32768,
-        factor=2, rss_target_gib=16), "growth")
+        factor=1.5, rss_target_gib=16), "growth")
     if type(growth["enabled"]) is not bool:
         raise ValueError("growth.enabled must be a boolean")
     for name in ("workers", "repetitions", "start_mib", "max_mib"):
@@ -60,8 +61,9 @@ def load_suite(path):
     positive(growth["rss_target_gib"], "rss_target_gib")
     if growth["enabled"] and execution["max_process_rss_gib"] <= growth["rss_target_gib"]:
         raise ValueError("safety RSS guard must exceed the growth soft target")
-    if type(growth["factor"]) is not int or growth["factor"] < 2 or growth["start_mib"] > growth["max_mib"]:
-        raise ValueError("growth factor must be an integer >=2; start_mib must fit max_mib")
+    if (type(growth["factor"]) not in (int, float) or not math.isfinite(growth["factor"])
+        or growth["factor"] <= 1 or growth["start_mib"] > growth["max_mib"]):
+        raise ValueError("growth factor must be finite and >1; start_mib must fit max_mib")
     small = options(cfg.get("small", {}), dict(enabled=False, size_mib=1), "small")
     if type(small["enabled"]) is not bool:
         raise ValueError("small.enabled must be a boolean")
@@ -189,7 +191,7 @@ def growth_curve(probe, start, maximum, factor):
             return dict(status=kind, points=points)
         if size == maximum:
             return dict(status="corpus_or_size_cap", points=points)
-        size = min(maximum, size * factor)
+        size = min(maximum, math.ceil(size * factor))
 
 
 def growth_case(out, cfg, arms, builds, cpus, case, source, retry_failed=False, progress=None):
@@ -211,6 +213,16 @@ def growth_case(out, cfg, arms, builds, cpus, case, source, retry_failed=False, 
             plan = experiment(cfg, arms, cpus, [cell], workers=[growth["workers"]])
             plan = validated_config(plan, folder / f"probe-{size}.json")
             cell = plan["cases"][0]
+            from .memory import matrix_reference, compatible, classify_reference
+
+            reference = matrix_reference(out, case["name"], growth["workers"], arm)
+            if compatible(reference, plan, cell, growth["workers"], build, inp):
+                point = classify_reference(reference, growth["rss_target_gib"] * 2**30)
+                point["requested_mib"] = size
+                write(folder / f"point-{size}.json", point)
+                if progress:
+                    progress.reused_point(f"growth/{case['name']}/{arm}", point)
+                return point
             previous = [read(p) for p in (folder / "attempts").glob("*/result.json")]
             slot = f"growth:{size}:0:{arm}"
             existing = sorted([r for r in previous if r["slot"] == slot], key=lambda r: r["started_unix"])

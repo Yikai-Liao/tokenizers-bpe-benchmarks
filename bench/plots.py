@@ -56,7 +56,7 @@ def _audit_pdf(target):
 def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=False,
            input_mib=512, vocabulary=100000, repetitions=3, cores=int(8),
            soft_target_gib=16, feed_axis=True, baseline_label="HF main", filename_prefix="",
-           timing="pipeline"):
+           timing="pipeline", memory_reference_rows=None):
     """Render actual points only; min/max whiskers describe observed repetitions.
 
     ``time_rows`` contain case, arm, workers and pipeline/train_samples_seconds.
@@ -64,6 +64,8 @@ def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=Fal
     ``growth_rows`` contain case, arm, input_bytes, peak_rss_bytes and optional
     feed_unique_utf8_bytes. An incomplete curve ends at its last observed point.
     The caller must select one shared Feed or raw-input axis for all growth rows.
+    Optional memory references use RSS medians from the throughput matrix at the
+    growth core count; labels compare those medians at the same input size.
     """
     import matplotlib
     matplotlib.use("Agg")
@@ -143,6 +145,21 @@ def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=Fal
         _audit_pdf(target)
         plt.close(fig)
 
+    def right_labels(ax, endpoints, high):
+        ordered = sorted(endpoints)
+        gap = high * min(0.10, 0.80 / max(1, len(ordered)))
+        positions = []
+        for value, *_ in ordered:
+            positions.append(max(value, positions[-1] + gap if positions else high * 0.06))
+        for index in range(len(positions) - 1, -1, -1):
+            ceiling = high * 0.94 if index == len(positions) - 1 else positions[index + 1] - gap
+            positions[index] = min(positions[index], ceiling)
+        for (value, color, label, x), label_y in zip(ordered, positions):
+            ax.annotate(label, xy=(x, value), xytext=(1.04, label_y / high),
+                        textcoords="axes fraction", annotation_clip=False,
+                        color=color, fontsize=8, va="center", fontweight="bold",
+                        arrowprops=dict(arrowstyle="-", color=color, lw=0.5))
+
     if timing not in ("pipeline", "train"):
         raise ValueError("timing must be pipeline or train")
     sample_field = f"{timing}_samples_seconds"
@@ -160,21 +177,6 @@ def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=Fal
         max_cores = max(r["workers"] for r in time_rows)
         xleft = 0
         xright = max_cores + 0.6
-
-        def endpoint_labels(ax, endpoints, high):
-            ordered = sorted(endpoints)
-            gap = high * min(0.10, 0.80 / max(1, len(ordered)))
-            positions = []
-            for value, *_ in ordered:
-                positions.append(max(value, positions[-1] + gap if positions else high * 0.06))
-            for index in range(len(positions) - 1, -1, -1):
-                ceiling = high * 0.94 if index == len(positions) - 1 else positions[index + 1] - gap
-                positions[index] = min(positions[index], ceiling)
-            for (value, color, ratio, x), label_y in zip(ordered, positions):
-                ax.annotate(f"{ratio:.1f}×", xy=(x, value), xytext=(1.04, label_y / high),
-                            textcoords="axes fraction", annotation_clip=False,
-                            color=color, fontsize=8, va="center", fontweight="bold",
-                            arrowprops=dict(arrowstyle="-", color=color, lw=0.5))
 
         for ax, case in zip(axes.flat, cases):
             observed = [r.get("input_bytes", input_mib * 2**20) / 2**20 / value
@@ -198,8 +200,8 @@ def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=Fal
                             markersize=4, linewidth=1.3, elinewidth=0.7, capsize=2)
                 ratio = selected[-1].get(ratio_field)
                 if ratio is not None:
-                    endpoints.append((ys[-1], color, ratio, xs[-1]))
-            endpoint_labels(ax, endpoints, high)
+                    endpoints.append((ys[-1], color, f"{ratio:.1f}×", xs[-1]))
+            right_labels(ax, endpoints, high)
             ax.set_xlim(xleft, xright)
             ax.set_ylim(0, high)
             ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
@@ -213,11 +215,15 @@ def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=Fal
         observed = [r[axis_field] / 2**20 for r in growth_rows if r.get(axis_field, 0) > 0]
         if not observed:
             raise ValueError("growth figure requires measured positive x values")
-        footer = f"One run per size. Soft target: {soft_target_gib:g} GiB; dashed line shown where within axis range."
+        footer = ("Fresh growth points: single runs. Reused throughput points: medians."
+                  if memory_reference_rows else "One run per size.")
+        footer += " Target line shown when in range."
         footer += ("\nFeed size sums UTF-8 bytes of distinct pre-tokenized strings; excludes their frequencies."
                    if feed_axis else "\nNested raw-text prefixes.")
         footer += "\nLinear axes; X and Y limits vary by panel. Curves stop at the last completed size."
-        fig, axes = canvas("BPE memory growth", f"{cores} cores  |  Target vocabulary size {vocabulary:,}  |  Single runs", footer)
+        if memory_reference_rows:
+            footer += f"\nVertical marker: reused throughput RSS medians. Labels: peak RSS as % of {baseline_label} at that input."
+        fig, axes = canvas("BPE memory growth", f"{cores} cores  |  Target vocabulary size {vocabulary:,}  |  Soft target {soft_target_gib:g} GiB", footer)
         for ax, case in zip(axes.flat, cases):
             observed = [r[axis_field] / 2**20 for r in growth_rows
                         if r["case"] == case and r.get(axis_field, 0) > 0]
@@ -238,6 +244,25 @@ def render(folder, time_rows, growth_rows, *, cases=None, methods=None, mock=Fal
                 ax.plot([r[axis_field] / 2**20 for r in selected],
                         [r["peak_rss_bytes"] / 2**30 for r in selected],
                         color=color, marker=marker, markersize=4, linewidth=1.3)
+            references = [r for r in memory_reference_rows or [] if r["case"] == case]
+            baseline = next((r for r in references if r["arm"] == "baseline"), None)
+            if baseline and baseline["peak_rss_bytes"] > 0:
+                reference_x = baseline[axis_field] / 2**20
+                ax.vlines(reference_x, 0, ymax * 0.86, color="#8A929B", linewidth=0.8,
+                          linestyles=(0, (2, 3)))
+                ax.text(reference_x + xhigh * 0.02, ymax * 0.94,
+                        f"{baseline['input_bytes'] / 2**20:.3g} MiB raw text", fontsize=7,
+                        color="#57606A", va="center")
+                annotations = []
+                for row in references:
+                    if row["arm"] == "baseline":
+                        continue
+                    color = methods[row["arm"]][1]
+                    percentage = 100 * row["peak_rss_bytes"] / baseline["peak_rss_bytes"]
+                    label = f"{percentage:.0f}%"
+                    annotations.append((row["peak_rss_bytes"] / 2**30, color, label,
+                                        row[axis_field] / 2**20))
+                right_labels(ax, annotations, ymax)
             ax.set_xlim(0, xhigh)
             ax.set_ylim(0, ymax)
             ax.yaxis.set_major_locator(FixedLocator(yticks))

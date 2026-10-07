@@ -39,8 +39,7 @@ and figures, then publishes `ghcr.io/<owner>/<repository>:run-<run-id>-<attempt>
 and the requested tag (default `latest`). Use the unique tag/digest on a rented
 server. Source revisions and
 validation results are uploaded as workflow artifacts.
-A private GHCR package requires `docker login ghcr.io` with a token permitted to
-read packages before pulling.
+The GHCR package is public; pulling it requires no login.
 
 ```sh
 IMAGE=ghcr.io/yikai-liao/tokenizers-bpe-benchmarks:latest
@@ -230,12 +229,22 @@ main at the same core count. Exact model IDs and ordered merges are checked;
 any mismatch invalidates performance comparisons and remains in the audit trail.
 
 `growth.repetitions = 1` is required. Input grows from `start_mib` by `factor`
-(default 2), bounded by `max_mib` and the mounted corpus. Each algorithm has its
+(default 1.5, rounded up to integer MiB), bounded by `max_mib` and the mounted corpus. Each algorithm has its
 own stopping point. The RSS target can be any positive value; its emphasized
 left-axis tick and horizontal line are computed from the config when the target
 falls within that panel's RSS range, even between normal ticks. A target above
 the observed range remains stated in the caption. A crossing observation is not
 an exact capacity.
+
+Growth reuses the main throughput matrix's RSS measurements at an identical
+input, build, trainer, pretokenizer, core count, CPU affinity and NUMA policy.
+Those points show the median of the original repetitions; other sizes use one
+fresh process. Any completed reused repetition above the target stops that
+curve. The original attempt IDs and all RSS samples remain in `summary.json`.
+The memory figure marks the reused point with a vertical line labeled by raw
+input size. Candidate labels show their median peak RSS as a percentage of HF
+main's median at that input. `memory-reference.csv` and `memory-plotted.csv`
+record the reference and displayed values; raw growth data remain available.
 
 The memory figure's preferred x-axis is **the sum of UTF-8 bytes of distinct
 strings in the public Feed word map**, excluding their frequencies and map/object

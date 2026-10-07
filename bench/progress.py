@@ -23,7 +23,7 @@ def sizes(start, maximum, factor):
         yield size
         if size == maximum:
             return
-        size = min(maximum, size * factor)
+        size = min(maximum, math.ceil(size * factor))
 
 
 class SuiteProgress:
@@ -135,6 +135,20 @@ class SuiteProgress:
             flush=True,
         )
 
+    def reused_point(self, folder, point, *, quiet=False):
+        key = folder, f"growth:{point['requested_mib']}:0:{point['arm']}"
+        if key in self.completed:
+            return
+        self.pending.pop(key, None)
+        self.completed.add(key)
+        if point["classification"] == "target_crossed":
+            self.pending = {k: v for k, v in self.pending.items() if k[0] != folder}
+        if not quiet:
+            done = len(self.completed)
+            self.emit(f"[{done}/{done + len(self.pending)}] {folder} reused {point['repetitions']} matrix runs "
+                      f"input={point['requested_mib']}MiB medianPeakRSS={point['peak_rss_bytes']/2**30:.3f}GiB "
+                      f"elapsed={duration(time.time() - self.started)} ETA~{duration(self.remaining())}", flush=True)
+
     def ingest(self, out, *, quiet=False):
         active = []
         records = []
@@ -147,6 +161,10 @@ class SuiteProgress:
                 records.append((folder, row))
         for folder, row in sorted(records, key=lambda item: item[1].get("finished_unix", item[1]["started_unix"])):
             self.completed_run(folder, row, quiet=quiet)
+        for path in Path(out).glob("growth/*/*/point-*.json"):
+            point = read(path)
+            if point.get("source") == "matrix_median":
+                self.reused_point(str(path.parent.relative_to(out)), point, quiet=quiet)
         return active
 
 

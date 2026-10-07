@@ -17,8 +17,7 @@ The target machine needs Docker. Choose the unique image tag shown by the manual
 [image workflow](https://github.com/Yikai-Liao/tokenizers-bpe-benchmarks/actions/workflows/docker.yml).
 The same image provides corpus preparation, the example config, all four compiled
 runners and plotting dependencies. No repository clone or host Python is needed.
-For a private GHCR package, first use `docker login ghcr.io` with a token permitted
-to read packages, then pull the image below.
+The GHCR package is public; pulling it requires no login.
 
 ```sh
 IMAGE=ghcr.io/yikai-liao/tokenizers-bpe-benchmarks:latest
@@ -90,7 +89,7 @@ English ByteLevel, Chinese ByteLevel and Chinese Whitespace in that order:
 | `trainer.vocab_size` | `100000` | Target vocabulary; actual vocabulary/merges are recorded |
 | `cases[].size_mib` | `512` | Main matrix input prefix per corpus |
 | `growth.workers`, `growth.repetitions` | `8`, `1` | One run per input size for every algorithm/corpus |
-| `growth.start_mib`, `growth.factor`, `growth.max_mib` | `512`, `2`, `32768` | Exponential raw-input prefix growth |
+| `growth.start_mib`, `growth.factor`, `growth.max_mib` | `512`, `1.5`, `32768` | Exponential raw-input prefix growth |
 | `growth.rss_target_gib` | `16` | Soft target: keep the completed crossing point, then stop |
 | `execution.max_process_rss_gib` | `48` | Separate safety guard; choose for the host and above the soft target |
 | `execution.min_available_gib` | `2` | Minimum available host/cgroup memory |
