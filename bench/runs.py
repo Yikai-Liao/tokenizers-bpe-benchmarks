@@ -425,7 +425,12 @@ def schedule(cfg):
             rotated = list(reversed(rotated))
         order = arms if block % 2 == 0 else list(reversed(arms))
         if len(arms) > 2:
-            order = arms[block % len(arms) :] + arms[: block % len(arms)]
+            # Rotate between block pairs, then reverse within each pair. Even
+            # two-round runs balance each arm's early/late execution position.
+            shift = (block // 2) % len(arms)
+            order = arms[shift:] + arms[:shift]
+            if block % 2:
+                order = list(reversed(order))
         for case, w in rotated:
             for arm in order:
                 yield case, w, arm, f"block:{block}:{case['name']}:{w}:{arm}"

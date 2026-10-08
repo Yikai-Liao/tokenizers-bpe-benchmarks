@@ -258,7 +258,8 @@ rejected if explicitly requested.
 
 Each process has a unique attempt directory, logs, job, result and full model.
 An exclusive writer lock prevents simultaneous supervisors. Warmups and paired
-blocks are fixed in advance; two-arm AB/BA and multi-arm rotation are recorded.
+blocks are fixed in advance; two-arm AB/BA and multi-arm paired reversal are
+recorded. Multi-arm orders rotate between block pairs.
 Timeout, resource guard, crash, invalid protocol, signal and model mismatch all
 produce retained terminal records. A killed process is reported as a process
 failure, without guessing OOM. Resume marks orphaned running attempts interrupted

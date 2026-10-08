@@ -13,7 +13,7 @@ from bench.builds import files, setup, source_snapshot
 from bench.config import cpu_config, digest, environment, identity, read, write
 from bench.inputs import prepared, shard_cache, text_manifest
 from bench.reports import report
-from bench.runs import canonical_model, execute, plan, recover, run
+from bench.runs import canonical_model, execute, plan, recover, run, schedule
 
 
 class BenchTests(unittest.TestCase):
@@ -370,6 +370,16 @@ print(json.dumps(v))
         self.assertEqual(
             [r["slot"].split(":")[-1] for r in starts],
             ["baseline", "candidate", "candidate", "baseline"],
+        )
+        cfg = dict(
+            arms={"baseline": {}, "left": {}, "right": {}},
+            cases=[{"name": "text"}],
+            execution=dict(workers=[1], warmups_per_cell=0, paired_blocks=4),
+        )
+        self.assertEqual(
+            [arm for _, _, arm, _ in schedule(cfg)],
+            ["baseline", "left", "right", "right", "left", "baseline",
+             "left", "right", "baseline", "baseline", "right", "left"],
         )
 
 
