@@ -1,0 +1,157 @@
+{
+  "baseline": "8faaff79d859bfd6b2417cfe8c93ea2851c3aaca",
+  "reference_addendum": "TRANSFER_ADDENDUM.md",
+  "reference_yttm": "YTTM_ALIGNMENT_NOTES.md",
+  "requested_measurement": "EN/ZH 256 MiB raw whole-line prefixes, 100K vocabulary, 4 workers, two reverse-paired blocks, exact models",
+  "scope": "Training experiments; encode-side opportunities assessed against concrete tk-encode implementations and retained separately",
+  "candidates": [
+    {
+      "id": "lifecycle-release",
+      "source": "YTTM alignment",
+      "candidate": "parallel_cleanup",
+      "decision": "implemented; repeated in expanded matrix"
+    },
+    {
+      "id": "entries-and-routing-capacity",
+      "source": "both notes + tk-encode BpeScratch/QueueScratch",
+      "candidate": "scratch_reuse",
+      "decision": "Implemented; empty attempt-local capacity only; safe revision becfd293 fixes forgotten-drain transfer invariant. Stage diagnostics completed; end-to-end benefits remain unstable."
+    },
+    {
+      "id": "last-publication",
+      "source": "YTTM alignment",
+      "candidate": "terminal_publication",
+      "decision": "implemented; preserves all count and codec checks"
+    },
+    {
+      "id": "direct-materialization",
+      "source": "YTTM alignment + tk-encode QueueSink",
+      "candidate": "lean_materialization",
+      "decision": "implemented; direct writes/chunks, known job capacity and owned string move"
+    },
+    {
+      "id": "sparse-character-map",
+      "source": "transfer addendum + tk-encode SparseFold",
+      "candidate": "sparse_character_ids",
+      "decision": "implemented; ASCII direct, BMP bitmap/rank, non-BMP hash map; preserve filtering and decoration order"
+    },
+    {
+      "id": "training-hot-cold",
+      "source": "transfer addendum + tk-encode MergeQueue",
+      "candidate": "hot_cold_priorities",
+      "decision": "implemented fresh-only; repaired heads enter hot and are compared again; reuse queue unchanged"
+    },
+    {
+      "id": "optional-length-layer",
+      "source": "YTTM alignment",
+      "candidate": "unrestricted_births",
+      "decision": "implemented; corpus separators prove strict gate admits every birth when limit >= corpus length"
+    },
+    {
+      "id": "packed-training-priority",
+      "source": "transfer addendum + tk-encode packed ranks",
+      "decision": "ineligible for requested 100K vocabulary: future IDs exceed u16; retain full count and ID range; a gated representation would not exercise the packed path here"
+    },
+    {
+      "id": "initial-pair-dense-grid",
+      "source": "transfer addendum + tk-encode BpeTables top_index",
+      "decision": "Existing bounded initial collector handles small complete alphabets. Large total A rejects only a complete A² grid, not a hot subset. A new independent ASCII/sparse hybrid candidate explicitly explores a bounded subset."
+    },
+    {
+      "id": "source-word-lifetime",
+      "source": "YTTM alignment",
+      "decision": "main already borrows word-count strings through initialization; no worker-owned per-word string destruction to remove"
+    },
+    {
+      "id": "selected-credit-cancellation",
+      "source": "YTTM alignment",
+      "decision": "fresh ordinary path already emits neighbor updates without selected add/sub cancellation; AA parity and actual credit stay required"
+    },
+    {
+      "id": "weight-mass-fusion",
+      "source": "YTTM alignment",
+      "decision": "main CorpusPlan already combines length, weighted mass and corpus geometry in one measurement pass"
+    },
+    {
+      "id": "encode-affix-preparse",
+      "source": "transfer addendum + tk-encode convert_affixed",
+      "decision": "encode-side candidate retained; current implementation uses a stack buffer; plain training workload cannot evaluate affixed encode conversion"
+    },
+    {
+      "id": "encode-fixed-rank-prefix",
+      "source": "transfer addendum + tk-encode SAFE/min_rank tables",
+      "decision": "encode-side candidate retained; per-rule SAFE alone is insufficient; needs prefix-wide producer rank bounds and crossed endpoint checks"
+    },
+    {
+      "id": "encode-stable-radix",
+      "source": "transfer addendum + tk-encode MergeQueue.sort_cold",
+      "decision": "encode-side candidate retained; requires long-word encode workload and reusable sorting scratch; equal-rank left-to-right order must survive"
+    },
+    {
+      "id": "encode-entry-width",
+      "source": "transfer addendum + tk-encode Entry",
+      "decision": "encode-side candidate retained; Entry is 24 bytes with no removable padding; need complete reachable-ID/link bounds plus wide fallback"
+    },
+    {
+      "id": "encode-AA-final-neighbors",
+      "source": "transfer addendum + tk-encode Entry.rewrite_neighbours",
+      "decision": "encode-side candidate retained; must publish internal P-P and odd P-A candidates and preserve lower-rank preemption"
+    },
+    {
+      "id": "encode-probe-lookahead",
+      "source": "transfer addendum + tk-encode tokenize_spans",
+      "decision": "encode-side candidate retained; cached insertion positions can be invalidated by earlier spans; requires encode cache/memory profile"
+    },
+    {
+      "id": "ascii-pair-hybrid-grid",
+      "source": "user correction + tk-encode BpeTables.top_index/top_values",
+      "candidate": "ascii_pair_grid",
+      "decision": "Implemented, both existing 101-test configurations and Clippy passed; measured 256 MiB/4 workers/two blocks. Chinese regression and mixed English result; no selection for landing."
+    },
+    {
+      "id": "bmp-direct-character-map",
+      "source": "measured Chinese regression of SparseFold-style training transfer",
+      "candidate": "bmp_character_ids",
+      "decision": "direct 256 KiB BMP ID array + non-BMP hash; removes per-codepoint rank/popcount; preserves Unicode/decorated IDs and all existing extended fixtures",
+      "commit": "9846f172"
+    }
+  ],
+  "input_shape_statistics": [
+    {
+      "case": "en512-whitespace-split",
+      "input_id": "5a214d38e867909d926580c1163534d8387fb8523fd7cb6db609edd49e951c4c",
+      "distinct_words": 2788295,
+      "initial_symbols": 7898,
+      "ascii_symbols": 94,
+      "non_bmp_symbols": 114,
+      "observed_unicode_pages": 214,
+      "initial_edges": 21786694,
+      "weighted_edge_mass": 363964734,
+      "corpus_slots": 27363285,
+      "dense_u32_grid_bytes": 249513616
+    },
+    {
+      "case": "zh512-whitespace",
+      "input_id": "db0490c608af7072ea8ae56e5f68ecb12a66239f6c6277f307505dd301bb3cc5",
+      "distinct_words": 12971649,
+      "initial_symbols": 20755,
+      "ascii_symbols": 95,
+      "non_bmp_symbols": 919,
+      "observed_unicode_pages": 465,
+      "initial_edges": 124735418,
+      "weighted_edge_mass": 157021369,
+      "corpus_slots": 150678717,
+      "dense_u32_grid_bytes": 1723080100
+    }
+  ],
+  "benchmark_configuration": "Generated by run.py from candidates.json, common Cargo.lock, and caller-provided raw texts",
+  "benchmark_harness_commit": "138230d",
+  "initial_result_caveat": "Initial comparison/ had rotating multi-arm order; later batches reverse paired order. All observed gains remain provisional due to repeated baseline variance. No stable ranking or combined candidate.",
+  "future_benchmark_preference": "User update: 256 MiB EN/ZH raw whole-line prefixes, 100K vocab, 4 workers, two reverse-paired blocks; small single-thread follow-up only for MT winners",
+  "scratch_discrepancy_audit": {
+    "verified": "same binary hashes, same inputs, deterministic caller map, same affinity, zero swap; baseline/scratch CPU-time variation remains",
+    "512m_tight_recheck_6_workers": "ZH gains 14.4% and 6.6%; EN regression 9.0% then gain 0.5%; requires stage attribution",
+    "followup": "Stage diagnostic and whole-process hardware counters completed; work counters match but baseline cycles/IPC vary. Root physical cause not fully isolated; continue baseline A/A on new host."
+  },
+  "earlier_measurement": "EN/ZH 512 MiB raw input, 100K vocabulary, 1/6 workers, two reverse-paired blocks, exact models"
+}

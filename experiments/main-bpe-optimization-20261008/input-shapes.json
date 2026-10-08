@@ -1,0 +1,28 @@
+[
+  {
+    "case": "en512-whitespace-split",
+    "input_id": "5a214d38e867909d926580c1163534d8387fb8523fd7cb6db609edd49e951c4c",
+    "distinct_words": 2788295,
+    "initial_symbols": 7898,
+    "ascii_symbols": 94,
+    "non_bmp_symbols": 114,
+    "observed_unicode_pages": 214,
+    "initial_edges": 21786694,
+    "weighted_edge_mass": 363964734,
+    "corpus_slots": 27363285,
+    "dense_u32_grid_bytes": 249513616
+  },
+  {
+    "case": "zh512-whitespace",
+    "input_id": "db0490c608af7072ea8ae56e5f68ecb12a66239f6c6277f307505dd301bb3cc5",
+    "distinct_words": 12971649,
+    "initial_symbols": 20755,
+    "ascii_symbols": 95,
+    "non_bmp_symbols": 919,
+    "observed_unicode_pages": 465,
+    "initial_edges": 124735418,
+    "weighted_edge_mass": 157021369,
+    "corpus_slots": 150678717,
+    "dense_u32_grid_bytes": 1723080100
+  }
+]

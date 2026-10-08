@@ -222,6 +222,8 @@ are preserved for this purpose.
 
 ## Identify input and run
 
+The [October 8 main BPE optimization handoff](experiments/main-bpe-optimization-20261008/HANDOFF.md) includes pinned candidate branches, a common lock, original measurements, and a 256 MiB / 4-worker runner with a baseline A/A check.
+
 ```sh
 uv run python -m bench text --input /path/to/text.txt --manifest .bench/text.json
 # Only core needs a preparation step. Select a validated build for preprocessing.

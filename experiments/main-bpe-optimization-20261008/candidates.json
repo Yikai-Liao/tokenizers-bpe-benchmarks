@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/Yikai-Liao/tokenizers.git",
+  "baseline": "baseline",
+  "sources": {
+    "baseline": {
+      "branch": "main",
+      "commit": "8faaff79d859bfd6b2417cfe8c93ea2851c3aaca",
+      "kind": "baseline"
+    },
+    "parallel_cleanup": {
+      "branch": "experiment/main-parallel-cleanup",
+      "commit": "ec92103bce0d08b5c4f16a25afa09109dc760a1e",
+      "kind": "candidate"
+    },
+    "scratch_reuse": {
+      "branch": "experiment/main-scratch-reuse",
+      "commit": "0648b8788a4ca3e7a13e8c96a08cf0c57907e10b",
+      "kind": "candidate"
+    },
+    "scratch_reuse_safe": {
+      "branch": "experiment/main-scratch-reuse-safe",
+      "commit": "becfd293fbcbffa0032d36322696d45ca9215157",
+      "kind": "candidate"
+    },
+    "terminal_publication": {
+      "branch": "experiment/main-terminal-publication",
+      "commit": "c479c79fe57733517158ae4ed508dbc333954112",
+      "kind": "candidate"
+    },
+    "lean_materialization": {
+      "branch": "experiment/main-lean-materialization",
+      "commit": "ea6d731407349c268dc117120e08fcd05d504de2",
+      "kind": "candidate"
+    },
+    "sparse_character_ids": {
+      "branch": "experiment/main-sparse-character-ids",
+      "commit": "f16dcbd716134de434bbf604f676351aa868c167",
+      "kind": "candidate"
+    },
+    "hot_cold_priorities": {
+      "branch": "experiment/main-hot-cold-priorities",
+      "commit": "887107c492e42370981b83ab525a18d20edb0ae9",
+      "kind": "candidate"
+    },
+    "unrestricted_births": {
+      "branch": "experiment/main-unrestricted-births",
+      "commit": "184bd4b9dda331c07e2e5fcd46b2881be4e33aa0",
+      "kind": "candidate"
+    },
+    "ascii_pair_grid": {
+      "branch": "experiment/main-ascii-pair-grid",
+      "commit": "e5f86d16d45be038b9dde4ea30de7dcebc58bebc",
+      "kind": "candidate"
+    },
+    "bmp_character_ids": {
+      "branch": "experiment/main-bmp-character-ids",
+      "commit": "9846f172c35c0d42376de8ee879a083e321e5177",
+      "kind": "candidate"
+    },
+    "phase_baseline": {
+      "branch": "experiment/phase-baseline",
+      "commit": "142299591cebc075d8293e9b96f6fe6fe5799f31",
+      "kind": "diagnostic"
+    },
+    "phase_scratch": {
+      "branch": "experiment/phase-scratch",
+      "commit": "9a5a412adddaecc132c646600466561b595a41f1",
+      "kind": "diagnostic"
+    }
+  }
+}
